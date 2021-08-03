@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="core">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="ui">
+      <UniqueIdentifier>{11854a1c-a849-45c9-9185-5c513aab2467}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="core\proc_info.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="core\proc_table.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="core\handle.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\context.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\state_choose_proc.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\command.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\state_exit.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\ui_stm.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\ui.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="core\handle.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\proc_info.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\proc_table.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\ui.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\state_choose_proc.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\state_exit.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\ui_stm.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\event.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\state.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\context.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\command.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\transitions.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
