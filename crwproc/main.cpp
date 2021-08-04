@@ -1,7 +1,8 @@
 #include "ui/ui.h"
 
 
-void main() {
+int main() {
     ui application;
     application.run();
+    return 0;
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-
+#include <iostream>
 #include <string>
 
 
@@ -23,4 +23,7 @@ public:
     const std::size_t pid() const;
 
     const bool is_valid() const;
+
+public:
+    friend std::ostream& operator<<(std::ostream& p_stream, const proc_info& p_info);
 };

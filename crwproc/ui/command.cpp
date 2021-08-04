@@ -6,7 +6,10 @@
 
 
 const std::unordered_map<std::string, event> command::COMMANDS = {
-    { "exit", event_exit() }
+    { "\\e",        event_exit() },
+    { "\\exit",     event_exit() },
+    { "\\c",        event_choose() },
+    { "\\choose",   event_choose(), }
 };
 
 

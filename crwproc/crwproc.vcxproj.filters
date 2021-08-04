@@ -5,7 +5,7 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="ui">
+    <Filter Include="control">
       <UniqueIdentifier>{11854a1c-a849-45c9-9185-5c513aab2467}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -21,22 +21,31 @@
       <Filter>core</Filter>
     </ClCompile>
     <ClCompile Include="ui\context.cpp">
-      <Filter>ui</Filter>
+      <Filter>control</Filter>
     </ClCompile>
     <ClCompile Include="ui\state_choose_proc.cpp">
-      <Filter>ui</Filter>
+      <Filter>control</Filter>
     </ClCompile>
     <ClCompile Include="ui\command.cpp">
-      <Filter>ui</Filter>
+      <Filter>control</Filter>
     </ClCompile>
     <ClCompile Include="ui\state_exit.cpp">
-      <Filter>ui</Filter>
+      <Filter>control</Filter>
     </ClCompile>
     <ClCompile Include="ui\ui_stm.cpp">
-      <Filter>ui</Filter>
+      <Filter>control</Filter>
     </ClCompile>
     <ClCompile Include="ui\ui.cpp">
-      <Filter>ui</Filter>
+      <Filter>control</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\state_create_filter.cpp">
+      <Filter>control</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\filter_value.cpp">
+      <Filter>control</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\state_search.cpp">
+      <Filter>control</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -50,31 +59,40 @@
       <Filter>core</Filter>
     </ClInclude>
     <ClInclude Include="ui\ui.h">
-      <Filter>ui</Filter>
+      <Filter>control</Filter>
     </ClInclude>
     <ClInclude Include="ui\state_choose_proc.h">
-      <Filter>ui</Filter>
+      <Filter>control</Filter>
     </ClInclude>
     <ClInclude Include="ui\state_exit.h">
-      <Filter>ui</Filter>
+      <Filter>control</Filter>
     </ClInclude>
     <ClInclude Include="ui\ui_stm.h">
-      <Filter>ui</Filter>
+      <Filter>control</Filter>
     </ClInclude>
     <ClInclude Include="ui\event.h">
-      <Filter>ui</Filter>
+      <Filter>control</Filter>
     </ClInclude>
     <ClInclude Include="ui\state.h">
-      <Filter>ui</Filter>
+      <Filter>control</Filter>
     </ClInclude>
     <ClInclude Include="ui\context.h">
-      <Filter>ui</Filter>
+      <Filter>control</Filter>
     </ClInclude>
     <ClInclude Include="ui\command.h">
-      <Filter>ui</Filter>
+      <Filter>control</Filter>
     </ClInclude>
     <ClInclude Include="ui\transitions.h">
-      <Filter>ui</Filter>
+      <Filter>control</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\state_create_filter.h">
+      <Filter>control</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\filter_value.h">
+      <Filter>control</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\state_search.h">
+      <Filter>control</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

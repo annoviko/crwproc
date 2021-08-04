@@ -46,6 +46,7 @@ std::string state_choose_proc::ask_proc() const {
     std::string user_input;
     std::cin >> user_input;
 
+    std::cout << std::endl;
     return user_input;
 }
 
