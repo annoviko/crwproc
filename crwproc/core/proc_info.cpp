@@ -6,8 +6,10 @@
 const std::size_t proc_info::INVALID_PID = std::numeric_limits<std::size_t>::max();
 
 
-proc_info::proc_info(const std::size_t p_pid, const std::string& p_name) :
-    m_pid(p_pid), m_name(p_name)
+proc_info::proc_info(const std::size_t p_pid, const std::string& p_name, const std::uint64_t p_address) :
+    m_pid(p_pid), 
+    m_name(p_name), 
+    m_address(p_address)
 { }
 
 
@@ -18,6 +20,11 @@ const std::string& proc_info::name() const {
 
 const std::size_t proc_info::pid() const {
     return m_pid;
+}
+
+
+const std::uint64_t proc_info::base_address() const {
+    return m_address;
 }
 
 

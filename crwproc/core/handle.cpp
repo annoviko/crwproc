@@ -13,3 +13,8 @@ handle::~handle() {
 HANDLE handle::operator()() {
     return m_handle;
 }
+
+
+const HANDLE handle::operator()() const {
+    return m_handle;
+}

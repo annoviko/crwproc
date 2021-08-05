@@ -41,6 +41,11 @@ std::size_t filter_value::get_size() const {
 }
 
 
+std::string filter_value::get_value() const {
+    return m_value;
+}
+
+
 std::ostream& operator<<(std::ostream& p_stream, const filter_value& p_info) {
     p_stream << "Filter (type: " << filter_value::TYPE_STR_DICT.at(p_info.get_type());
     if (p_info.get_type() == filter_value::type::integral) {

@@ -36,21 +36,11 @@ public:
 
     std::size_t get_size() const;
 
+    std::string get_value() const;
+
 public:
     static type to_type(const std::string& p_type);
 
 public:
     friend std::ostream& operator<<(std::ostream& p_stream, const filter_value& p_info);
-
-public:
-    template<typename TypeValue>
-    std::enable_if_t<std::is_integral_v<TypeValue>> get_value() {
-        return static_cast<TypeValue>(std::stoll(m_value));
-    }
-
-
-    template<typename TypeValue>
-    std::enable_if_t<std::is_floating_point_v<TypeValue>> get_value() {
-        return static_cast<TypeValue>(std::stold(m_value));
-    }
 };

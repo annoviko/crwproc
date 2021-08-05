@@ -47,6 +47,9 @@
     <ClCompile Include="core\filter_value.cpp">
       <Filter>core</Filter>
     </ClCompile>
+    <ClCompile Include="core\proc_reader.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\handle.h">
@@ -92,6 +95,12 @@
       <Filter>control</Filter>
     </ClInclude>
     <ClInclude Include="core\filter_value.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\proc_reader.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\proc_reader_result.h">
       <Filter>core</Filter>
     </ClInclude>
   </ItemGroup>

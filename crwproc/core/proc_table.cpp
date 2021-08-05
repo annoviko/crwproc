@@ -15,7 +15,7 @@ proc_info proc_table::get_info(const std::size_t p_pid) const
         return proc_info();
     }
 
-    HMODULE modules[2048];
+    HMODULE modules[128];
     std::memset(modules, 0x00, sizeof(modules));
 
     DWORD amount_module_bytes = 0;
@@ -26,7 +26,8 @@ proc_info proc_table::get_info(const std::size_t p_pid) const
     char proc_name[512];
     std::memset(proc_name, 0x00, sizeof(proc_name));
 
-    if (!GetModuleBaseName(proc_handler(), modules[0], proc_name, sizeof(proc_name) / sizeof(char))) {
+    HMODULE process_base_address = modules[0];
+    if (!GetModuleBaseName(proc_handler(), process_base_address, proc_name, sizeof(proc_name) / sizeof(char))) {
         return proc_info();
     }
 

@@ -16,4 +16,5 @@ public:
 
 public:
     HANDLE operator()();
+    const HANDLE operator()() const;
 };
