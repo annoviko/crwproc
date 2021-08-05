@@ -178,7 +178,7 @@
     <ClInclude Include="core\handle.h" />
     <ClInclude Include="core\proc_info.h" />
     <ClInclude Include="core\proc_reader.h" />
-    <ClInclude Include="core\proc_reader_result.h" />
+    <ClInclude Include="core\proc_pointer.h" />
     <ClInclude Include="core\proc_table.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
