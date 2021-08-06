@@ -9,7 +9,8 @@ class context {
 private:
     proc_info               m_proc;
     filter_value            m_filter;
-    proc_pointer_sequence   m_values;
+    proc_pointer_sequence   m_found_values;
+    proc_pointer_sequence   m_user_table;
 
 public:
     void set_proc_info(const proc_info& p_proc);
@@ -20,9 +21,11 @@ public:
 
     const filter_value& get_filter() const;
 
+    filter_value& get_filter();
+
     void set_values(const proc_pointer_sequence& p_container);
 
-    proc_pointer_sequence get_values() const;
+    const proc_pointer_sequence& get_found_values() const;
 
 public:
     friend std::ostream& operator<<(std::ostream& p_stream, const context& p_info);

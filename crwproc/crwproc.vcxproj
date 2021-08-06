@@ -37,20 +37,20 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -149,10 +149,13 @@
   <ItemGroup>
     <ClCompile Include="control\command.cpp" />
     <ClCompile Include="control\context.cpp" />
+    <ClCompile Include="control\filter_reader_value.cpp" />
     <ClCompile Include="control\state_choose_proc.cpp" />
     <ClCompile Include="control\state_create_filter.cpp" />
     <ClCompile Include="control\state_exit.cpp" />
     <ClCompile Include="control\state_search.cpp" />
+    <ClCompile Include="control\state_show_search_result.cpp" />
+    <ClCompile Include="control\state_update_filter_value.cpp" />
     <ClCompile Include="control\ui.cpp" />
     <ClCompile Include="control\ui_stm.cpp" />
     <ClCompile Include="core\filter_value.cpp" />
@@ -166,11 +169,14 @@
     <ClInclude Include="control\command.h" />
     <ClInclude Include="control\context.h" />
     <ClInclude Include="control\event.h" />
+    <ClInclude Include="control\filter_reader_value.h" />
     <ClInclude Include="control\state.h" />
     <ClInclude Include="control\state_choose_proc.h" />
     <ClInclude Include="control\state_create_filter.h" />
     <ClInclude Include="control\state_exit.h" />
     <ClInclude Include="control\state_search.h" />
+    <ClInclude Include="control\state_show_search_result.h" />
+    <ClInclude Include="control\state_update_filter_value.h" />
     <ClInclude Include="control\transitions.h" />
     <ClInclude Include="control\ui.h" />
     <ClInclude Include="control\ui_stm.h" />

@@ -10,7 +10,7 @@
 
 proc_info proc_table::get_info(const std::size_t p_pid) const
 {
-    handle proc_handler = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, p_pid);
+    handle proc_handler = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, static_cast<DWORD>(p_pid));
     if (!proc_handler()) {
         return proc_info();
     }
@@ -31,7 +31,7 @@ proc_info proc_table::get_info(const std::size_t p_pid) const
         return proc_info();
     }
 
-    return proc_info(p_pid, std::string(proc_name));
+    return proc_info(p_pid, std::string(proc_name), (uint64_t)process_base_address);
 }
 
 

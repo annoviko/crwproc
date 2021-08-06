@@ -50,6 +50,15 @@
     <ClCompile Include="core\proc_reader.cpp">
       <Filter>core</Filter>
     </ClCompile>
+    <ClCompile Include="control\state_show_search_result.cpp">
+      <Filter>control</Filter>
+    </ClCompile>
+    <ClCompile Include="control\state_update_filter_value.cpp">
+      <Filter>control</Filter>
+    </ClCompile>
+    <ClCompile Include="control\filter_reader_value.cpp">
+      <Filter>control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\handle.h">
@@ -102,6 +111,15 @@
     </ClInclude>
     <ClInclude Include="core\proc_pointer.h">
       <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="control\state_show_search_result.h">
+      <Filter>control</Filter>
+    </ClInclude>
+    <ClInclude Include="control\state_update_filter_value.h">
+      <Filter>control</Filter>
+    </ClInclude>
+    <ClInclude Include="control\filter_reader_value.h">
+      <Filter>control</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

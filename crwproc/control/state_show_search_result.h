@@ -1,14 +1,12 @@
 #pragma once
 
 #include <functional>
-#include <vector>
-#include <unordered_map>
 
 #include "context.h"
 #include "event.h"
 
 
-class state_search {
+class state_show_search_result {
 private:
     using action_dict = std::unordered_map<std::string, std::function<event(context&)>>;
     using action_sequence = std::vector<action_dict::const_iterator>;
@@ -21,14 +19,10 @@ public:
     event operator()(context& p_context);
 
 private:
-    event ask_next_action(context& p_context) const;
-
-    std::size_t ask_action_option() const;
-
-    void show_provided_actions() const;
+    void show_values(const context& p_context) const;
 
 private:
     static action_dict get_available_actions();
 
-    static action_sequence get_provided_actions(const state_search::action_dict& p_actions);
+    static action_sequence get_provided_actions(const state_show_search_result::action_dict& p_actions);
 };

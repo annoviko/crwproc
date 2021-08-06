@@ -11,7 +11,6 @@ public:
     event operator()(context& p_context);
 
 private:
-    void show_intro() const;
     void show_procs(const proc_collection& p_table) const;
     std::string ask_proc() const;
 

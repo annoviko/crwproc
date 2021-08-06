@@ -4,20 +4,17 @@
 #include <limits>
 #include <vector>
 
+#include "filter_reader_value.h"
+#include "intro_builder.h"
+
 
 const std::size_t state_create_filter::INVALID_SIZE = std::numeric_limits<std::size_t>::max();
 
 
 event state_create_filter::operator()(context& p_context) {
-    show_intro(p_context);
+    intro_builder::show(p_context, "Create filter for the process.");
     ask_filter(p_context);
     return event_done{};
-}
-
-
-void state_create_filter::show_intro(const context& p_context) const {
-    std::cout << p_context << std::endl;
-    std::cout << "Create filter for the process." << std::endl;
 }
 
 
@@ -35,9 +32,9 @@ void state_create_filter::ask_filter(context& p_context) const {
         }
     }
 
-    std::string value = ask_value();
+    std::string value = filter_reader_value::read(p_context.get_filter());
     if (value.empty()) {
-        value = ask_value();
+        value = filter_reader_value::read(p_context.get_filter());
     }
 
     p_context.set_filter(filter_value(type, size, value));
@@ -88,23 +85,4 @@ std::size_t state_create_filter::ask_value_size() const {
 
     std::cout << "Error: invalid filter is specified (user input '" << index_option << "')." << std::endl << std::endl;
     return INVALID_SIZE;
-}
-
-
-std::string state_create_filter::ask_value() const {
-    std::cout << "Enter value that is going to be searched in the process: ";
-
-    std::string value;
-    std::cin >> value;
-
-    try {
-        std::stoll(value);
-    }
-    catch (...) {
-        std::cout << "Error: invalid value is specified '" << value << "'." << std::endl << std::endl;
-        return std::string{};
-    }
-
-    std::cout << std::endl;
-    return value;
 }

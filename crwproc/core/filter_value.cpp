@@ -46,6 +46,11 @@ std::string filter_value::get_value() const {
 }
 
 
+void filter_value::set_value(const std::string& p_value) {
+    m_value = p_value;
+}
+
+
 std::ostream& operator<<(std::ostream& p_stream, const filter_value& p_info) {
     p_stream << "Filter (type: " << filter_value::TYPE_STR_DICT.at(p_info.get_type());
     if (p_info.get_type() == filter_value::type::integral) {
@@ -57,7 +62,7 @@ std::ostream& operator<<(std::ostream& p_stream, const filter_value& p_info) {
 }
 
 
-filter_value::type filter_value::to_type(const std::string& p_type) {
+filter_value::type filter_value::string_to_type(const std::string& p_type) {
     std::string canonical_type;
     std::transform(p_type.begin(), p_type.end(), std::back_inserter(canonical_type), [](const char symbol) {
         return std::tolower(symbol);
@@ -66,6 +71,16 @@ filter_value::type filter_value::to_type(const std::string& p_type) {
     const auto iter = STR_TYPE_DICT.find(canonical_type);
     if (iter == STR_TYPE_DICT.cend()) {
         return filter_value::type::invalid;
+    }
+
+    return iter->second;
+}
+
+
+std::string filter_value::type_to_string(const filter_value::type p_type) {
+    const auto iter = TYPE_STR_DICT.find(p_type);
+    if (iter == TYPE_STR_DICT.cend()) {
+        return "invalid";
     }
 
     return iter->second;

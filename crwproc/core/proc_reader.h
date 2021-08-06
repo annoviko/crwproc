@@ -26,10 +26,12 @@ private:
 private:
     static constexpr std::uint64_t READ_VALUE_SIZE = 16;
     static constexpr std::uint64_t READ_WINDOW_SIZE = 1048576;  /* 1MB step */
+
     static constexpr std::uint64_t INVALID_PROC_SIZE = std::numeric_limits<std::uint64_t>::max();
+    static constexpr std::uint64_t INVALID_INTEGER_VALUE = std::numeric_limits<std::uint64_t>::max();
 
 public:
-    proc_reader(const proc_info& p_info);
+    proc_reader(const proc_info& p_info, const filter_value& p_filter);
 
 public:
     proc_pointer_sequence read() const;
@@ -41,7 +43,7 @@ public:
     void set_filter_observer(const filter_observer& p_observer);
 
 private:
-    std::uint64_t get_proc_size(const handle& p_handle) const;
+    std::uint64_t get_proc_size(const std::uint64_t p_pid) const;
 
     void extract_values(const std::uint8_t* p_buffer, const std::uint64_t p_length, proc_pointer_sequence& p_result) const;
 

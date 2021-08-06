@@ -6,10 +6,11 @@
 #include <type_traits>
 
 #include "command.h"
+#include "intro_builder.h"
 
 
 event state_choose_proc::operator()(context& p_context) {
-    show_intro();
+    intro_builder::show(p_context, "Please, choose process by using its PID (Process ID).");
 
     proc_collection procs = proc_table().get();
     show_procs(procs);
@@ -17,14 +18,6 @@ event state_choose_proc::operator()(context& p_context) {
     std::string input = ask_proc();
 
     return process_user_input(input, procs, p_context);
-}
-
-
-void state_choose_proc::show_intro() const {
-    static const std::string message = "Please, choose process by using its PID (Process ID).";
-    static const std::string highlighter(message.size(), '-');
-
-    std::cout << highlighter << std::endl << message << std::endl << highlighter << std::endl << std::endl;
 }
 
 

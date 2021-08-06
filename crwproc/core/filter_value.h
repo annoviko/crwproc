@@ -38,8 +38,12 @@ public:
 
     std::string get_value() const;
 
+    void set_value(const std::string& p_value);
+
 public:
-    static type to_type(const std::string& p_type);
+    static type string_to_type(const std::string& p_type);
+
+    static std::string type_to_string(const type p_type);
 
 public:
     friend std::ostream& operator<<(std::ostream& p_stream, const filter_value& p_info);

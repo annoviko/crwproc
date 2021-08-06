@@ -21,20 +21,22 @@ const filter_value& context::get_filter() const {
 }
 
 
-void context::set_values(const proc_pointer_sequence& p_container) {
-    m_values = p_container;
+filter_value& context::get_filter() {
+    return m_filter;
 }
 
 
-proc_pointer_sequence context::get_values() const {
-    return m_values;
+void context::set_values(const proc_pointer_sequence& p_container) {
+    m_found_values = p_container;
+}
+
+
+const proc_pointer_sequence& context::get_found_values() const {
+    return m_found_values;
 }
 
 
 std::ostream& operator<<(std::ostream& p_stream, const context& p_info) {
-    static const std::string line(40, '-');
-
-    std::cout << std::endl << line << std::endl;
     if (p_info.get_proc_info().is_valid()) {
         std::cout << p_info.get_proc_info() << std::endl;
     }
@@ -43,8 +45,7 @@ std::ostream& operator<<(std::ostream& p_stream, const context& p_info) {
         std::cout << p_info.get_filter() << std::endl;
     }
 
-    std::cout << "Found values: " << p_info.get_values().size() << std::endl;
+    std::cout << "Found values: " << p_info.get_found_values().size() << std::endl;
 
-    std::cout << line << std::endl;
     return p_stream;
 }
