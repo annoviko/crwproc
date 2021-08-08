@@ -11,6 +11,8 @@ class event_update { };
 
 class event_show { };
 
+class event_add { };
+
 class event_done { };
 
 class event_error { };
@@ -23,6 +25,7 @@ using event = std::variant<
     event_filter, 
     event_update,
     event_show, 
+    event_add, 
     event_done, 
     event_error, 
     event_exit

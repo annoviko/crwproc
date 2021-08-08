@@ -15,7 +15,7 @@ proc_reader::proc_reader(const proc_info& p_info, const filter_value& p_filter) 
 { }
 
 
-proc_pointer_sequence proc_reader::read() const {
+proc_pointer_sequence proc_reader::read_and_filter() const {
     proc_pointer_sequence result;
 
     handle proc_handler = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, static_cast<DWORD>(m_proc_info.pid()));
@@ -54,7 +54,7 @@ proc_pointer_sequence proc_reader::read() const {
 }
 
 
-proc_pointer_sequence proc_reader::read(const proc_pointer_sequence& p_values) const {
+proc_pointer_sequence proc_reader::read_and_filter(const proc_pointer_sequence& p_values) const {
     proc_pointer_sequence result;
 
     handle proc_handler = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, static_cast<DWORD>(m_proc_info.pid()));
@@ -78,6 +78,12 @@ proc_pointer_sequence proc_reader::read(const proc_pointer_sequence& p_values) c
     }
 
     return result;
+}
+
+
+proc_pointer_sequence proc_reader::read(proc_pointer_sequence& p_value) {
+    /* TODO: */
+    return {};
 }
 
 

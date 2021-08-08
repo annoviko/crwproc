@@ -22,7 +22,7 @@ event state_search::operator()(context& p_context) {
     };
 
     reader.set_read_observer(observer);
-    p_context.set_values(reader.read());
+    p_context.set_values(reader.read_and_filter());
 
     if (p_context.get_found_values().empty()) {
         std::cout << "Nothing has been found, please change filter" << std::endl;

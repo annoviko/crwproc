@@ -7,9 +7,11 @@
 #include "intro_builder.h"
 
 
+
 event state_show_search_result::operator()(context& p_context) {
     intro_builder::show(p_context, "Found values with the filter.");
     show_values(p_context);
+
 
 
     return event_filter{};
@@ -27,33 +29,30 @@ void state_show_search_result::show_values(const context& p_context) const {
 }
 
 
-state_show_search_result::action_dict state_show_search_result::get_available_actions() {
-    return
-    {
-        { "Set new filter and restart.", [](context& p_context) {
-                p_context.set_values({});
-                return event_filter{};
-            }
-        },
+void state_show_search_result::ask_next_action(context& p_context) const {
+    std::cout << "Please enter the command to continue: ";
 
-        { "Set new filter and continue.", [](context&) {
-                return event_filter{};
-            }
-        },
+    std::string user_input;
+    std::cin >> user_input;
 
-        { "Set new value for the filter and continue.", [](context&) {
-                return event_update{};
-            }
-        },
-
-        { "Display found values.", [](context&) {
-                return event_show{};
-            }
+    event action = command::to_event(user_input);
+    std::visit([&user_input, &p_context, &action](auto&& instance) {
+        using EventType = std::decay_t<decltype(instance)>;
+        if constexpr (std::is_same_v<EventType, event_error>) {
+            std::cout << "Error: unknown command is specified '" << user_input << "'." << std::endl;
         }
-    };
-}
+        else if (std::is_same_v<EventType, event_add>) {
+            std::size_t index_value = 0;
+            std::cin >> index_value;
 
-
-state_show_search_result::action_sequence state_show_search_result::get_provided_actions(const state_show_search_result::action_dict& p_actions) {
-
+            if (index_value >= p_context.get_found_values().size()) {
+                std::cout << "Error: specified index '" << index_value << "' is out of range. The total amount of found values: " << p_context.get_found_values().size() << "." << std::endl;
+                action = event_error{};
+                return;
+            }
+            
+            p_context.get_user_table().push_back(p_context.get_found_values().at(index_value));
+            std::cout << "Value has been successfully added." << std::endl;
+        }
+    }, action);
 }

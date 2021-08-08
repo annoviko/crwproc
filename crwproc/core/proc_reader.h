@@ -34,9 +34,11 @@ public:
     proc_reader(const proc_info& p_info, const filter_value& p_filter);
 
 public:
-    proc_pointer_sequence read() const;
+    proc_pointer_sequence read_and_filter() const;
 
-    proc_pointer_sequence read(const proc_pointer_sequence& p_values) const;
+    proc_pointer_sequence read_and_filter(const proc_pointer_sequence& p_values) const;
+
+    proc_pointer_sequence read(proc_pointer_sequence& p_value);
 
     void set_read_observer(const read_observer& p_observer);
 

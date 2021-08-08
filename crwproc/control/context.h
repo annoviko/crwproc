@@ -27,6 +27,10 @@ public:
 
     const proc_pointer_sequence& get_found_values() const;
 
+    proc_pointer_sequence& get_user_table();
+
+    const proc_pointer_sequence& get_user_table() const;
+
 public:
     friend std::ostream& operator<<(std::ostream& p_stream, const context& p_info);
 };

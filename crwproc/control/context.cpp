@@ -36,6 +36,16 @@ const proc_pointer_sequence& context::get_found_values() const {
 }
 
 
+proc_pointer_sequence& context::get_user_table() {
+    return m_user_table;
+}
+
+
+const proc_pointer_sequence& context::get_user_table() const {
+    return m_user_table;
+}
+
+
 std::ostream& operator<<(std::ostream& p_stream, const context& p_info) {
     if (p_info.get_proc_info().is_valid()) {
         std::cout << p_info.get_proc_info() << std::endl;
