@@ -17,13 +17,11 @@ public:
 
     const proc_info& get_proc_info() const;
 
-    void set_filter(const filter_equal& p_filter);
-
     const filter_equal& get_filter() const;
 
     filter_equal& get_filter();
 
-    void set_values(const proc_pointer_sequence& p_container);
+    proc_pointer_sequence& get_found_values();
 
     const proc_pointer_sequence& get_found_values() const;
 

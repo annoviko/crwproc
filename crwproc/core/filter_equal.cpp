@@ -12,7 +12,21 @@ bool filter_equal::is_valid() const {
 
 
 bool filter_equal::is_satisfying(const std::string& p_value) const {
-    return m_value.get_value() == p_value;
+    try {
+        switch (m_value.get_type()) {
+        case value::type::doubling:
+            return std::stod(p_value) == std::stod(m_value.get_value());
+
+        case value::type::floating:
+            return std::stof(p_value) == std::stof(m_value.get_value());
+
+        default:
+            return m_value.get_value() == p_value;
+        }
+    }
+    catch (...) {
+        return false;
+    }
 }
 
 

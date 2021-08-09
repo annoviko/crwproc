@@ -5,6 +5,8 @@
 #include <string>
 #include <type_traits>
 
+#include "core/console.h"
+
 #include "command.h"
 #include "intro_builder.h"
 
@@ -67,7 +69,7 @@ std::size_t state_choose_proc::try_get_pid(const std::string& p_input) const {
 event state_choose_proc::assign_pid(const std::size_t p_pid, const proc_collection& p_table, context& p_context) const {
     const auto iter = p_table.find(p_pid);
     if (iter == p_table.cend()) {
-        std::cout << "Error: process ID '" << p_pid << "' does not exist." << std::endl;
+        console::error("Error: process ID '" + std::to_string(p_pid) + "' does not exist.", true);
         return event_error{};
     }
 
@@ -81,7 +83,7 @@ event state_choose_proc::process_user_command(const std::string& p_command) cons
     std::visit([&p_command](auto && instance) {
         using EventType = std::decay_t<decltype(instance)>;
         if constexpr (std::is_same_v<EventType, event_error>) {
-            std::cout << "Error: unknown command is specified '" << p_command << "'." << std::endl;
+            console::error("Error: unknown command is specified '" + p_command + "'.", true);
         }
     }, event_to_handle);
 

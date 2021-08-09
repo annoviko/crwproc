@@ -16,14 +16,11 @@ struct context {
     std::int64_t m_int64 = 1234567890;
 
     float m_float = 3.14;
-    double m_double = 1.23456789;
+    double m_double = 1.2345;
 };
 
 
-context g_context;
-
-
-void show_values(const std::size_t p_pid) {
+void show_values(const std::size_t p_pid, const context& g_context) {
     std::cout << p_pid << ") " << (int)g_context.m_int8 << ", " << g_context.m_int16 << ", " << g_context.m_int32 << ", " << g_context.m_int64 << ", " << g_context.m_float << ", " << g_context.m_double << std::endl;
 }
 
@@ -31,7 +28,9 @@ void show_values(const std::size_t p_pid) {
 int main() {
     DWORD pid = GetCurrentProcessId();
 
-    show_values(pid);
+    context g_context;
+
+    show_values(pid, g_context);
 
     while (true) {
 
@@ -68,7 +67,7 @@ int main() {
             std::cout << std::setw(10) << g_context.m_double << ": " << (void*)&g_context.m_double << std::endl;
         }
         else if (command == "show") {
-            show_values(pid);
+            show_values(pid, g_context);
         }
         else {
             std::cout << "ERROR: WRONG COMMAND." << std::endl;

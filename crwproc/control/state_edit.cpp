@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <iostream>
 
+#include "core/console.h"
 #include "core/proc_reader.h"
 #include "core/proc_writer.h"
 
@@ -25,15 +26,17 @@ void state_edit::show_table(context& p_context) {
     for (std::size_t i = 0; i < p_context.get_user_table().size(); i++) {
         proc_pointer& pointer = p_context.get_user_table().at(i);
 
-        std::cout << i << " - " << std::left <<
-            "address: " << std::setw(10) << (void*) pointer.get_address() << ", " << 
-            "type: "    << std::setw(10) << value::type_to_string(pointer.get_value().get_type()) << ", " <<
+        std::cout << std::right << std::setw(4) << i << ") " <<
+            "address: " << std::setw(10) << (void*) pointer.get_address() << "| " << 
+            "type: "    << std::setw(10) << value::type_to_string(pointer.get_value().get_type()) << "| " <<
             "value: "   << std::setw(10) << pointer.get_value().get_value() << std::endl;
     }
+
+    std::cout << std::endl;
 }
 
 
-event state_edit::ask_next_action(context& p_context) {
+event state_edit::ask_next_action(context& p_context) const {
     std::cout << "Please enter the command to continue: ";
 
     std::string user_input;
@@ -43,14 +46,15 @@ event state_edit::ask_next_action(context& p_context) {
     std::visit([&user_input, &p_context, &action](auto&& instance) {
         using EventType = std::decay_t<decltype(instance)>;
         if constexpr (std::is_same_v<EventType, event_error>) {
-            std::cout << "Error: unknown command is specified '" << user_input << "'." << std::endl;
+            console::error("Error: unknown command is specified '" + user_input + "'.", true);
         }
         else if (std::is_same_v<EventType, event_set>) {
             std::size_t index_value = 0;
             std::cin >> index_value;
 
             if (index_value >= p_context.get_user_table().size()) {
-                std::cout << "Error: specified index '" << index_value << "' is out of range. The total amount of monitored values: " << p_context.get_user_table().size() << "." << std::endl;
+                console::error("Error: specified index '" + std::to_string(index_value) + 
+                    "' is out of range. The total amount of monitored values: " + std::to_string(p_context.get_user_table().size()) + ".", true);
                 return;
             }
 
@@ -62,9 +66,11 @@ event state_edit::ask_next_action(context& p_context) {
 
             proc_writer writer(p_context.get_proc_info());
             if (!writer.write(new_value)) {
-                std::cout << "Error: impossible to write value to the process." << std::endl;
+                console::error("Error: impossible to write value to the process.", true);
                 return;
             }
+
+            p_context.get_found_values().at(index_value) = new_value;
         }
     }, action);
 

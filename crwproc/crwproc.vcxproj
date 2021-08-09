@@ -160,6 +160,7 @@
     <ClCompile Include="control\state_update_filter_value.cpp" />
     <ClCompile Include="control\ui.cpp" />
     <ClCompile Include="control\ui_stm.cpp" />
+    <ClCompile Include="core\console.cpp" />
     <ClCompile Include="core\filter_equal.cpp" />
     <ClCompile Include="core\handle.cpp" />
     <ClCompile Include="core\proc_info.cpp" />
@@ -187,6 +188,7 @@
     <ClInclude Include="control\transitions.h" />
     <ClInclude Include="control\ui.h" />
     <ClInclude Include="control\ui_stm.h" />
+    <ClInclude Include="core\console.h" />
     <ClInclude Include="core\filter_equal.h" />
     <ClInclude Include="core\handle.h" />
     <ClInclude Include="core\proc_info.h" />

@@ -39,9 +39,6 @@ proc_pointer_sequence proc_reader::read_and_filter() const {
         if (ReadProcessMemory(proc_handler(), (LPCVOID) current_base_address, buffer.get(), bytes_to_read, (SIZE_T *) &bytes_was_read)) {
             extract_values(buffer.get(), bytes_was_read, current_base_address, m_filter.get_value(), true, result);
         }
-        else {
-            std::cout << "Impossible to read memory block (reason: '" << GetLastError() << "')." << std::endl;
-        }
 
         remaining_proc_size -= bytes_was_read;
         current_base_address += bytes_was_read;
@@ -93,7 +90,7 @@ void proc_reader::set_filter_observer(const filter_observer& p_observer) {
 
 
 std::uint64_t proc_reader::get_proc_size(const std::uint64_t p_pid) const {
-    HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, p_pid);
+    HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, static_cast<DWORD>(p_pid));
     std::uint64_t proc_size = INVALID_PROC_SIZE;
 
     if (snapshot != INVALID_HANDLE_VALUE) {
@@ -150,7 +147,7 @@ proc_pointer proc_reader::extract_value(const std::uint8_t* p_buffer, const std:
         }
 
         case value::type::doubling: {
-            const double actual_value = *((float*)p_buffer);
+            const double actual_value = *((double*)p_buffer);
             return { p_address, value(p_value.get_type(), p_value.get_size(), std::to_string(actual_value)) };
         }
 

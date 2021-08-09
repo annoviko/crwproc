@@ -11,8 +11,8 @@ const proc_info& context::get_proc_info() const {
 }
 
 
-void context::set_filter(const filter_equal& p_filter) {
-    m_filter = p_filter;
+filter_equal& context::get_filter() {
+    return m_filter;
 }
 
 
@@ -21,13 +21,8 @@ const filter_equal& context::get_filter() const {
 }
 
 
-filter_equal& context::get_filter() {
-    return m_filter;
-}
-
-
-void context::set_values(const proc_pointer_sequence& p_container) {
-    m_found_values = p_container;
+proc_pointer_sequence& context::get_found_values() {
+    return m_found_values;
 }
 
 
@@ -56,6 +51,7 @@ std::ostream& operator<<(std::ostream& p_stream, const context& p_info) {
     }
 
     std::cout << "Found values: " << p_info.get_found_values().size() << std::endl;
+    std::cout << "Saved values: " << p_info.get_user_table().size() << std::endl;
 
     return p_stream;
 }

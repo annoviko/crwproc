@@ -22,6 +22,7 @@ public:
         static constexpr char show[]            = "\\show";
         static constexpr char edit[]            = "\\edit";
         static constexpr char set[]             = "\\set";
+        static constexpr char refresh[]         = "\\refresh";
     };
 
 private:

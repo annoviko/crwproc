@@ -11,5 +11,5 @@ public:
 private:
     void show_table(context& p_context);
 
-    event ask_next_action(context& p_context);
+    event ask_next_action(context& p_context) const;
 };

@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include "core/console.h"
+
 
 std::string filter_reader_value::read(const filter_equal& p_filter) {
     std::cout << "Enter value that is going to be searched in the process: ";
@@ -25,7 +27,7 @@ std::string filter_reader_value::read(const filter_equal& p_filter) {
         }
     }
     catch (...) {
-        std::cout << "Error: invalid value is specified '" << value << "'." << std::endl << std::endl;
+        console::error("Error: invalid value is specified '" + value + "'.", true);
         return std::string{};
     }
 

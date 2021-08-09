@@ -4,6 +4,8 @@
 #include <limits>
 #include <vector>
 
+#include "core/console.h"
+
 #include "filter_reader_value.h"
 #include "intro_builder.h"
 
@@ -37,7 +39,7 @@ void state_create_filter::ask_filter(context& p_context) const {
         value = filter_reader_value::read(p_context.get_filter());
     }
 
-    p_context.set_filter(filter_equal({ type, size, value }));
+    p_context.get_filter() = filter_equal({ type, size, value });
 }
 
 
@@ -61,7 +63,9 @@ value::type state_create_filter::ask_value_type() const {
         return options[index_option]->second;
     }
 
-    std::cout << "Error: invalid filter is specified (user input '" << index_option << "')." << std::endl << std::endl;
+    console::error("Error: invalid filter is specified (user input '" + std::to_string(index_option) + "').", false);
+    std::cout << std::endl << std::endl;
+
     return value::type::invalid;
 }
 
@@ -83,6 +87,8 @@ std::size_t state_create_filter::ask_value_size() const {
         return options[index_option];
     }
 
-    std::cout << "Error: invalid filter is specified (user input '" << index_option << "')." << std::endl << std::endl;
+    console::error("Error: invalid filter is specified (user input '" + std::to_string(index_option) + "').", false);
+    std::cout << std::endl << std::endl;
+
     return INVALID_SIZE;
 }

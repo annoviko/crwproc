@@ -21,6 +21,9 @@ public:
     state operator()(state_edit&, event_show&) { return state_show_search_result{}; }
 
     template <typename TypeState>
+    state operator()(TypeState& state, event_refresh&) { return state; }
+
+    template <typename TypeState>
     state operator()(TypeState& state, event_update&) { return state_update_filter_value{}; }
 
     template <typename TypeState>

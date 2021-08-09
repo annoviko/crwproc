@@ -74,6 +74,9 @@
     <ClCompile Include="core\proc_writer.cpp">
       <Filter>core</Filter>
     </ClCompile>
+    <ClCompile Include="core\console.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\handle.h">
@@ -146,6 +149,9 @@
       <Filter>core</Filter>
     </ClInclude>
     <ClInclude Include="core\proc_writer.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\console.h">
       <Filter>core</Filter>
     </ClInclude>
   </ItemGroup>
