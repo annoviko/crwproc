@@ -3,23 +3,23 @@
 #include <iostream>
 
 
-std::string filter_reader_value::read(const filter_value& p_filter) {
+std::string filter_reader_value::read(const filter_equal& p_filter) {
     std::cout << "Enter value that is going to be searched in the process: ";
 
     std::string value;
     std::cin >> value;
 
     try {
-        switch (p_filter.get_type()) {
-        case filter_value::type::integral:
+        switch (p_filter.get_value().get_type()) {
+        case value::type::integral:
             std::stoull(value);
             break;
 
-        case filter_value::type::floating:
+        case value::type::floating:
             std::stof(value);
             break;
 
-        case filter_value::type::doubling:
+        case value::type::doubling:
             std::stod(value);
             break;
         }

@@ -2,9 +2,10 @@
 
 #include <functional>
 #include <limits>
+#include <optional>
 #include <vector>
 
-#include "filter_value.h"
+#include "filter_equal.h"
 #include "handle.h"
 #include "proc_pointer.h"
 #include "proc_info.h"
@@ -19,7 +20,7 @@ public:
 
 private:
     proc_info            m_proc_info;
-    filter_value         m_filter;
+    filter_equal         m_filter;
     read_observer        m_reader_observer;
     filter_observer      m_filter_observer;
 
@@ -31,14 +32,14 @@ private:
     static constexpr std::uint64_t INVALID_INTEGER_VALUE = std::numeric_limits<std::uint64_t>::max();
 
 public:
-    proc_reader(const proc_info& p_info, const filter_value& p_filter);
+    proc_reader(const proc_info& p_info, const filter_equal& p_filter);
 
 public:
     proc_pointer_sequence read_and_filter() const;
 
     proc_pointer_sequence read_and_filter(const proc_pointer_sequence& p_values) const;
 
-    proc_pointer_sequence read(proc_pointer_sequence& p_value);
+    proc_pointer_sequence read(const proc_pointer_sequence& p_values);
 
     void set_read_observer(const read_observer& p_observer);
 
@@ -47,13 +48,13 @@ public:
 private:
     std::uint64_t get_proc_size(const std::uint64_t p_pid) const;
 
-    void extract_values(const std::uint8_t* p_buffer, const std::uint64_t p_length, proc_pointer_sequence& p_result) const;
+    proc_pointer read_value(const handle& p_proc_handler, const std::uint64_t p_address, const value& p_value) const;
 
-    void extract_value(const std::uint8_t* p_buffer, proc_pointer_sequence& p_result) const;
+    void extract_values(const std::uint8_t* p_buffer, const std::uint64_t p_length, const std::uint64_t p_address, const value& p_value, const bool p_filter, proc_pointer_sequence& p_result) const;
 
-    std::uint64_t extract_integral_value(const std::uint8_t* p_buffer) const;
+    proc_pointer extract_value(const std::uint8_t* p_buffer, const std::uint64_t p_address, const value& p_value) const;
 
-    std::uint64_t get_value_size() const;
+    std::uint64_t extract_integral_value(const std::uint8_t* p_buffer, const std::size_t p_size) const;
 
     void handle_observers(const std::uint64_t p_read_bytes, const std::uint64_t p_size, const std::uint64_t p_value_found) const;
 };

@@ -44,7 +44,7 @@
     <ClCompile Include="control\ui_stm.cpp">
       <Filter>control</Filter>
     </ClCompile>
-    <ClCompile Include="core\filter_value.cpp">
+    <ClCompile Include="core\filter_equal.cpp">
       <Filter>core</Filter>
     </ClCompile>
     <ClCompile Include="core\proc_reader.cpp">
@@ -64,6 +64,15 @@
     </ClCompile>
     <ClCompile Include="control\state_edit.cpp">
       <Filter>control</Filter>
+    </ClCompile>
+    <ClCompile Include="core\value.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="core\proc_pointer.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="core\proc_writer.cpp">
+      <Filter>core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -109,7 +118,7 @@
     <ClInclude Include="control\ui_stm.h">
       <Filter>control</Filter>
     </ClInclude>
-    <ClInclude Include="core\filter_value.h">
+    <ClInclude Include="core\filter_equal.h">
       <Filter>core</Filter>
     </ClInclude>
     <ClInclude Include="core\proc_reader.h">
@@ -132,6 +141,12 @@
     </ClInclude>
     <ClInclude Include="control\state_edit.h">
       <Filter>control</Filter>
+    </ClInclude>
+    <ClInclude Include="core\value.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\proc_writer.h">
+      <Filter>core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

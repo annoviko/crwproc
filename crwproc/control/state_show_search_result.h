@@ -18,5 +18,5 @@ public:
 private:
     void show_values(const context& p_context) const;
 
-    void ask_next_action(context& p_context) const;
+    event ask_next_action(context& p_context) const;
 };

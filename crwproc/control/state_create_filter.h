@@ -13,6 +13,6 @@ public:
 
 private:
     void ask_filter(context& p_context) const;
-    filter_value::type ask_filter_type() const;
+    value::type ask_value_type() const;
     std::size_t ask_value_size() const;
 };

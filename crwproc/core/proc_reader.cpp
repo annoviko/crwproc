@@ -1,5 +1,6 @@
 #include "proc_reader.h"
 
+#include <exception>
 #include <memory>
 
 #include <windows.h>
@@ -9,7 +10,7 @@
 #include "handle.h"
 
 
-proc_reader::proc_reader(const proc_info& p_info, const filter_value& p_filter) :
+proc_reader::proc_reader(const proc_info& p_info, const filter_equal& p_filter) :
     m_proc_info(p_info),
     m_filter(p_filter)
 { }
@@ -19,10 +20,6 @@ proc_pointer_sequence proc_reader::read_and_filter() const {
     proc_pointer_sequence result;
 
     handle proc_handler = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, static_cast<DWORD>(m_proc_info.pid()));
-
-    if (!proc_handler()) {
-        return { };
-    }
 
     std::uint64_t proc_size = get_proc_size(m_proc_info.pid());
     if ((proc_size == INVALID_PROC_SIZE) || (proc_size == 0)) {
@@ -40,7 +37,7 @@ proc_pointer_sequence proc_reader::read_and_filter() const {
         std::uint64_t bytes_was_read = 0;
 
         if (ReadProcessMemory(proc_handler(), (LPCVOID) current_base_address, buffer.get(), bytes_to_read, (SIZE_T *) &bytes_was_read)) {
-            extract_values(buffer.get(), bytes_was_read, result);
+            extract_values(buffer.get(), bytes_was_read, current_base_address, m_filter.get_value(), true, result);
         }
         else {
             std::cout << "Impossible to read memory block (reason: '" << GetLastError() << "')." << std::endl;
@@ -56,34 +53,32 @@ proc_pointer_sequence proc_reader::read_and_filter() const {
 
 proc_pointer_sequence proc_reader::read_and_filter(const proc_pointer_sequence& p_values) const {
     proc_pointer_sequence result;
+    result.reserve(p_values.size());
 
     handle proc_handler = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, static_cast<DWORD>(m_proc_info.pid()));
-    if (!proc_handler()) {
-        return { };
-    }
-
-    std::uint8_t buffer[READ_VALUE_SIZE];
 
     for (const auto& value : p_values) {
-        std::memset(buffer, 0x00, READ_VALUE_SIZE);
-
-        std::uint64_t bytes_to_read = get_value_size();
-        std::uint64_t bytes_was_read = 0;
-
-        if (!ReadProcessMemory(proc_handler(), (LPCVOID)value.address, buffer, bytes_to_read, (SIZE_T*)&bytes_was_read)) {
-            continue;
+        proc_pointer pointer = read_value(proc_handler, value.get_address(), value.get_value());
+        if (m_filter.is_satisfying(pointer.get_value().get_value())) {
+            result.push_back(value);
         }
-
-        extract_value((const uint8_t*)value.address, result);
     }
 
     return result;
 }
 
 
-proc_pointer_sequence proc_reader::read(proc_pointer_sequence& p_value) {
-    /* TODO: */
-    return {};
+proc_pointer_sequence proc_reader::read(const proc_pointer_sequence& p_values) {
+    proc_pointer_sequence result;
+    result.reserve(p_values.size());
+
+    handle proc_handler = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, static_cast<DWORD>(m_proc_info.pid()));
+
+    for (const auto& pointer : p_values) {
+        result.push_back(read_value(proc_handler, pointer.get_address(), pointer.get_value()));
+    }
+
+    return result;
 }
 
 
@@ -116,53 +111,57 @@ std::uint64_t proc_reader::get_proc_size(const std::uint64_t p_pid) const {
 }
 
 
-void proc_reader::extract_values(const std::uint8_t* p_buffer, const std::uint64_t p_length, proc_pointer_sequence& p_result) const {
+proc_pointer proc_reader::read_value(const handle& p_proc_handler, const std::uint64_t p_address, const value& p_value) const {
+    std::uint8_t buffer[READ_VALUE_SIZE];
+    std::memset(buffer, 0x00, READ_VALUE_SIZE);
+
+    std::uint64_t bytes_to_read = p_value.get_size();
+    std::uint64_t bytes_was_read = 0;
+
+    if (!ReadProcessMemory(p_proc_handler(), (LPCVOID)p_address, buffer, bytes_to_read, (SIZE_T*)&bytes_was_read)) {
+        return { };
+    }
+
+    return extract_value(buffer, p_address, p_value);
+}
+
+
+void proc_reader::extract_values(const std::uint8_t* p_buffer, const std::uint64_t p_length, const std::uint64_t p_address, const value& p_value, const bool p_filter, proc_pointer_sequence& p_result) const {
     for (std::uint64_t offset = 0; offset < p_length; offset++) {
-        extract_value(p_buffer + offset, p_result);
+        proc_pointer value = extract_value(p_buffer + offset, p_address + offset, p_value);
+
+        if (p_filter && m_filter.is_satisfying(value.get_value().get_value())) {
+            p_result.push_back(value);
+        }
     }
 }
 
 
-void proc_reader::extract_value(const std::uint8_t* p_buffer, proc_pointer_sequence& p_result) const {
-    switch (m_filter.get_type()) {
-        case filter_value::type::integral: {
-            const std::uint64_t expected_value = std::stoull(m_filter.get_value());
-            const std::uint64_t actual_value = extract_integral_value(p_buffer);
-
-            if (expected_value == actual_value) {
-                p_result.push_back({ (std::uint64_t)p_buffer, m_filter.get_size(), m_filter.get_type(), m_filter.get_value() });
-            }
-
-            break;
+proc_pointer proc_reader::extract_value(const std::uint8_t* p_buffer, const std::uint64_t p_address, const value& p_value) const {
+    switch (p_value.get_type()) {
+        case value::type::integral: {
+            const std::uint64_t actual_value = extract_integral_value(p_buffer, p_value.get_size());
+            return { p_address, value(p_value.get_type(), p_value.get_size(), std::to_string(actual_value)) };
         }
 
-        case filter_value::type::floating: {
-            const float expected_value = std::stof(m_filter.get_value());
+        case value::type::floating: {
             const float actual_value = *((float*)p_buffer);
-
-            if (expected_value == actual_value) {
-                p_result.push_back({ (std::uint64_t)p_buffer, m_filter.get_size(), m_filter.get_type(), m_filter.get_value() });
-            }
-
-            break;
+            return { p_address, value(p_value.get_type(), p_value.get_size(), std::to_string(actual_value)) };
         }
 
-        case filter_value::type::doubling: {
-            const double expected_value = std::stof(m_filter.get_value());
+        case value::type::doubling: {
             const double actual_value = *((float*)p_buffer);
-
-            if (expected_value == actual_value) {
-                p_result.push_back({ (std::uint64_t)p_buffer, m_filter.get_size(), m_filter.get_type(), m_filter.get_value() });
-            }
-
-            break;
+            return { p_address, value(p_value.get_type(), p_value.get_size(), std::to_string(actual_value)) };
         }
+
+        default:
+            throw std::logic_error("Unknown value type '" + std::to_string(static_cast<std::size_t>(p_value.get_type())) + "'.");
     }
 }
 
 
-std::uint64_t proc_reader::extract_integral_value(const std::uint8_t* p_buffer) const {
-    switch (m_filter.get_size()) {
+std::uint64_t proc_reader::extract_integral_value(const std::uint8_t* p_buffer, const std::size_t p_size) const {
+    switch (p_size) {
         case 1: return *((std::uint8_t*)p_buffer);
         case 2: return *((std::uint16_t*)p_buffer);
         case 4: return *((std::uint32_t*)p_buffer);
@@ -170,22 +169,6 @@ std::uint64_t proc_reader::extract_integral_value(const std::uint8_t* p_buffer) 
     }
 
     return INVALID_INTEGER_VALUE;
-}
-
-
-std::uint64_t proc_reader::get_value_size() const {
-    switch (m_filter.get_type()) {
-    case filter_value::type::integral:
-        return m_filter.get_size();
-
-    case filter_value::type::floating:
-        return sizeof(float);
-
-    case filter_value::type::doubling:
-        return sizeof(double);
-    }
-
-    return 0;
 }
 
 

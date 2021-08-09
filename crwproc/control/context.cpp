@@ -11,17 +11,17 @@ const proc_info& context::get_proc_info() const {
 }
 
 
-void context::set_filter(const filter_value& p_filter) {
+void context::set_filter(const filter_equal& p_filter) {
     m_filter = p_filter;
 }
 
 
-const filter_value& context::get_filter() const {
+const filter_equal& context::get_filter() const {
     return m_filter;
 }
 
 
-filter_value& context::get_filter() {
+filter_equal& context::get_filter() {
     return m_filter;
 }
 

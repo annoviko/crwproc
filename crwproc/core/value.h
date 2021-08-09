@@ -1,12 +1,12 @@
 #pragma once
 
+#include <cstdint>
 #include <iostream>
-#include <list>
 #include <string>
 #include <unordered_map>
 
 
-class filter_value {
+class value {
 public:
     enum class type {
         invalid,
@@ -20,31 +20,31 @@ public:
     static const std::unordered_map<type, std::string> TYPE_STR_DICT;
 
 private:
-    type        m_type = type::invalid;
-    std::size_t m_size = 0;
-    std::string m_value;
+    std::uint64_t   m_size = 0;
+    type            m_type = value::type::invalid;
+    std::string     m_value;
 
 public:
-    filter_value() = default;
+    value() = default;
 
-    filter_value(const type p_type, const std::size_t p_size, const std::string& p_value);
+    value(const type p_type, const std::size_t p_size, const std::string& p_value);
 
 public:
     bool is_valid() const;
 
+    std::uint64_t get_size() const;
+
     type get_type() const;
 
-    std::size_t get_size() const;
-
-    std::string get_value() const;
+    const std::string& get_value() const;
 
     void set_value(const std::string& p_value);
+
+public:
+    friend std::ostream& operator<<(std::ostream& p_stream, const value& p_info);
 
 public:
     static type string_to_type(const std::string& p_type);
 
     static std::string type_to_string(const type p_type);
-
-public:
-    friend std::ostream& operator<<(std::ostream& p_stream, const filter_value& p_info);
 };

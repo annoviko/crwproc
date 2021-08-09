@@ -6,11 +6,14 @@
 
 
 const std::unordered_map<std::string, event> command::COMMANDS = {
-    { command::name::exit,     event_exit()     },
-    { command::name::choose,   event_choose()   },
-    { command::name::filter,   event_filter()   },
-    { command::name::add,      event_add()      },
-    { command::name::show,     event_show()     }
+    { command::name::exit,              event_exit()     },
+    { command::name::choose,            event_choose()   },
+    { command::name::create_filter,     event_filter()   },
+    { command::name::update_filter,     event_update()   },
+    { command::name::add,               event_add()      },
+    { command::name::show,              event_show()     },
+    { command::name::edit,              event_edit()     },
+    { command::name::set,               event_set()      }
 };
 
 

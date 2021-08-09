@@ -9,5 +9,5 @@ public:
     event operator()(context& p_context);
 
 private:
-    std::string update_value(const filter_value& p_filter) const;
+    std::string update_value(const filter_equal& p_filter) const;
 };

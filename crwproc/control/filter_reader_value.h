@@ -2,10 +2,10 @@
 
 #include <string>
 
-#include "core/filter_value.h"
+#include "core/filter_equal.h"
 
 
 class filter_reader_value {
 public:
-    static std::string read(const filter_value& p_filter);
+    static std::string read(const filter_equal& p_filter);
 };

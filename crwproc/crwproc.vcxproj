@@ -160,11 +160,14 @@
     <ClCompile Include="control\state_update_filter_value.cpp" />
     <ClCompile Include="control\ui.cpp" />
     <ClCompile Include="control\ui_stm.cpp" />
-    <ClCompile Include="core\filter_value.cpp" />
+    <ClCompile Include="core\filter_equal.cpp" />
     <ClCompile Include="core\handle.cpp" />
     <ClCompile Include="core\proc_info.cpp" />
+    <ClCompile Include="core\proc_pointer.cpp" />
     <ClCompile Include="core\proc_reader.cpp" />
     <ClCompile Include="core\proc_table.cpp" />
+    <ClCompile Include="core\proc_writer.cpp" />
+    <ClCompile Include="core\value.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -184,12 +187,14 @@
     <ClInclude Include="control\transitions.h" />
     <ClInclude Include="control\ui.h" />
     <ClInclude Include="control\ui_stm.h" />
-    <ClInclude Include="core\filter_value.h" />
+    <ClInclude Include="core\filter_equal.h" />
     <ClInclude Include="core\handle.h" />
     <ClInclude Include="core\proc_info.h" />
     <ClInclude Include="core\proc_reader.h" />
     <ClInclude Include="core\proc_pointer.h" />
     <ClInclude Include="core\proc_table.h" />
+    <ClInclude Include="core\proc_writer.h" />
+    <ClInclude Include="core\value.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

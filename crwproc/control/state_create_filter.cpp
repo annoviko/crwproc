@@ -19,13 +19,13 @@ event state_create_filter::operator()(context& p_context) {
 
 
 void state_create_filter::ask_filter(context& p_context) const {
-    filter_value::type type = ask_filter_type();
-    while (type == filter_value::type::invalid) {
-        type = ask_filter_type();
+    value::type type = ask_value_type();
+    while (type == value::type::invalid) {
+        type = ask_value_type();
     }
 
     std::size_t size = 0;
-    if (type == filter_value::type::integral) {
+    if (type == value::type::integral) {
         size = ask_value_size();
         while (size == INVALID_SIZE) {
             size = ask_value_size();
@@ -37,17 +37,17 @@ void state_create_filter::ask_filter(context& p_context) const {
         value = filter_reader_value::read(p_context.get_filter());
     }
 
-    p_context.set_filter(filter_value(type, size, value));
+    p_context.set_filter(filter_equal({ type, size, value }));
 }
 
 
-filter_value::type state_create_filter::ask_filter_type() const {
+value::type state_create_filter::ask_value_type() const {
     std::cout << "Select value type that is going to be searched in the process:" << std::endl;
 
-    std::vector<decltype(filter_value::STR_TYPE_DICT)::const_iterator> options;
-    options.reserve(filter_value::STR_TYPE_DICT.size());
+    std::vector<decltype(value::STR_TYPE_DICT)::const_iterator> options;
+    options.reserve(value::STR_TYPE_DICT.size());
 
-    for (auto iter = filter_value::STR_TYPE_DICT.cbegin(); iter != filter_value::STR_TYPE_DICT.cend(); iter++) {
+    for (auto iter = value::STR_TYPE_DICT.cbegin(); iter != value::STR_TYPE_DICT.cend(); iter++) {
         std::cout << options.size() << " - " << iter->first << std::endl;
         options.push_back(iter);
     }
@@ -62,7 +62,7 @@ filter_value::type state_create_filter::ask_filter_type() const {
     }
 
     std::cout << "Error: invalid filter is specified (user input '" << index_option << "')." << std::endl << std::endl;
-    return filter_value::type::invalid;
+    return value::type::invalid;
 }
 
 
