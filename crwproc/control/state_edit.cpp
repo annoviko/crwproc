@@ -7,6 +7,7 @@
 #include "core/proc_reader.h"
 #include "core/proc_writer.h"
 
+#include "asker.h"
 #include "command.h"
 #include "intro_builder.h"
 
@@ -71,6 +72,11 @@ event state_edit::ask_next_action(context& p_context) const {
             }
 
             p_context.get_found_values().at(index_value) = new_value;
+        }
+        else if (std::is_same_v<EventType, event_remove>) {
+            std::size_t index_value = asker::ask_index(p_context.get_found_values().size(), [&p_context](std::size_t p_index) {
+                p_context.get_user_table().erase(p_context.get_user_table().begin() + p_index);
+            });
         }
     }, action);
 

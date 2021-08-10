@@ -6,6 +6,7 @@
 
 #include "core/console.h"
 
+#include "asker.h"
 #include "intro_builder.h"
 
 
@@ -44,18 +45,17 @@ event state_show_search_result::ask_next_action(context& p_context) const {
             console::error("Error: unknown command is specified '" + user_input + "'.", true);
         }
         else if (std::is_same_v<EventType, event_add>) {
-            std::size_t index_value = 0;
-            std::cin >> index_value;
-
-            if (index_value >= p_context.get_found_values().size()) {
-                console::error("Error: specified index '" + std::to_string(index_value) + "' is out of range. The total amount of found values: " + std::to_string(p_context.get_found_values().size()) + ".", true);
-                action = event_error{};
-                return;
-            }
-            
-            p_context.get_user_table().push_back(p_context.get_found_values().at(index_value));
+            std::size_t index_value = asker::ask_index(p_context.get_found_values().size(), [&p_context](std::size_t p_index) {
+                p_context.get_user_table().push_back(p_context.get_found_values().at(p_index));
+            });
+        }
+        else if (std::is_same_v<EventType, event_remove>) {
+            std::size_t index_value = asker::ask_index(p_context.get_found_values().size(), [&p_context](std::size_t p_index) {
+                p_context.get_found_values().erase(p_context.get_found_values().begin() + p_index);
+            });
         }
     }, action);
 
     return action;
 }
+

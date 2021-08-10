@@ -19,6 +19,8 @@ class event_set { };
 
 class event_refresh { };
 
+class event_remove { };
+
 class event_done { };
 
 class event_error { };
@@ -35,6 +37,7 @@ using event = std::variant<
     event_edit, 
     event_set, 
     event_refresh, 
+    event_remove, 
     event_done, 
     event_error, 
     event_exit

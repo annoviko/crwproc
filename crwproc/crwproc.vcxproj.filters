@@ -77,6 +77,9 @@
     <ClCompile Include="core\console.cpp">
       <Filter>core</Filter>
     </ClCompile>
+    <ClCompile Include="control\asker.cpp">
+      <Filter>control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\handle.h">
@@ -153,6 +156,9 @@
     </ClInclude>
     <ClInclude Include="core\console.h">
       <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="control\asker.h">
+      <Filter>control</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

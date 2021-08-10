@@ -14,7 +14,8 @@ const std::unordered_map<std::string, event> command::COMMANDS = {
     { command::name::show,              event_show()     },
     { command::name::edit,              event_edit()     },
     { command::name::set,               event_set()      },
-    { command::name::refresh,           event_refresh()  }
+    { command::name::refresh,           event_refresh()  },
+    { command::name::remove,            event_remove()   }
 };
 
 

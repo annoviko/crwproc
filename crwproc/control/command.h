@@ -23,6 +23,7 @@ public:
         static constexpr char edit[]            = "\\edit";
         static constexpr char set[]             = "\\set";
         static constexpr char refresh[]         = "\\refresh";
+        static constexpr char remove[]          = "\\remove";
     };
 
 private:

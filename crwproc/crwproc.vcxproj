@@ -147,6 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="control\asker.cpp" />
     <ClCompile Include="control\command.cpp" />
     <ClCompile Include="control\context.cpp" />
     <ClCompile Include="control\filter_reader_value.cpp" />
@@ -172,6 +173,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="control\asker.h" />
     <ClInclude Include="control\command.h" />
     <ClInclude Include="control\context.h" />
     <ClInclude Include="control\event.h" />
