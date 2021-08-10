@@ -19,11 +19,22 @@ const std::unordered_map<value::type, std::string> value::TYPE_STR_DICT = {
 };
 
 
+value::value(const value::type p_type, const std::size_t p_size, const void* p_buffer) :
+    m_type(p_type),
+    m_size(p_size)
+{
+    std::memset((void*)m_buffer, 0x00, sizeof(m_buffer));
+    std::memcpy((void*)p_buffer, (void*)m_buffer, p_size);
+}
+
+
 value::value(const value::type p_type, const std::size_t p_size, const std::string& p_value) :
     m_type(p_type),
-    m_size(p_size),
-    m_value(p_value)
-{ }
+    m_size(p_size)
+{
+    std::memset((void*)m_buffer, 0x00, sizeof(m_buffer));
+    set(p_value);
+}
 
 
 bool value::is_valid() const {
@@ -32,18 +43,7 @@ bool value::is_valid() const {
 
 
 std::uint64_t value::get_size() const {
-    switch (m_type) {
-    case value::type::integral:
-        return m_size;
-
-    case value::type::floating:
-        return sizeof(float);
-
-    case value::type::doubling:
-        return sizeof(double);
-    }
-
-    throw std::logic_error("Unknown value type is detected '" + std::to_string(static_cast<std::uint64_t>(m_type)) + "')");
+    return m_size;
 }
 
 
@@ -52,13 +52,31 @@ value::type value::get_type() const {
 }
 
 
-const std::string& value::get_value() const {
-    return m_value;
-}
+std::string value::evaluate_string_value() const {
+    switch (m_type) {
+    case value::type::integral:
+        switch (m_size) {
+        case 1:
+            return std::to_string(*((std::uint8_t*)m_buffer));
 
+        case 2:
+            return std::to_string(*((std::uint16_t*)m_buffer));
 
-void value::set_value(const std::string& p_value) {
-    m_value = p_value;
+        case 4:
+            return std::to_string(*((std::uint32_t*)m_buffer));
+
+        case 8:
+            return std::to_string(*((std::uint64_t*)m_buffer));
+        }
+
+    case value::type::floating:
+        return std::to_string(*((float*)m_buffer));
+
+    case value::type::doubling:
+        return std::to_string(*((double*)m_buffer));
+    }
+
+    throw std::logic_error("Impossible to return value as a string due to unknown type.");
 }
 
 
@@ -68,7 +86,7 @@ std::ostream& operator<<(std::ostream& p_stream, const value& p_info) {
         p_stream << ", size: '" << p_info.get_size() << "'";
     }
 
-    p_stream << ", value: '" << p_info.m_value << "'";
+    p_stream << ", value: '" << p_info.get<std::string>() << "'";
     return p_stream;
 }
 

@@ -61,7 +61,7 @@ proc_pointer_sequence proc_reader::read_and_filter(const proc_pointer_sequence& 
     for (const auto& value : p_values) {
         proc_pointer pointer = read_value(proc_handler, value.get_address(), value.get_value());
 
-        if (m_filter.is_satisfying(pointer.get_value().get_value())) {
+        if (m_filter.is_satisfying(pointer.get_value().get<std::string>())) {
             result.push_back(value);
         }
 
@@ -131,7 +131,7 @@ void proc_reader::extract_values(const std::uint8_t* p_buffer, const std::uint64
         proc_pointer value = extract_value(p_buffer + offset, p_address + offset, p_value);
 
         m_bytes_read += p_value.get_size();
-        if (p_filter && m_filter.is_satisfying(value.get_value().get_value())) {
+        if (p_filter && m_filter.is_satisfying(value.get_value().get<std::string>())) {
             p_result.push_back(value);
         }
     }
@@ -216,9 +216,9 @@ void proc_reader::stop_notifier() const {
     {
         std::unique_lock<std::mutex> guard(m_event_mutex);
         m_stop_notifier = true;
-        m_event.notify_one();
     }
 
+    m_event.notify_one();
     m_notifer.join();
 }
 

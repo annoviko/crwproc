@@ -25,7 +25,7 @@ void state_show_search_result::show_values(const context& p_context) const {
         std::cout << std::right << std::setw(4) << i << ") " <<
             "address: " << std::setw(10) << (void*)pointer.get_address() << "| " <<
             "type: " << std::setw(10) << value::type_to_string(pointer.get_value().get_type()) << "| " <<
-            "value: " << std::setw(10) << pointer.get_value().get_value() << std::endl;
+            "value: " << std::setw(10) << pointer.get_value().get<std::string>() << std::endl;
     }
 
     std::cout << std::endl;

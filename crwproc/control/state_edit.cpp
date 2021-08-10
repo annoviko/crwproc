@@ -30,7 +30,7 @@ void state_edit::show_table(context& p_context) {
         std::cout << std::right << std::setw(4) << i << ") " <<
             "address: " << std::setw(10) << (void*) pointer.get_address() << "| " << 
             "type: "    << std::setw(10) << value::type_to_string(pointer.get_value().get_type()) << "| " <<
-            "value: "   << std::setw(10) << pointer.get_value().get_value() << std::endl;
+            "value: "   << std::setw(10) << pointer.get_value().get<std::string>() << std::endl;
     }
 
     std::cout << std::endl;
@@ -63,7 +63,7 @@ event state_edit::ask_next_action(context& p_context) const {
             std::cin >> string_value;
 
             proc_pointer new_value = p_context.get_user_table().at(index_value);
-            new_value.get_value().set_value(string_value);
+            new_value.get_value().set(string_value);
 
             proc_writer writer(p_context.get_proc_info());
             if (!writer.write(new_value)) {

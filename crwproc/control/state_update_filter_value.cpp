@@ -11,7 +11,7 @@ event state_update_filter_value::operator()(context& p_context) {
     intro_builder::show(p_context, "Update value for the current filter.");
 
     const std::string value = update_value(p_context.get_filter());
-    p_context.get_filter().get_value().set_value(value);
+    p_context.get_filter().get_value().set(value);
 
     return event_done{};
 }
