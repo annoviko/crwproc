@@ -11,17 +11,19 @@ public:
     state operator()(state_create_filter&, event_done&) { return state_search{}; }
 
     state operator()(state_search&, event_filter&) { return state_create_filter{}; }
-    state operator()(state_search&, event_show&) { return state_show_search_result{}; }
 
     state operator()(state_show_search_result&, event_filter&) { return state_create_filter{}; }
-    state operator()(state_show_search_result&, event_edit&) { return state_edit{}; }
 
     state operator()(state_update_filter_value&, event_done&) { return state_search{}; }
 
-    state operator()(state_edit&, event_show&) { return state_show_search_result{}; }
-
     template <typename TypeState>
     state operator()(TypeState& state, event_refresh&) { return state; }
+
+    template <typename TypeState>
+    state operator()(TypeState& state, event_edit&) { return state_edit{}; }
+
+    template <typename TypeState>
+    state operator()(TypeState& state, event_show&) { return state_show_search_result{}; }
 
     template <typename TypeState>
     state operator()(TypeState& state, event_update&) { return state_update_filter_value{}; }

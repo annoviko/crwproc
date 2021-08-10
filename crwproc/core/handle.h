@@ -12,6 +12,8 @@ private:
 public:
     handle(const HANDLE p_handle);
 
+    handle(const handle& p_other) = delete;
+
     ~handle();
 
 public:

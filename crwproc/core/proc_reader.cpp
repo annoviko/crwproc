@@ -21,10 +21,9 @@ proc_pointer_sequence proc_reader::read_and_filter() const {
 
     handle proc_handler = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, static_cast<DWORD>(m_proc_info.pid()));
 
-    std::uint64_t proc_size = get_proc_size(m_proc_info.pid());
-    if ((proc_size == INVALID_PROC_SIZE) || (proc_size == 0)) {
-        return { };
-    }
+    m_bytes_to_read = get_amount_bytes_to_read(proc_handler);
+    m_bytes_read = 0;
+    run_notifier();
 
     MEMORY_BASIC_INFORMATION  memory_info;
     std::uint64_t current_address = 0;
@@ -44,6 +43,7 @@ proc_pointer_sequence proc_reader::read_and_filter() const {
         current_address += memory_info.RegionSize;
     }
 
+    stop_notifier();
     return result;
 }
 
@@ -52,20 +52,28 @@ proc_pointer_sequence proc_reader::read_and_filter(const proc_pointer_sequence& 
     proc_pointer_sequence result;
     result.reserve(p_values.size());
 
+    m_bytes_to_read = p_values.size() * m_filter.get_value().get_size();
+    m_bytes_read = 0;
+    run_notifier();
+
     handle proc_handler = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, static_cast<DWORD>(m_proc_info.pid()));
 
     for (const auto& value : p_values) {
         proc_pointer pointer = read_value(proc_handler, value.get_address(), value.get_value());
+
         if (m_filter.is_satisfying(pointer.get_value().get_value())) {
             result.push_back(value);
         }
+
+        m_bytes_read += value.get_value().get_size();
     }
 
+    stop_notifier();
     return result;
 }
 
 
-proc_pointer_sequence proc_reader::read(const proc_pointer_sequence& p_values) {
+proc_pointer_sequence proc_reader::read(const proc_pointer_sequence& p_values) const {
     proc_pointer_sequence result;
     result.reserve(p_values.size());
 
@@ -79,13 +87,8 @@ proc_pointer_sequence proc_reader::read(const proc_pointer_sequence& p_values) {
 }
 
 
-void proc_reader::set_read_observer(const read_observer& p_observer) {
-    m_reader_observer = p_observer;
-}
-
-
-void proc_reader::set_filter_observer(const filter_observer& p_observer) {
-    m_filter_observer = p_observer;
+void proc_reader::subscribe(const progress_observer& p_observer) {
+    m_observer = p_observer;
 }
 
 
@@ -127,6 +130,7 @@ void proc_reader::extract_values(const std::uint8_t* p_buffer, const std::uint64
     for (std::uint64_t offset = 0; offset < p_length; offset++) {
         proc_pointer value = extract_value(p_buffer + offset, p_address + offset, p_value);
 
+        m_bytes_read += p_value.get_size();
         if (p_filter && m_filter.is_satisfying(value.get_value().get_value())) {
             p_result.push_back(value);
         }
@@ -169,12 +173,63 @@ std::uint64_t proc_reader::extract_integral_value(const std::uint8_t* p_buffer, 
 }
 
 
-void proc_reader::handle_observers(const std::uint64_t p_read_bytes, const std::uint64_t p_size, const std::uint64_t p_value_found) const {
-    if (m_reader_observer) {
-        m_reader_observer(p_read_bytes, p_size, p_value_found);
+std::uint64_t proc_reader::get_amount_bytes_to_read(const handle& p_handle) const {
+    MEMORY_BASIC_INFORMATION  memory_info;
+
+    std::uint64_t current_address = 0;
+    std::uint64_t bytes_to_process = 0;
+
+    while (VirtualQueryEx(p_handle(), (LPCVOID)current_address, &memory_info, sizeof(memory_info))) {
+        if ((memory_info.State == MEM_COMMIT) && ((memory_info.Type == MEM_MAPPED) || (memory_info.Type == MEM_PRIVATE))) {
+            bytes_to_process += memory_info.RegionSize;
+        }
+
+        current_address += memory_info.RegionSize;
     }
 
-    if (m_filter_observer) {
-        m_filter_observer(p_value_found);
+    return bytes_to_process;
+}
+
+
+std::uint64_t proc_reader::get_progress() const {
+    if (m_bytes_read != 0) {
+        return m_bytes_read * 100 / m_bytes_to_read;
     }
+
+    return 0;
+}
+
+
+void proc_reader::run_notifier() const {
+    if (m_observer) {
+        m_stop_notifier = false;
+        m_notifer = std::thread(&proc_reader::notifier_thread, this);
+    }
+}
+
+
+void proc_reader::stop_notifier() const {
+    if (!m_notifer.joinable()) {
+        return;
+    }
+
+    {
+        std::unique_lock<std::mutex> guard(m_event_mutex);
+        m_stop_notifier = true;
+        m_event.notify_one();
+    }
+
+    m_notifer.join();
+}
+
+
+void proc_reader::notifier_thread() const {
+    std::unique_lock<std::mutex> guard(m_event_mutex);
+
+    while (!m_stop_notifier) {
+        m_observer(get_progress());
+        m_event.wait_for(guard, std::chrono::milliseconds(NOTIFICATION_PERIOD_MS), [this]() { return m_stop_notifier; });
+    }
+
+    m_observer(100);
 }

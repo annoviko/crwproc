@@ -13,12 +13,16 @@
 event state_search::operator()(context& p_context) {
     intro_builder::show(p_context, "Run search process, please wait...");
 
+    std::size_t reported_progress = 0;
     proc_reader reader(p_context.get_proc_info(), p_context.get_filter());
-    auto observer = [](std::uint64_t p_read_bytes, std::uint64_t p_size, std::uint64_t p_found_values) {
-        std::cout << "Processed bytes: " << p_read_bytes << "/" << p_size << " (found values: " << p_found_values << ")." << std::endl;
+    auto observer = [&reported_progress](std::size_t p_progress) {
+        std::size_t bars_to_display = (p_progress - reported_progress) / 2;
+        reported_progress = p_progress;
+        std::cout << std::string(bars_to_display, 219);
     };
 
-    reader.set_read_observer(observer);
+    reader.subscribe(observer);
+    std::cout << "Progress: ";
 
     if (p_context.get_found_values().empty()) {
         p_context.get_found_values() = reader.read_and_filter();
@@ -26,6 +30,8 @@ event state_search::operator()(context& p_context) {
     else {
         p_context.get_found_values() = reader.read_and_filter(p_context.get_found_values());
     }
+
+    std::cout << std::endl;
 
     if (p_context.get_found_values().empty()) {
         console::warning("Nothing has been found, please change filter.", false);
