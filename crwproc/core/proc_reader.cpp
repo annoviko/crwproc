@@ -26,22 +26,22 @@ proc_pointer_sequence proc_reader::read_and_filter() const {
         return { };
     }
 
-    std::shared_ptr<std::uint8_t[]> buffer(new std::uint8_t[READ_WINDOW_SIZE]);
+    MEMORY_BASIC_INFORMATION  memory_info;
+    std::uint64_t current_address = 0;
 
-    std::uint64_t current_base_address = m_proc_info.base_address();
-    std::uint64_t remaining_proc_size = proc_size;
-    while (remaining_proc_size != 0) {
-        std::memset(buffer.get(), 0x00, READ_WINDOW_SIZE);
+    while (VirtualQueryEx(proc_handler(), (LPCVOID)current_address, &memory_info, sizeof(memory_info))) {
+        if ((memory_info.State == MEM_COMMIT) && ((memory_info.Type == MEM_MAPPED) || (memory_info.Type == MEM_PRIVATE))) {
+            std::shared_ptr<std::uint8_t[]> buffer(new std::uint8_t[memory_info.RegionSize]);
+            std::memset(buffer.get(), 0x00, memory_info.RegionSize);
 
-        std::uint64_t bytes_to_read = remaining_proc_size > READ_WINDOW_SIZE ? READ_WINDOW_SIZE : remaining_proc_size;
-        std::uint64_t bytes_was_read = 0;
+            std::uint64_t bytes_was_read = 0;
 
-        if (ReadProcessMemory(proc_handler(), (LPCVOID) current_base_address, buffer.get(), bytes_to_read, (SIZE_T *) &bytes_was_read)) {
-            extract_values(buffer.get(), bytes_was_read, current_base_address, m_filter.get_value(), true, result);
+            if (ReadProcessMemory(proc_handler(), (LPCVOID)memory_info.BaseAddress, buffer.get(), memory_info.RegionSize, (SIZE_T*)&bytes_was_read)) {
+                extract_values(buffer.get(), bytes_was_read, (std::uint64_t)memory_info.BaseAddress, m_filter.get_value(), true, result);
+            }
         }
 
-        remaining_proc_size -= bytes_was_read;
-        current_base_address += bytes_was_read;
+        current_address += memory_info.RegionSize;
     }
 
     return result;
