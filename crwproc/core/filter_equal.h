@@ -18,11 +18,14 @@ public:
 public:
     bool is_valid() const;
 
-    bool is_satisfying(const std::string& p_value) const;
-
     value& get_value();
 
     const value& get_value() const;
+
+    template <typename TypeValue>
+    bool is_satisfying(TypeValue p_value) const {
+        return m_value.get<TypeValue>() == p_value;
+    }
 
 public:
     friend std::ostream& operator<<(std::ostream& p_stream, const filter_equal& p_info);

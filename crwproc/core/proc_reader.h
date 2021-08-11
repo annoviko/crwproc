@@ -10,6 +10,10 @@
 #include <thread>
 #include <vector>
 
+#include <windows.h>
+#include <psapi.h>
+#include <tlhelp32.h>
+
 #include "filter_equal.h"
 #include "handle.h"
 #include "proc_pointer.h"
@@ -47,6 +51,8 @@ private:
 public:
     proc_reader(const proc_info& p_info, const filter_equal& p_filter);
 
+    ~proc_reader();
+
 public:
     proc_pointer_sequence read_and_filter() const;
 
@@ -61,12 +67,6 @@ private:
 
     proc_pointer read_value(const handle& p_proc_handler, const std::uint64_t p_address, const value& p_value) const;
 
-    void extract_values(const std::uint8_t* p_buffer, const std::uint64_t p_length, const std::uint64_t p_address, const value& p_value, const bool p_filter, proc_pointer_sequence& p_result) const;
-
-    proc_pointer extract_value(const std::uint8_t* p_buffer, const std::uint64_t p_address, const value& p_value) const;
-
-    std::uint64_t extract_integral_value(const std::uint8_t* p_buffer, const std::size_t p_size) const;
-
     std::uint64_t get_amount_bytes_to_read(const handle& proc_handler) const;
 
     std::uint64_t get_progress() const;
@@ -76,4 +76,42 @@ private:
     void stop_notifier() const;
 
     void notifier_thread() const;
+
+private:
+    template <typename TypeValue>
+    proc_pointer_sequence read_and_filter_with_type(const handle& p_handle) const {
+        proc_pointer_sequence result;
+
+        MEMORY_BASIC_INFORMATION  memory_info;
+        std::uint64_t current_address = 0;
+
+        while (VirtualQueryEx(p_handle(), (LPCVOID)current_address, &memory_info, sizeof(memory_info))) {
+            if ((memory_info.State == MEM_COMMIT) && ((memory_info.Type == MEM_MAPPED) || (memory_info.Type == MEM_PRIVATE))) {
+                std::shared_ptr<std::uint8_t[]> buffer(new std::uint8_t[memory_info.RegionSize]);
+                std::memset(buffer.get(), 0x00, memory_info.RegionSize);
+
+                std::uint64_t bytes_was_read = 0;
+
+                if (ReadProcessMemory(p_handle(), (LPCVOID)memory_info.BaseAddress, buffer.get(), memory_info.RegionSize, (SIZE_T*)&bytes_was_read)) {
+                    extract_values<TypeValue>(buffer.get(), bytes_was_read, (std::uint64_t)memory_info.BaseAddress, m_filter, result);
+                }
+            }
+
+            current_address += memory_info.RegionSize;
+        }
+
+        return result;
+    }
+
+    template <typename TypeValue>
+    void extract_values(const std::uint8_t* p_buffer, const std::uint64_t p_length, const std::uint64_t p_address, const filter_equal& p_filter, proc_pointer_sequence& p_result) const {
+        for (std::uint64_t offset = 0; offset < p_length; offset++) {
+            const TypeValue actual_value = *((TypeValue*)(p_buffer + offset));
+            if (p_filter.is_satisfying(actual_value)) {
+                p_result.emplace_back(p_address + offset, p_filter.get_value());
+            }
+
+            m_bytes_read++;
+        }
+    }
 };

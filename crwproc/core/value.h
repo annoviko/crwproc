@@ -41,6 +41,7 @@ public:
 
     type get_type() const;
 
+public:
     template <typename TypeValue>
     TypeValue get() const {
         return *((TypeValue*)m_buffer);
@@ -54,6 +55,12 @@ public:
 
         return m_value_as_string;
     }
+
+    template <>
+    const std::string& get<const std::string&>() const {
+        return get<std::string>();
+    }
+
 
     template <typename TypeValue>
     void set(const TypeValue p_value) {

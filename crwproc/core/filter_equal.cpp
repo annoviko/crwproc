@@ -11,25 +11,6 @@ bool filter_equal::is_valid() const {
 }
 
 
-bool filter_equal::is_satisfying(const std::string& p_value) const {
-    try {
-        switch (m_value.get_type()) {
-        case value::type::doubling:
-            return std::stod(p_value) == std::stod(m_value.get<std::string>());
-
-        case value::type::floating:
-            return std::stof(p_value) == m_value.get<float>();
-
-        default:
-            return m_value.get<std::string>() == p_value;
-        }
-    }
-    catch (...) {
-        return false;
-    }
-}
-
-
 value& filter_equal::get_value() {
     return m_value;
 }

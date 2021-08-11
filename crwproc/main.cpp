@@ -9,10 +9,10 @@ int main() {
         application.run();
     }
     catch (std::exception& p_exception) {
-        std::cout << "Unexpected critical error: " << p_exception.what() << std::endl;
+        std::cout << std::endl << "Unexpected critical error: " << p_exception.what() << std::endl;
     }
     catch (...) {
-        std::cout << "Unexpected unknown exception" << std::endl;
+        std::cout << std::endl << "Unexpected unknown exception" << std::endl;
     }
     return 0;
 }

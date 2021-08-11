@@ -24,13 +24,14 @@ value::value(const value::type p_type, const std::size_t p_size, const void* p_b
     m_size(p_size)
 {
     std::memset((void*)m_buffer, 0x00, sizeof(m_buffer));
-    std::memcpy((void*)p_buffer, (void*)m_buffer, p_size);
+    std::memcpy((void*)m_buffer, (void*)p_buffer, p_size);
 }
 
 
 value::value(const value::type p_type, const std::size_t p_size, const std::string& p_value) :
     m_type(p_type),
-    m_size(p_size)
+    m_size(p_size),
+    m_value_string_valid(true)
 {
     std::memset((void*)m_buffer, 0x00, sizeof(m_buffer));
     set(p_value);
@@ -76,7 +77,7 @@ std::string value::evaluate_string_value() const {
         return std::to_string(*((double*)m_buffer));
     }
 
-    throw std::logic_error("Impossible to return value as a string due to unknown type.");
+    return "invalid";
 }
 
 

@@ -19,7 +19,7 @@ event state_search::operator()(context& p_context) {
         std::size_t bars_to_display = (p_progress - reported_progress) / 2;
         if (bars_to_display != 0) {
             reported_progress = p_progress;
-            std::cout << std::string(bars_to_display, 219);
+            std::cout << std::string(bars_to_display, char(219));
         }
     };
 
@@ -36,7 +36,7 @@ event state_search::operator()(context& p_context) {
     std::cout << std::endl;
 
     if (p_context.get_found_values().empty()) {
-        console::warning("Nothing has been found, please change filter.", false);
+        console::warning("Nothing has been found, please change filter.", true);
         return event_filter{};
     }
 
