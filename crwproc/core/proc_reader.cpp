@@ -16,50 +16,13 @@ proc_reader::~proc_reader() {
 
 
 proc_pointer_sequence proc_reader::read_and_filter() const {
-    proc_pointer_sequence result;
-
     handle proc_handler = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, static_cast<DWORD>(m_proc_info.pid()));
 
     m_bytes_to_read = get_amount_bytes_to_read(proc_handler);
     m_bytes_read = 0;
     run_notifier();
 
-    switch (m_filter.get_value().get_type()) {
-        case value::type::integral:
-            switch (m_filter.get_value().get_size()) {
-                case 1: 
-                    result = read_and_filter_with_type<std::uint8_t>(proc_handler);
-                    break;
-
-                case 2:
-                    result = read_and_filter_with_type<std::uint16_t>(proc_handler);
-                    break;
-
-                case 4:
-                    result = read_and_filter_with_type<std::uint32_t>(proc_handler);
-                    break;
-
-                case 8:
-                    result = read_and_filter_with_type<std::uint64_t>(proc_handler);
-                    break;
-
-                default:
-                    throw std::logic_error("Invalid integer size '" + std::to_string(m_filter.get_value().get_size()) + "' is used by the filter.");
-            }
-
-            break;
-
-        case value::type::floating:
-            result = read_and_filter_with_type<float>(proc_handler);
-            break;
-
-        case value::type::doubling:
-            result = read_and_filter_with_type<double>(proc_handler);
-            break;
-
-        default:
-            throw std::logic_error("Unkown value type '" + std::to_string(static_cast<int>(m_filter.get_value().get_type())) + "' is used for filtering.");
-    }
+    proc_pointer_sequence result = read_and_filter_eval(proc_handler);
 
     stop_notifier();
     return result;
@@ -67,28 +30,50 @@ proc_pointer_sequence proc_reader::read_and_filter() const {
 
 
 proc_pointer_sequence proc_reader::read_and_filter(const proc_pointer_sequence& p_values) const {
-    proc_pointer_sequence result;
-    result.reserve(p_values.size());
-
     m_bytes_to_read = p_values.size() * m_filter.get_value().get_size();
     m_bytes_read = 0;
     run_notifier();
 
     handle proc_handler = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, static_cast<DWORD>(m_proc_info.pid()));
+    proc_pointer_sequence result = read_and_filter_eval(proc_handler, p_values);
 
-    for (const auto& value : p_values) {
-        proc_pointer pointer = read_value(proc_handler, value.get_address(), value.get_value());
-
-        if (pointer.is_valid() && m_filter.is_satisfying(pointer.get_value().get<std::string>())) {
-            result.push_back(value);
-        }
-
-        m_bytes_read += value.get_value().get_size();
-    }
 
     stop_notifier();
     return result;
 }
+
+
+proc_pointer_sequence proc_reader::read_and_filter_eval(const handle& p_proc_handler, const proc_pointer_sequence& p_values) const {
+    switch (m_filter.get_value().get_type()) {
+    case value::type::integral:
+        switch (m_filter.get_value().get_size()) {
+        case 1:
+            return read_and_filter_with_type<std::uint8_t>(p_proc_handler, p_values);
+
+        case 2:
+            return read_and_filter_with_type<std::uint16_t>(p_proc_handler, p_values);
+
+        case 4:
+            return read_and_filter_with_type<std::uint32_t>(p_proc_handler, p_values);
+
+        case 8:
+            return read_and_filter_with_type<std::uint64_t>(p_proc_handler, p_values);
+
+        default:
+            throw std::logic_error("Invalid integer size '" + std::to_string(m_filter.get_value().get_size()) + "' is used by the filter.");
+        }
+
+    case value::type::floating:
+        return read_and_filter_with_type<float>(p_proc_handler, p_values);
+
+    case value::type::doubling:
+        return read_and_filter_with_type<double>(p_proc_handler, p_values);
+
+    default:
+        throw std::logic_error("Unkown value type '" + std::to_string(static_cast<int>(m_filter.get_value().get_type())) + "' is used for filtering.");
+    }
+}
+
 
 
 proc_pointer_sequence proc_reader::read(const proc_pointer_sequence& p_values) const {
