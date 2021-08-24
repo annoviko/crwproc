@@ -6,12 +6,10 @@
 
 #include "context.h"
 #include "event.h"
+#include "state_base.h"
 
 
-class state_search {
+class state_search : public state_base {
 public:
     event operator()(context& p_context);
-
-private:
-    event ask_next_action(context& p_context) const;
 };

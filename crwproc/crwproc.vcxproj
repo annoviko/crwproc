@@ -152,10 +152,12 @@
     <ClCompile Include="control\context.cpp" />
     <ClCompile Include="control\filter_reader_value.cpp" />
     <ClCompile Include="control\intro_builder.cpp" />
+    <ClCompile Include="control\state_base.cpp" />
     <ClCompile Include="control\state_choose_proc.cpp" />
     <ClCompile Include="control\state_create_filter.cpp" />
     <ClCompile Include="control\state_edit.cpp" />
     <ClCompile Include="control\state_exit.cpp" />
+    <ClCompile Include="control\state_help.cpp" />
     <ClCompile Include="control\state_search.cpp" />
     <ClCompile Include="control\state_show_search_result.cpp" />
     <ClCompile Include="control\state_update_filter_value.cpp" />
@@ -180,10 +182,12 @@
     <ClInclude Include="control\filter_reader_value.h" />
     <ClInclude Include="control\intro_builder.h" />
     <ClInclude Include="control\state.h" />
+    <ClInclude Include="control\state_base.h" />
     <ClInclude Include="control\state_choose_proc.h" />
     <ClInclude Include="control\state_create_filter.h" />
     <ClInclude Include="control\state_edit.h" />
     <ClInclude Include="control\state_exit.h" />
+    <ClInclude Include="control\state_help.h" />
     <ClInclude Include="control\state_search.h" />
     <ClInclude Include="control\state_show_search_result.h" />
     <ClInclude Include="control\state_update_filter_value.h" />

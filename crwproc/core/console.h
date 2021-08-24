@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <unordered_map>
 
 
 struct position {
@@ -10,7 +11,21 @@ public:
 };
 
 
+enum class color {
+    basic,
+    red,
+    yellow,
+    blue,
+    green
+};
+
+
 class console {
+private:
+    static const int BASIC_TEXT_ATTRIBUTE_CODE;
+    static const std::unordered_map<color, int> COLOR_FOREGROUND_DICT;
+    static const std::unordered_map<color, int> COLOR_BACKGROUND_DICT;
+
 public:
     static void clear();
 
@@ -30,6 +45,12 @@ public:
 
     static void set_cursor_position(const position& p_position);
 
+    static void set_foreground_color(const color p_color, const bool p_intense = false);
+
+    static void set_defaut_color();
+
 private:
     static void color_output(const std::string& p_message, const std::uint64_t p_attribute, const bool ask_wait_key);
+
+    static int get_basic_text_attributes();
 };

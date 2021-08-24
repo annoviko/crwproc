@@ -24,10 +24,16 @@ public:
         static constexpr char set[]             = "\\set";
         static constexpr char refresh[]         = "\\refresh";
         static constexpr char remove[]          = "\\remove";
+        static constexpr char help[]            = "\\help";
     };
 
 private:
     static const std::unordered_map<std::string, event> COMMANDS;
+
+public:
+    static const std::unordered_map<std::string, std::string> DESCRIPTION;
+
+    static const std::unordered_map<std::string, std::vector<std::string>> EXAMPLES;
 
 public:
     static event to_event(const std::string& p_command);

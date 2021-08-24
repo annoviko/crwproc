@@ -32,6 +32,9 @@ public:
     state operator()(TypeState& state, event_choose&) { return state_choose_proc{}; }
 
     template <typename TypeState>
+    state operator()(TypeState& state, event_help&) { return state_help{}; }
+
+    template <typename TypeState>
     state operator()(TypeState& state, event_exit&) { return state_exit{}; }
 
     template <typename TypeState, typename TypeEvent>

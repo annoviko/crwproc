@@ -80,6 +80,12 @@
     <ClCompile Include="control\asker.cpp">
       <Filter>control</Filter>
     </ClCompile>
+    <ClCompile Include="control\state_help.cpp">
+      <Filter>control</Filter>
+    </ClCompile>
+    <ClCompile Include="control\state_base.cpp">
+      <Filter>control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\handle.h">
@@ -162,6 +168,12 @@
     </ClInclude>
     <ClInclude Include="core\traits.h">
       <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="control\state_help.h">
+      <Filter>control</Filter>
+    </ClInclude>
+    <ClInclude Include="control\state_base.h">
+      <Filter>control</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

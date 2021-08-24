@@ -6,7 +6,28 @@
 #include <iostream>
 
 
-#define FOREGROUND_YELLOW       14
+#define FOREGROUND_YELLOW       0x000E
+#define BACKGROUND_YELLOW       0x00E0
+
+
+const int console::BASIC_TEXT_ATTRIBUTE_CODE = console::get_basic_text_attributes();
+
+
+const std::unordered_map<color, int> console::COLOR_FOREGROUND_DICT = {
+    { color::basic, console::BASIC_TEXT_ATTRIBUTE_CODE & 0x000F },
+    { color::red, FOREGROUND_RED },
+    { color::blue, FOREGROUND_BLUE },
+    { color::green, FOREGROUND_GREEN },
+    { color::yellow, FOREGROUND_YELLOW }
+};
+
+const std::unordered_map<color, int> console::COLOR_BACKGROUND_DICT = {
+    { color::basic, console::BASIC_TEXT_ATTRIBUTE_CODE & 0x00F0 },
+    { color::red, BACKGROUND_RED },
+    { color::blue, BACKGROUND_BLUE },
+    { color::green, BACKGROUND_GREEN },
+    { color::yellow, BACKGROUND_YELLOW }
+};
 
 
 void console::clear() {
@@ -133,4 +154,33 @@ void console::set_cursor_position(const position& p_position) {
     HANDLE console_handle = GetStdHandle(STD_OUTPUT_HANDLE);
 
     SetConsoleCursorPosition(console_handle, { static_cast<short>(p_position.x), static_cast<short>(p_position.y) });
+}
+
+
+void console::set_foreground_color(const color p_color, const bool p_intense) {
+    auto iter = COLOR_FOREGROUND_DICT.find(p_color);
+    if (iter != COLOR_FOREGROUND_DICT.cend()) {
+        HANDLE console_handle = GetStdHandle(STD_OUTPUT_HANDLE);
+        CONSOLE_SCREEN_BUFFER_INFO buffer_info;
+
+        GetConsoleScreenBufferInfo(console_handle, &buffer_info);
+
+        WORD intensity = p_intense ? FOREGROUND_INTENSITY : 0;
+
+        SetConsoleTextAttribute(console_handle, static_cast<WORD>(iter->second) | intensity);
+    }
+}
+
+
+void console::set_defaut_color() {
+    set_foreground_color(color::basic);
+}
+
+
+int console::get_basic_text_attributes() {
+    HANDLE console_handle = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO buffer_info;
+
+    GetConsoleScreenBufferInfo(console_handle, &buffer_info);
+    return buffer_info.wAttributes;
 }
