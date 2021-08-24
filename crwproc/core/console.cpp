@@ -122,6 +122,7 @@ void console::color_output(const std::string& p_message, const std::uint64_t p_a
         if (ask_wait_key) {
             std::cout << "Press any key to continue...";
             (void) _getch();
+            std::cout << std::endl;
         }
     };
 

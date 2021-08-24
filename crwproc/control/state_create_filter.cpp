@@ -6,6 +6,7 @@
 
 #include "core/console.h"
 
+#include "asker.h"
 #include "filter_reader_value.h"
 #include "intro_builder.h"
 
@@ -35,7 +36,7 @@ void state_create_filter::ask_filter(context& p_context) const {
     }
 
     std::string value = filter_reader_value::read(p_context.get_filter());
-    if (value.empty()) {
+    while (value.empty()) {
         value = filter_reader_value::read(p_context.get_filter());
     }
 
@@ -50,21 +51,21 @@ value::type state_create_filter::ask_value_type() const {
     options.reserve(value::STR_TYPE_DICT.size());
 
     for (auto iter = value::STR_TYPE_DICT.cbegin(); iter != value::STR_TYPE_DICT.cend(); iter++) {
-        std::cout << options.size() << " - " << iter->first << std::endl;
+        console::set_foreground_color(color::blue, true);
+        std::cout << " " << options.size();
+        console::set_defaut_color();
+
+        std::cout << " - " << iter->first << std::endl;
         options.push_back(iter);
     }
 
     std::cout << "Enter option number (0-" << options.size() - 1 << "): ";
-    std::size_t index_option = std::numeric_limits<std::size_t>::max();
-    std::cin >> index_option;   /* TODO: possibility to use command */
+    std::size_t index_option = asker::ask_index(options.size());
 
-    if (index_option < options.size()) {
+    if (index_option != asker::INVALID_INDEX) {
         std::cout << std::endl;
         return options[index_option]->second;
     }
-
-    console::error_and_wait_key("Error: invalid filter is specified (user input '" + std::to_string(index_option) + "').");
-    std::cout << std::endl << std::endl;
 
     return value::type::invalid;
 }
@@ -75,20 +76,20 @@ std::size_t state_create_filter::ask_value_size() const {
 
     std::vector<std::size_t> options = { 1, 2, 4, 8 };
     for (std::size_t i = 0; i < options.size(); i++) {
-        std::cout << i << " - " << options[i] << " byte(s)" << std::endl;
+        console::set_foreground_color(color::blue, true);
+        std::cout << " " << i;
+        console::set_defaut_color();
+
+        std::cout << " - " << options[i] << " byte(s)" << std::endl;
     }
 
     std::cout << "Enter option number (0-" << options.size() - 1 << "): ";
-    std::size_t index_option = std::numeric_limits<std::size_t>::max();
-    std::cin >> index_option;   /* TODO: possibility to use command */
+    std::size_t index_option = asker::ask_index(options.size());
 
-    if (index_option < options.size()) {
+    if (index_option != asker::INVALID_INDEX) {
         std::cout << std::endl;
         return options[index_option];
     }
-
-    console::error("Error: invalid filter is specified (user input '" + std::to_string(index_option) + "').");
-    std::cout << std::endl << std::endl;
 
     return INVALID_SIZE;
 }
