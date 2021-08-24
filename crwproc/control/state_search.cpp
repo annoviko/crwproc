@@ -36,7 +36,7 @@ event state_search::operator()(context& p_context) {
     std::cout << std::endl;
 
     if (p_context.get_found_values().empty()) {
-        console::warning("Nothing has been found, please change filter.", true);
+        console::warning_and_wait_key("Nothing has been found, please change filter.");
         return event_filter{};
     }
 
@@ -56,7 +56,7 @@ event state_search::ask_next_action(context& p_context) const {
     std::visit([&user_input, &p_context, &action](auto&& instance) {
         using EventType = std::decay_t<decltype(instance)>;
         if constexpr (std::is_same_v<EventType, event_error>) {
-            console::error("Error: unknown command is specified '" + user_input + "'.", true);
+            console::error_and_wait_key("Error: unknown command is specified '" + user_input + "'.");
         }
         else if (std::is_same_v<EventType, event_set>) {
 

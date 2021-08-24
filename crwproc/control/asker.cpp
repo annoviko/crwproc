@@ -11,7 +11,7 @@ std::size_t asker::ask_index(const std::size_t p_limit, const action_index& p_ac
     std::cin >> index_value;
 
     if (index_value >= p_limit) {
-        console::error("Error: specified index '" + std::to_string(index_value) + "' is out of range.", true);
+        console::error_and_wait_key("Error: specified index '" + std::to_string(index_value) + "' is out of range.");
         return INVALID_INDEX;
     }
 

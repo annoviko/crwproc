@@ -198,6 +198,7 @@
     <ClInclude Include="core\proc_pointer.h" />
     <ClInclude Include="core\proc_table.h" />
     <ClInclude Include="core\proc_writer.h" />
+    <ClInclude Include="core\traits.h" />
     <ClInclude Include="core\value.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

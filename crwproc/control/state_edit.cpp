@@ -47,15 +47,15 @@ event state_edit::ask_next_action(context& p_context) const {
     std::visit([&user_input, &p_context, &action](auto&& instance) {
         using EventType = std::decay_t<decltype(instance)>;
         if constexpr (std::is_same_v<EventType, event_error>) {
-            console::error("Error: unknown command is specified '" + user_input + "'.", true);
+            console::error_and_wait_key("Error: unknown command is specified '" + user_input + "'.");
         }
         else if (std::is_same_v<EventType, event_set>) {
             std::size_t index_value = 0;
             std::cin >> index_value;
 
             if (index_value >= p_context.get_user_table().size()) {
-                console::error("Error: specified index '" + std::to_string(index_value) + 
-                    "' is out of range. The total amount of monitored values: " + std::to_string(p_context.get_user_table().size()) + ".", true);
+                console::error_and_wait_key("Error: specified index '" + std::to_string(index_value) +
+                    "' is out of range. The total amount of monitored values: " + std::to_string(p_context.get_user_table().size()) + ".");
                 return;
             }
 
@@ -67,7 +67,7 @@ event state_edit::ask_next_action(context& p_context) const {
 
             proc_writer writer(p_context.get_proc_info());
             if (!writer.write(new_value)) {
-                console::error("Error: impossible to write value to the process.", true);
+                console::error_and_wait_key("Error: impossible to write value to the process.");
                 return;
             }
 

@@ -160,5 +160,8 @@
     <ClInclude Include="control\asker.h">
       <Filter>control</Filter>
     </ClInclude>
+    <ClInclude Include="core\traits.h">
+      <Filter>core</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

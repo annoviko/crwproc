@@ -11,10 +11,12 @@
 
 
 event state_show_search_result::operator()(context& p_context) {
-    intro_builder::show(p_context, "Found values with the filter.");
+    m_intro = intro_builder("Found values with the filter.");
+    m_intro.show(p_context);
+
     show_values(p_context);
 
-    return ask_next_action(p_context);
+    return continue_until_event_is_not<event_add>([this, &p_context]() { return ask_next_action(p_context); });
 }
 
 
@@ -24,8 +26,7 @@ void state_show_search_result::show_values(const context& p_context) const {
 
         std::cout << std::right << std::setw(4) << i << ") " <<
             "address: " << std::setw(10) << (void*)pointer.get_address() << "| " <<
-            "type: " << std::setw(10) << value::type_to_string(pointer.get_value().get_type()) << "| " <<
-            "value during filtering: " << std::setw(15) << pointer.get_value().get<std::string>() << std::endl;
+            "type: " << std::setw(10) << value::type_to_string(pointer.get_value().get_type()) << std::endl;
     }
 
     std::cout << std::endl;
@@ -42,12 +43,14 @@ event state_show_search_result::ask_next_action(context& p_context) const {
     std::visit([this, &user_input, &p_context, &action](auto&& instance) {
         using EventType = std::decay_t<decltype(instance)>;
         if constexpr (std::is_same_v<EventType, event_error>) {
-            console::error("Error: unknown command is specified '" + user_input + "'.", true);
+            console::error_and_wait_key("Error: unknown command is specified '" + user_input + "'.");
         }
         else if (std::is_same_v<EventType, event_add>) {
             std::size_t index_value = asker::ask_index(p_context.get_found_values().size(), [&p_context](std::size_t p_index) {
                 p_context.get_user_table().push_back(p_context.get_found_values().at(p_index));
             });
+
+            m_intro.redraw(p_context);
         }
         else if (std::is_same_v<EventType, event_remove>) {
             std::size_t index_value = asker::ask_index(p_context.get_found_values().size(), [&p_context](std::size_t p_index) {

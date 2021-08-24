@@ -69,7 +69,7 @@ std::size_t state_choose_proc::try_get_pid(const std::string& p_input) const {
 event state_choose_proc::assign_pid(const std::size_t p_pid, const proc_collection& p_table, context& p_context) const {
     const auto iter = p_table.find(p_pid);
     if (iter == p_table.cend()) {
-        console::error("Error: process ID '" + std::to_string(p_pid) + "' does not exist.", true);
+        console::error_and_wait_key("Error: process ID '" + std::to_string(p_pid) + "' does not exist.");
         return event_error{};
     }
 
@@ -83,7 +83,7 @@ event state_choose_proc::process_user_command(const std::string& p_command) cons
     std::visit([&p_command](auto && instance) {
         using EventType = std::decay_t<decltype(instance)>;
         if constexpr (std::is_same_v<EventType, event_error>) {
-            console::error("Error: unknown command is specified '" + p_command + "'.", true);
+            console::error_and_wait_key("Error: unknown command is specified '" + p_command + "'.");
         }
     }, event_to_handle);
 

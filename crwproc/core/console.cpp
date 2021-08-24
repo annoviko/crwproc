@@ -41,13 +41,56 @@ void console::clear() {
 }
 
 
-void console::error(const std::string& p_message, const bool ask_wait_key) {
-    color_output(p_message, FOREGROUND_RED, ask_wait_key);
+void console::clear_line() {
+    console::clear_lines(1);
 }
 
 
-void console::warning(const std::string& p_message, const bool ask_wait_key) {
-    color_output(p_message, FOREGROUND_YELLOW, ask_wait_key);
+void console::clear_lines(const std::size_t p_lines) {
+    HANDLE console_handle = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO buffer_info;
+
+    std::memset((void*)&buffer_info, 0x00, sizeof(CONSOLE_SCREEN_BUFFER_INFO));
+
+    GetConsoleScreenBufferInfo(console_handle, &buffer_info);
+
+    SMALL_RECT scroll_rectange;
+    scroll_rectange.Left = buffer_info.dwCursorPosition.X;
+    scroll_rectange.Top = buffer_info.dwCursorPosition.Y;
+    scroll_rectange.Right = buffer_info.dwSize.X;
+    scroll_rectange.Bottom = static_cast<short>(p_lines);
+
+    COORD scroll_target;
+    scroll_target.X = 0;
+    scroll_target.Y = (SHORT)(0 - p_lines);
+
+    CHAR_INFO fill;
+    fill.Char.UnicodeChar = TEXT(' ');
+    fill.Attributes = buffer_info.wAttributes;
+
+    ScrollConsoleScreenBuffer(console_handle, &scroll_rectange, nullptr, scroll_target, &fill);
+
+    SetConsoleCursorPosition(console_handle, buffer_info.dwCursorPosition);
+}
+
+
+void console::error(const std::string& p_message) {
+    color_output(p_message, FOREGROUND_RED, false);
+}
+
+
+void console::error_and_wait_key(const std::string& p_message) {
+    color_output(p_message, FOREGROUND_RED, true);
+}
+
+
+void console::warning(const std::string& p_message) {
+    color_output(p_message, FOREGROUND_YELLOW, false);
+}
+
+
+void console::warning_and_wait_key(const std::string& p_message) {
+    color_output(p_message, FOREGROUND_YELLOW, true);
 }
 
 
@@ -57,7 +100,7 @@ void console::color_output(const std::string& p_message, const std::uint64_t p_a
 
         if (ask_wait_key) {
             std::cout << "Press any key to continue...";
-            _getch();
+            (void) _getch();
         }
     };
 
@@ -72,4 +115,22 @@ void console::color_output(const std::string& p_message, const std::uint64_t p_a
     SetConsoleTextAttribute(console_handle, static_cast<WORD>(p_attribute) | FOREGROUND_INTENSITY);
     output_function(p_message);
     SetConsoleTextAttribute(console_handle, buffer_info.wAttributes);
+}
+
+
+position console::get_cursor_position() {
+    HANDLE console_handle = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO buffer_info;
+
+    std::memset((void*)&buffer_info, 0x00, sizeof(CONSOLE_SCREEN_BUFFER_INFO));
+
+    GetConsoleScreenBufferInfo(console_handle, &buffer_info);
+    return { buffer_info.dwCursorPosition.X, buffer_info.dwCursorPosition.Y };
+}
+
+
+void console::set_cursor_position(const position& p_position) {
+    HANDLE console_handle = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    SetConsoleCursorPosition(console_handle, { static_cast<short>(p_position.x), static_cast<short>(p_position.y) });
 }

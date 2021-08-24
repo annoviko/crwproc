@@ -63,7 +63,7 @@ value::type state_create_filter::ask_value_type() const {
         return options[index_option]->second;
     }
 
-    console::error("Error: invalid filter is specified (user input '" + std::to_string(index_option) + "').", false);
+    console::error_and_wait_key("Error: invalid filter is specified (user input '" + std::to_string(index_option) + "').");
     std::cout << std::endl << std::endl;
 
     return value::type::invalid;
@@ -87,7 +87,7 @@ std::size_t state_create_filter::ask_value_size() const {
         return options[index_option];
     }
 
-    console::error("Error: invalid filter is specified (user input '" + std::to_string(index_option) + "').", false);
+    console::error("Error: invalid filter is specified (user input '" + std::to_string(index_option) + "').");
     std::cout << std::endl << std::endl;
 
     return INVALID_SIZE;

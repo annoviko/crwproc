@@ -27,7 +27,7 @@ std::string filter_reader_value::read(const filter_equal& p_filter) {
         }
     }
     catch (...) {
-        console::error("Error: invalid value is specified '" + value + "'.", true);
+        console::error_and_wait_key("Error: invalid value is specified '" + value + "'.");
         return std::string{};
     }
 

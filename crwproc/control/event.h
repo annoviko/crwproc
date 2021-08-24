@@ -1,7 +1,11 @@
 #pragma once
 
 
+#include <type_traits>
 #include <variant>
+
+#include "core/traits.h"
+
 
 class event_choose { };
 
@@ -42,3 +46,24 @@ using event = std::variant<
     event_error, 
     event_exit
 >;
+
+
+template <typename ... ExpectedEvents>
+bool is_event_type(const event& p_event) {
+    return std::visit([](auto&& instance) {
+        using actual_type = std::decay_t<decltype(instance)>;
+        return crwproc::is_any<actual_type, ExpectedEvents...>::value;
+    }, p_event);
+}
+
+
+template <typename ... ExpectedEvent, typename FunctionType>
+event continue_until_event_is_not(const FunctionType& p_function) {
+    event current_event = p_function();
+    while (is_event_type<ExpectedEvent...>(current_event)) {
+        current_event = p_function();
+    }
+
+    return current_event;
+}
+

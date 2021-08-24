@@ -5,12 +5,19 @@
 #include "command.h"
 #include "context.h"
 #include "event.h"
+#include "intro_builder.h"
 
 
 class state_show_search_result {
 private:
     using action_dict = std::unordered_map<std::string, std::function<event(context&)>>;
     using action_sequence = std::vector<action_dict::const_iterator>;
+
+private:
+    intro_builder m_intro;
+
+public:
+    state_show_search_result() = default;
 
 public:
     event operator()(context& p_context);
