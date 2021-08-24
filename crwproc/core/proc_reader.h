@@ -3,6 +3,7 @@
 #include <chrono>
 #include <condition_variable>
 #include <functional>
+#include <future>
 #include <limits>
 #include <mutex>
 #include <optional>
@@ -146,13 +147,71 @@ private:
 
     template <typename TypeValue>
     void extract_values(const std::uint8_t* p_buffer, const std::uint64_t p_length, const std::uint64_t p_address, const filter_equal& p_filter, proc_pointer_sequence& p_result) const {
-        for (std::uint64_t offset = 0; offset < p_length; offset++) {
+        //if (p_length > 50000000) {  /* parallel processing if memory block is bigger then 50 MB. */
+        //    extract_values_parallel<TypeValue>(p_buffer, p_length, p_address, p_filter, p_result);
+        //    return;
+        //}
+
+        for (std::uint64_t offset = 0; offset < p_length; ++offset) {
             const TypeValue actual_value = *((TypeValue*)(p_buffer + offset));
             if (p_filter.is_satisfying(actual_value)) {
                 p_result.emplace_back(p_address + offset, p_filter.get_value());
             }
 
             m_bytes_read++;
+        }
+    }
+
+    template <typename TypeValue>
+    void extract_values_parallel(const std::uint8_t* p_buffer, const std::uint64_t p_length, const std::uint64_t p_address, const filter_equal& p_filter, proc_pointer_sequence& p_result) const {
+        const static std::size_t amount_threads = (std::thread::hardware_concurrency() > 1) ? (std::thread::hardware_concurrency() - 1) : 0;
+
+        const std::uint64_t interval_thread_length = p_length / amount_threads;
+
+        std::uint64_t current_start = 0;
+        std::uint64_t current_end = interval_thread_length;
+
+        std::vector<std::future<void>> future_storage;
+        future_storage.reserve(amount_threads);
+
+        std::vector<proc_pointer_sequence> local_results(amount_threads);
+        auto task = [this, p_buffer, p_address, &p_filter, &local_results](const std::uint64_t p_offset, const std::size_t p_fid) {
+            const TypeValue actual_value = *((TypeValue*)(p_buffer + p_offset));
+            if (p_filter.is_satisfying(actual_value)) {
+                local_results[p_fid].emplace_back(p_address + p_offset, p_filter.get_value());
+            }
+
+            m_bytes_read++; /* no locks, lets progress statistic is going to be a behind real. */
+        };
+
+        /* process by other threads */
+        for (std::size_t index_thread = 0; (index_thread < amount_threads - 1) && (current_end < amount_threads); ++index_thread) {
+            const auto async_task = [&task, index_thread, current_start, current_end]() {
+                for (std::uint64_t i = current_start; i < current_end; ++i) {
+                    task(i, index_thread);
+                }
+            };
+
+            future_storage.push_back(std::async(std::launch::async, async_task));
+
+            current_start = current_end;
+            current_end += interval_thread_length;
+        }
+
+        /* process by current thread */
+        std::size_t current_index_thread = amount_threads - 1;
+        for (std::uint64_t i = current_start; i < p_length; i++) {
+            task(i, current_index_thread);
+        }
+
+        /* wait when everyone is ready */
+        for (auto& feature : future_storage) {
+            feature.get();
+        }
+
+        /* merge results */
+        for (const auto& thread_result : local_results) {
+            p_result.insert(p_result.begin(), thread_result.begin(), thread_result.end());
         }
     }
 };

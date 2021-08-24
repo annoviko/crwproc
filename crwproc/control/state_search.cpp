@@ -1,5 +1,6 @@
 #include "state_search.h"
 
+#include <chrono>
 #include <iostream>
 #include <unordered_map>
 
@@ -27,7 +28,12 @@ event state_search::operator()(context& p_context) {
     std::cout << "Progress: ";
 
     if (p_context.get_found_values().empty()) {
+        const auto start_time = std::chrono::system_clock::now();
         p_context.get_found_values() = reader.read_and_filter();
+        const auto end_time = std::chrono::system_clock::now();
+
+        std::chrono::duration<double> processing_time = end_time - start_time;
+        std::cout << std::endl << "Processing time: " << processing_time.count() << " seconds.";
     }
     else {
         p_context.get_found_values() = reader.read_and_filter(p_context.get_found_values());
