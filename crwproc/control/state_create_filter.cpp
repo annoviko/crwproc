@@ -15,6 +15,8 @@ const std::size_t state_create_filter::INVALID_SIZE = std::numeric_limits<std::s
 
 
 event state_create_filter::operator()(context& p_context) {
+    p_context.get_found_values().clear();
+
     intro_builder::show(p_context, "Create filter for the process.");
     ask_filter(p_context);
     return event_done{};

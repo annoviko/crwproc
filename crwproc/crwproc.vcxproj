@@ -166,6 +166,7 @@
     <ClCompile Include="core\console.cpp" />
     <ClCompile Include="core\filter_equal.cpp" />
     <ClCompile Include="core\handle.cpp" />
+    <ClCompile Include="core\parallel.cpp" />
     <ClCompile Include="core\proc_info.cpp" />
     <ClCompile Include="core\proc_pointer.cpp" />
     <ClCompile Include="core\proc_reader.cpp" />
@@ -197,6 +198,7 @@
     <ClInclude Include="core\console.h" />
     <ClInclude Include="core\filter_equal.h" />
     <ClInclude Include="core\handle.h" />
+    <ClInclude Include="core\parallel.h" />
     <ClInclude Include="core\proc_info.h" />
     <ClInclude Include="core\proc_reader.h" />
     <ClInclude Include="core\proc_pointer.h" />

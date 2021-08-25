@@ -18,11 +18,13 @@ proc_reader::~proc_reader() {
 proc_pointer_sequence proc_reader::read_and_filter() const {
     handle proc_handler = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, static_cast<DWORD>(m_proc_info.pid()));
 
-    m_bytes_to_read = get_amount_bytes_to_read(proc_handler);
+    proc_memblocks blocks = get_proc_memblocks(proc_handler);
+
+    m_bytes_to_read = blocks.total_size;
     m_bytes_read = 0;
     run_notifier();
 
-    proc_pointer_sequence result = read_and_filter_eval(proc_handler);
+    proc_pointer_sequence result = read_and_filter_eval(proc_handler, { }, blocks);
 
     stop_notifier();
     return result;
@@ -35,39 +37,38 @@ proc_pointer_sequence proc_reader::read_and_filter(const proc_pointer_sequence& 
     run_notifier();
 
     handle proc_handler = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, static_cast<DWORD>(m_proc_info.pid()));
-    proc_pointer_sequence result = read_and_filter_eval(proc_handler, p_values);
-
+    proc_pointer_sequence result = read_and_filter_eval(proc_handler, p_values, { });
 
     stop_notifier();
     return result;
 }
 
 
-proc_pointer_sequence proc_reader::read_and_filter_eval(const handle& p_proc_handler, const proc_pointer_sequence& p_values) const {
+proc_pointer_sequence proc_reader::read_and_filter_eval(const handle& p_proc_handler, const proc_pointer_sequence& p_values, const proc_memblocks& p_blocks) const {
     switch (m_filter.get_value().get_type()) {
     case value::type::integral:
         switch (m_filter.get_value().get_size()) {
         case 1:
-            return read_and_filter_with_type<std::uint8_t>(p_proc_handler, p_values);
+            return read_and_filter_with_type<std::uint8_t>(p_proc_handler, p_values, p_blocks);
 
         case 2:
-            return read_and_filter_with_type<std::uint16_t>(p_proc_handler, p_values);
+            return read_and_filter_with_type<std::uint16_t>(p_proc_handler, p_values, p_blocks);
 
         case 4:
-            return read_and_filter_with_type<std::uint32_t>(p_proc_handler, p_values);
+            return read_and_filter_with_type<std::uint32_t>(p_proc_handler, p_values, p_blocks);
 
         case 8:
-            return read_and_filter_with_type<std::uint64_t>(p_proc_handler, p_values);
+            return read_and_filter_with_type<std::uint64_t>(p_proc_handler, p_values, p_blocks);
 
         default:
             throw std::logic_error("Invalid integer size '" + std::to_string(m_filter.get_value().get_size()) + "' is used by the filter.");
         }
 
     case value::type::floating:
-        return read_and_filter_with_type<float>(p_proc_handler, p_values);
+        return read_and_filter_with_type<float>(p_proc_handler, p_values, p_blocks);
 
     case value::type::doubling:
-        return read_and_filter_with_type<double>(p_proc_handler, p_values);
+        return read_and_filter_with_type<double>(p_proc_handler, p_values, p_blocks);
 
     default:
         throw std::logic_error("Unkown value type '" + std::to_string(static_cast<int>(m_filter.get_value().get_type())) + "' is used for filtering.");
@@ -131,22 +132,23 @@ proc_pointer proc_reader::read_value(const handle& p_proc_handler, const std::ui
 }
 
 
-
-std::uint64_t proc_reader::get_amount_bytes_to_read(const handle& p_handle) const {
+proc_reader::proc_memblocks proc_reader::get_proc_memblocks(const handle& p_handle) const {
     MEMORY_BASIC_INFORMATION  memory_info;
 
     std::uint64_t current_address = 0;
-    std::uint64_t bytes_to_process = 0;
+
+    proc_memblocks result;
 
     while (VirtualQueryEx(p_handle(), (LPCVOID)current_address, &memory_info, sizeof(memory_info))) {
         if ((memory_info.State == MEM_COMMIT) && ((memory_info.Type == MEM_MAPPED) || (memory_info.Type == MEM_PRIVATE))) {
-            bytes_to_process += memory_info.RegionSize;
+            result.total_size += memory_info.RegionSize;
+            result.blocks.push_back(memory_info);
         }
 
         current_address += memory_info.RegionSize;
     }
 
-    return bytes_to_process;
+    return result;
 }
 
 
