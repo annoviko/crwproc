@@ -53,6 +53,8 @@ private:
 private:
     static constexpr std::uint64_t READ_VALUE_SIZE = 16;
 
+    static constexpr std::uint64_t TRIGGER_CPU_PARALLEL = 10 * 1000 * 1000;     /* 10Mbytes */
+
     static constexpr std::uint64_t INVALID_PROC_SIZE = std::numeric_limits<std::uint64_t>::max();
     static constexpr std::uint64_t INVALID_INTEGER_VALUE = std::numeric_limits<std::uint64_t>::max();
 
@@ -106,6 +108,7 @@ private:
 
                 if (ReadProcessMemory(p_handle(), (LPCVOID)memory_info.BaseAddress, buffer.get(), memory_info.RegionSize, (SIZE_T*)&bytes_was_read)) {
                     extract_values<TypeValue>(buffer.get(), bytes_was_read, (std::uint64_t)memory_info.BaseAddress, m_filter, result);
+                    m_bytes_read += bytes_was_read;
                 }
             }
 
@@ -131,6 +134,7 @@ private:
 
             if (ReadProcessMemory(p_handle(), (LPCVOID)memory_info.BaseAddress, buffer.get(), memory_info.RegionSize, (SIZE_T*)&bytes_was_read)) {
                 extract_values<TypeValue>(buffer.get(), bytes_was_read, (std::uint64_t)memory_info.BaseAddress, m_filter, partial_results[p_tidx]);
+                m_bytes_read += bytes_was_read;
             }
         };
 
@@ -181,7 +185,7 @@ private:
     template <typename TypeValue>
     proc_pointer_sequence read_and_filter_with_type(const handle& p_handle, const proc_pointer_sequence& p_values, const proc_memblocks& p_blocks) const {
         if (p_values.empty()) {
-            if (p_blocks.total_size >= 10000000) {   /* parallel processing if process memory is bigger than 10 Mbytes */
+            if (p_blocks.total_size >= TRIGGER_CPU_PARALLEL) {
                 return read_and_filter_whole_process_parallel_cpu<TypeValue>(p_handle, p_blocks.blocks);
             }
 
@@ -199,8 +203,6 @@ private:
             if (p_filter.is_satisfying(actual_value)) {
                 p_result.emplace_back(p_address + offset, p_filter.get_value());
             }
-
-            m_bytes_read++;
         }
     }
 };
