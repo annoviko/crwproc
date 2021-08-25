@@ -23,7 +23,7 @@ void intro_builder::redraw(const context& p_context) const {
 
     console::set_cursor_position(m_begin_position);
 
-    const int lines_to_clean = m_end_position.y - m_begin_position.y;
+    const int lines_to_clean = m_end_position.y - m_begin_position.y - 1;
     if (lines_to_clean < 0) {
         throw std::logic_error("Error: impossible to redraw intro.");
     }
