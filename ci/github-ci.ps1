@@ -21,8 +21,7 @@ function Build-Application($Configuration) {
 function Build-UnitTests {
 	Announce-Step "Build Unit-Tests."
 	
-	msbuild $SolutionPath /t:restore
-	#msbuild $SolutionPath\tests\ut\ut.vcxproj /t:Restore
+	msbuild $SolutionPath\tests\ut\ut.vcxproj /t:Restore
 	msbuild $SolutionPath /t:ut /p:configuration=release /p:platform=x64
 	if ($LastExitCode -ne 0) {
 		Write-Error "[Error] Building unit-test project failed with error code '$LastExitCode'."
