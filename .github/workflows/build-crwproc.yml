@@ -2,10 +2,6 @@ name: Build and test crwproc application
 
 on: [push]
 
-env:
-  SOLUTION_FILE_PATH: .
-  BUILD_CONFIGURATION: Release
-
 jobs:
   build:
     runs-on: windows-latest
