@@ -1,5 +1,7 @@
 New-Variable -Name JobBuild -Value "test-crwproc-build" -Option ReadOnly -Force
-New-Variable -Name SolutionPath -Value crwproc.sln -Option ReadOnly -Force
+New-Variable -Name SolutionName -Value crwproc.sln -Option ReadOnly -Force
+New-Variable -Name ProjectUtPath -Value .\tests\ut\ -Option ReadOnly -Force
+New-Variable -Name ProjectUtName -Value ut.vcxproj -Option ReadOnly -Force
 
 
 function Announce-Step($Message) {
@@ -10,7 +12,7 @@ function Announce-Step($Message) {
 function Build-Application($Configuration) {
 	Announce-Step "Build Application."
 	
-	msbuild $SolutionPath /t:crwproc /p:configuration=$Configuration /p:platform=x64
+	msbuild $SolutionName /t:crwproc /p:configuration=$Configuration /p:platform=x64
 	if ($LastExitCode -ne 0) {
 		Write-Error "[Error] Building crwproc failed with error code '$LastExitCode'."
 		Exit 1
@@ -21,8 +23,8 @@ function Build-Application($Configuration) {
 function Build-UnitTests {
 	Announce-Step "Build Unit-Tests."
 	
-	msbuild $SolutionPath\tests\ut\ut.vcxproj /t:Restore
-	msbuild $SolutionPath /t:ut /p:configuration=release /p:platform=x64
+	msbuild $(ProjectUtPath)$(ProjectUtName) /t:Restore
+	msbuild $SolutionName /t:ut /p:configuration=release /p:platform=x64
 	if ($LastExitCode -ne 0) {
 		Write-Error "[Error] Building unit-test project failed with error code '$LastExitCode'."
 		Exit 1
