@@ -25,18 +25,25 @@ struct context {
 };
 
 
-void show_values(const std::size_t p_pid, const context& g_context) {
-    std::cout << p_pid << ") " << (int)g_context.m_int8 << ", " << g_context.m_int16 << ", " << g_context.m_int32 << ", " << g_context.m_int64 << ", " << g_context.m_float << ", " << g_context.m_double << std::endl;
-    std::cout << p_pid << ") [ptrs] " << (int)*g_context.m_ptr_int8 << ", " << *g_context.m_ptr_int16 << ", " << *g_context.m_ptr_int32 << ", " << *g_context.m_ptr_int64 << std::endl;
+std::int8_t g_int8 = 32;
+std::int16_t g_int16 = 512;
+std::int32_t g_int32 = 77512;
+std::int64_t g_int64 = 3333333333;
+
+
+void show_values(const std::size_t p_pid, const context& context) {
+    std::cout << p_pid << ") [data]  " << (int)g_int8 << ", " << g_int16 << ", " << g_int32 << ", " << g_int64 << std::endl;
+    std::cout << p_pid << ") [stack] " << (int) context.m_int8 << ", " << context.m_int16 << ", " << context.m_int32 << ", " << context.m_int64 << ", " << context.m_float << ", " << context.m_double << std::endl;
+    std::cout << p_pid << ") [ptrs]  " << (int)*context.m_ptr_int8 << ", " << *context.m_ptr_int16 << ", " << *context.m_ptr_int32 << ", " << *context.m_ptr_int64 << std::endl;
 }
 
 
 int main() {
     DWORD pid = GetCurrentProcessId();
 
-    context g_context;
+    context context;
 
-    show_values(pid, g_context);
+    show_values(pid, context);
 
     while (true) {
 
@@ -46,50 +53,67 @@ int main() {
         std::cin >> command;
 
         if (command == "inc") {
-            g_context.m_int8++;
-            g_context.m_int16++;
-            g_context.m_int32++;
-            g_context.m_int64++;
+            context.m_int8++;
+            context.m_int16++;
+            context.m_int32++;
+            context.m_int64++;
 
-            g_context.m_float += 0.1;
-            g_context.m_double += 0.1;
+            context.m_float += 0.1;
+            context.m_double += 0.1;
 
-            (*g_context.m_ptr_int8)++;
-            (*g_context.m_ptr_int16)++;
-            (*g_context.m_ptr_int32)++;
-            (*g_context.m_ptr_int64)++;
+            (*context.m_ptr_int8)++;
+            (*context.m_ptr_int16)++;
+            (*context.m_ptr_int32)++;
+            (*context.m_ptr_int64)++;
+
+            g_int8++;
+            g_int16++;
+            g_int32++;
+            g_int64++;
         }
         else if (command == "dec") {
-            g_context.m_int8--;
-            g_context.m_int16--;
-            g_context.m_int32--;
-            g_context.m_int64--;
+            context.m_int8--;
+            context.m_int16--;
+            context.m_int32--;
+            context.m_int64--;
 
-            g_context.m_float -= 0.1;
-            g_context.m_double -= 0.1;
+            context.m_float -= 0.1;
+            context.m_double -= 0.1;
 
-            (*g_context.m_ptr_int8)--;
-            (*g_context.m_ptr_int16)--;
-            (*g_context.m_ptr_int32)--;
-            (*g_context.m_ptr_int64)--;
+            (*context.m_ptr_int8)--;
+            (*context.m_ptr_int16)--;
+            (*context.m_ptr_int32)--;
+            (*context.m_ptr_int64)--;
+
+            g_int8--;
+            g_int16--;
+            g_int32--;
+            g_int64--;
         }
         else if (command == "addr") {
-            std::cout << std::setw(10) << (int) g_context.m_int8 << ": " << (void*)&g_context.m_int8 << std::endl;
-            std::cout << std::setw(10) << g_context.m_int16 << ": " << (void*)&g_context.m_int16 << std::endl;
-            std::cout << std::setw(10) << g_context.m_int32 << ": " << (void*)&g_context.m_int32 << std::endl;
-            std::cout << std::setw(10) << g_context.m_int64 << ": " << (void*)&g_context.m_int64 << std::endl;
+            std::cout << "[data]" << std::endl;
+            std::cout << std::setw(10) << (int)g_int8 << ": " << (void*)&g_int8 << std::endl;
+            std::cout << std::setw(10) << g_int16 << ": " << (void*)&g_int16 << std::endl;
+            std::cout << std::setw(10) << g_int32 << ": " << (void*)&g_int32 << std::endl;
+            std::cout << std::setw(10) << g_int64 << ": " << (void*)&g_int64 << std::endl;
 
-            std::cout << std::setw(10) << g_context.m_float << ": " << (void*)&g_context.m_float << std::endl;
-            std::cout << std::setw(10) << g_context.m_double << ": " << (void*)&g_context.m_double << std::endl;
+            std::cout << std::endl << "[stack]" << std::endl;
+            std::cout << std::setw(10) << (int) context.m_int8 << ": " << (void*)&context.m_int8 << std::endl;
+            std::cout << std::setw(10) << context.m_int16 << ": " << (void*)&context.m_int16 << std::endl;
+            std::cout << std::setw(10) << context.m_int32 << ": " << (void*)&context.m_int32 << std::endl;
+            std::cout << std::setw(10) << context.m_int64 << ": " << (void*)&context.m_int64 << std::endl;
+
+            std::cout << std::setw(10) << context.m_float << ": " << (void*)&context.m_float << std::endl;
+            std::cout << std::setw(10) << context.m_double << ": " << (void*)&context.m_double << std::endl;
 
             std::cout << std::endl << "[ptrs]" << std::endl;
-            std::cout << std::setw(10) << (int) *g_context.m_ptr_int8 << ": " << (void*) g_context.m_ptr_int8 << std::endl;
-            std::cout << std::setw(10) << *g_context.m_ptr_int16 << ": " << (void*) g_context.m_ptr_int16 << std::endl;
-            std::cout << std::setw(10) << *g_context.m_ptr_int32 << ": " << (void*) g_context.m_ptr_int32 << std::endl;
-            std::cout << std::setw(10) << *g_context.m_ptr_int64 << ": " << (void*) g_context.m_ptr_int64 << std::endl;
+            std::cout << std::setw(10) << (int) *context.m_ptr_int8 << ": " << (void*) context.m_ptr_int8 << std::endl;
+            std::cout << std::setw(10) << *context.m_ptr_int16 << ": " << (void*) context.m_ptr_int16 << std::endl;
+            std::cout << std::setw(10) << *context.m_ptr_int32 << ": " << (void*) context.m_ptr_int32 << std::endl;
+            std::cout << std::setw(10) << *context.m_ptr_int64 << ": " << (void*) context.m_ptr_int64 << std::endl;
         }
         else if (command == "show") {
-            show_values(pid, g_context);
+            show_values(pid, context);
         }
         else {
             std::cout << "ERROR: WRONG COMMAND." << std::endl;
