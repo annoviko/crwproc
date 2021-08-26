@@ -6,6 +6,8 @@ $SolutionName = "crwproc.sln"
 $ProjectUtPath = "$SolutionPath\tests\ut"
 $ProjectUtName = "ut.vcxproj"
 
+$BinaryUtPath = "$SolutionPath\x64\Release"
+$BinaryUtName = "ut.exe"
 
 
 function Announce-Step($Message) {
@@ -40,7 +42,8 @@ function Build-UnitTests {
 function Run-UnitTests {
 	Announce-Step "Run Unit-Tests."
 	
-	Start-Process -FilePath ".\x64\Release\ut.exe"
+	& "$BinaryUtPath\$BinaryUtName"
+	
 	if ($LastExitCode -ne 0) {
 		Write-Error "[Error] Unit-testing failed with error code '$LastExitCode'."
 		Exit 1
