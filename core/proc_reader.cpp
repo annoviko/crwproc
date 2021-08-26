@@ -44,6 +44,11 @@ proc_pointer_sequence proc_reader::read_and_filter(const proc_pointer_sequence& 
 }
 
 
+void proc_reader::force_parallel_processing() {
+    m_force_parallel = true;
+}
+
+
 proc_pointer_sequence proc_reader::read_and_filter_eval(const handle& p_proc_handler, const proc_pointer_sequence& p_values, const proc_memblocks& p_blocks) const {
     switch (m_filter.get_value().get_type()) {
     case value::type::integral:

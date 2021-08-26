@@ -39,6 +39,7 @@ public:
 private:
     proc_info            m_proc_info;
     filter_equal         m_filter;
+    bool                 m_force_parallel = false;
 
     /* statistics */
     mutable std::uint64_t   m_bytes_to_read = 0;
@@ -74,6 +75,8 @@ public:
 
     void subscribe(const progress_observer& p_observer);
 
+    void force_parallel_processing();
+
 private:
     proc_pointer_sequence read_and_filter_eval(const handle& p_proc_handler, const proc_pointer_sequence& p_values, const proc_memblocks& p_memblocks) const;
 
@@ -93,26 +96,19 @@ private:
 
 private:
     template <typename TypeValue>
-    proc_pointer_sequence read_and_filter_whole_process(const handle& p_handle) const {
+    proc_pointer_sequence read_and_filter_whole_process(const handle& p_handle, const memblock_container& p_blocks) const {
         proc_pointer_sequence result;
 
-        MEMORY_BASIC_INFORMATION  memory_info;
-        std::uint64_t current_address = 0;
+        for (const auto& memory_info : p_blocks) {
+            std::shared_ptr<std::uint8_t[]> buffer(new std::uint8_t[memory_info.RegionSize]);
+            std::memset(buffer.get(), 0x00, memory_info.RegionSize);
 
-        while (VirtualQueryEx(p_handle(), (LPCVOID)current_address, &memory_info, sizeof(memory_info))) {
-            if ((memory_info.State == MEM_COMMIT) && ((memory_info.Type == MEM_MAPPED) || (memory_info.Type == MEM_PRIVATE))) {
-                std::shared_ptr<std::uint8_t[]> buffer(new std::uint8_t[memory_info.RegionSize]);
-                std::memset(buffer.get(), 0x00, memory_info.RegionSize);
+            std::uint64_t bytes_was_read = 0;
 
-                std::uint64_t bytes_was_read = 0;
-
-                if (ReadProcessMemory(p_handle(), (LPCVOID)memory_info.BaseAddress, buffer.get(), memory_info.RegionSize, (SIZE_T*)&bytes_was_read)) {
-                    extract_values<TypeValue>(buffer.get(), bytes_was_read, (std::uint64_t)memory_info.BaseAddress, m_filter, result);
-                    m_bytes_read += bytes_was_read;
-                }
+            if (ReadProcessMemory(p_handle(), (LPCVOID)memory_info.BaseAddress, buffer.get(), memory_info.RegionSize, (SIZE_T*)&bytes_was_read)) {
+                extract_values<TypeValue>(buffer.get(), bytes_was_read, (std::uint64_t)memory_info.BaseAddress, m_filter, result);
+                m_bytes_read += bytes_was_read;
             }
-
-            current_address += memory_info.RegionSize;
         }
 
         return result;
@@ -185,11 +181,11 @@ private:
     template <typename TypeValue>
     proc_pointer_sequence read_and_filter_with_type(const handle& p_handle, const proc_pointer_sequence& p_values, const proc_memblocks& p_blocks) const {
         if (p_values.empty()) {
-            if (p_blocks.total_size >= TRIGGER_CPU_PARALLEL) {
+            if (m_force_parallel || (p_blocks.total_size >= TRIGGER_CPU_PARALLEL)) {
                 return read_and_filter_whole_process_parallel_cpu<TypeValue>(p_handle, p_blocks.blocks);
             }
 
-            return read_and_filter_whole_process<TypeValue>(p_handle);
+            return read_and_filter_whole_process<TypeValue>(p_handle, p_blocks.blocks);
         }
 
         return read_and_filter_values<TypeValue>(p_handle, p_values);

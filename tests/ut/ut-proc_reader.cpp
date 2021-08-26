@@ -55,6 +55,30 @@ static void test_template_find_value(const value::type p_type, const std::size_t
 }
 
 
+TEST(ut_proc_reader, find_value_int8_in_stack) {
+    std::int8_t stack_value = -64;
+    test_template_find_value(value::type::integral, sizeof(decltype(stack_value)), &stack_value, [&stack_value]() { stack_value++; });
+}
+
+
+TEST(ut_proc_reader, find_value_int16_in_stack) {
+    std::int16_t stack_value = -4096;
+    test_template_find_value(value::type::integral, sizeof(decltype(stack_value)), &stack_value, [&stack_value]() { stack_value++; });
+}
+
+
+TEST(ut_proc_reader, find_value_int32_in_stack) {
+    std::int32_t stack_value = -95678;
+    test_template_find_value(value::type::integral, sizeof(decltype(stack_value)), &stack_value, [&stack_value]() { stack_value++; });
+}
+
+
+TEST(ut_proc_reader, find_value_int64_in_stack) {
+    std::int64_t stack_value = -3333333333;
+    test_template_find_value(value::type::integral, sizeof(decltype(stack_value)), &stack_value, [&stack_value]() { stack_value++; });
+}
+
+
 TEST(ut_proc_reader, find_value_uint8_in_stack) {
     std::uint8_t stack_value = 128;
     test_template_find_value(value::type::integral, sizeof(decltype(stack_value)), &stack_value, [&stack_value]() { stack_value++; });
