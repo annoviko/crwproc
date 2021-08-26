@@ -27,10 +27,7 @@ function Build-Application($Configuration) {
 function Build-UnitTests {
 	Announce-Step "Build Unit-Tests."
 	
-	cd $ProjectUtPath
-	msbuild /t:Restore
-	cd $SolutionPath
-	
+	nuget restore $ProjectUtPath
 	
 	msbuild $SolutionName /t:ut /p:configuration=release /p:platform=x64
 	if ($LastExitCode -ne 0) {
