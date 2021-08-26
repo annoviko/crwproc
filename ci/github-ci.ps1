@@ -3,7 +3,7 @@ New-Variable -Name SolutionPath -Value crwproc.sln -Option ReadOnly -Force
 
 
 function Announce-Step($Message) {
-	Write-Host "New Step. $Message" -ForegroundColor green
+	Write-Host "[New Step] $Message" -ForegroundColor green
 }
 
 
@@ -12,7 +12,7 @@ function Build-Application($Configuration) {
 	
 	msbuild $SolutionPath /t:crwproc /p:configuration=$Configuration /p:platform=x64
 	if ($LastExitCode -ne 0) {
-		Write-Error "Building crwproc failed with error code '$LastExitCode'."
+		Write-Error "[Error] Building crwproc failed with error code '$LastExitCode'."
 		Exit 1
 	}
 }
@@ -21,9 +21,11 @@ function Build-Application($Configuration) {
 function Build-UnitTests {
 	Announce-Step "Build Unit-Tests."
 	
-	msbuild $SolutionPath /t:ut /p:configuration=release /p:platform=x64 /restore
+	msbuild $SolutionPath /t:restore
+	#msbuild $SolutionPath\tests\ut\ut.vcxproj /t:Restore
+	msbuild $SolutionPath /t:ut /p:configuration=release /p:platform=x64
 	if ($LastExitCode -ne 0) {
-		Write-Error "Building unit-test project failed with error code '$LastExitCode'."
+		Write-Error "[Error] Building unit-test project failed with error code '$LastExitCode'."
 		Exit 1
 	}
 }
@@ -34,7 +36,7 @@ function Run-UnitTests {
 	
 	Start-Process -FilePath ".\x64\Release\ut.exe"
 	if ($LastExitCode -ne 0) {
-		Write-Error "Unit-testing failed with error code '$LastExitCode'."
+		Write-Error "[Error] Unit-testing failed with error code '$LastExitCode'."
 		Exit 1
 	}
 }
