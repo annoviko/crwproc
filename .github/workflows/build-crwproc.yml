@@ -19,4 +19,4 @@ jobs:
 
     - name: Run multi-line script
       shell: pwsh
-      run: ci/github-ci.sh test-crwproc-build
+      run: ci/github-ci.ps1 test-crwproc-build
