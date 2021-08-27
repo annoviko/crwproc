@@ -25,5 +25,16 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\lib\native\src\gmock\gmock-all.cc">
       <Filter>tests</Filter>
     </ClCompile>
+    <ClCompile Include="ut-value.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ut-value.h">
+      <Filter>tests</Filter>
+    </ClInclude>
+    <ClInclude Include="ut-proc_reader.h">
+      <Filter>tests</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

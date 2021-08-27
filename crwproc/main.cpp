@@ -14,5 +14,6 @@ int main() {
     catch (...) {
         std::cout << std::endl << "Unexpected unknown exception" << std::endl;
     }
+
     return 0;
 }

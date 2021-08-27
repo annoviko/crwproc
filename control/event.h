@@ -55,7 +55,7 @@ template <typename ... ExpectedEvents>
 bool is_event_type(const event& p_event) {
     return std::visit([](auto&& instance) {
         using actual_type = std::decay_t<decltype(instance)>;
-        return crwproc::is_any<actual_type, ExpectedEvents...>::value;
+        return crwproc::traits::is_any<actual_type, ExpectedEvents...>::value;
     }, p_event);
 }
 

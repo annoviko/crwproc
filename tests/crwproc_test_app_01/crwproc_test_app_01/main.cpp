@@ -10,7 +10,7 @@
 
 
 struct context {
-    std::int8_t m_int8 = 64;
+    std::int8_t m_int8 = -64;
     std::int16_t m_int16 = 1024;
     std::int32_t m_int32 = 1234567;
     std::int64_t m_int64 = 1234567890;

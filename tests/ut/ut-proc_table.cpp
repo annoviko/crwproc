@@ -25,3 +25,12 @@ TEST(ut_proc_table, find_myself) {
 
     ASSERT_EQ(1, collection.count(pid));
 }
+
+
+TEST(ut_proc_table, find_nothing) {
+    proc_collection collection = proc_table().get();
+
+    ASSERT_FALSE(collection.empty());
+    ASSERT_GT(collection.size(), 1);
+    ASSERT_EQ(0, collection.count(100));
+}

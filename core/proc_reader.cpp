@@ -133,7 +133,7 @@ proc_pointer proc_reader::read_value(const handle& p_proc_handler, const std::ui
         return { p_address, value{ } };
     }
 
-    return { p_address, value(p_value.get_type(), p_value.get_size(), buffer) };
+    return { p_address, value(p_value.get_type(), p_value.get_size(), p_value.is_signed(), buffer) };
 }
 
 

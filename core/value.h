@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <iostream>
 #include <string>
+#include <type_traits>
 #include <unordered_map>
 
 
@@ -20,8 +21,9 @@ public:
     static const std::unordered_map<type, std::string> TYPE_STR_DICT;
 
 private:
-    std::uint64_t       m_size = 0;
     type                m_type = value::type::invalid;
+    std::size_t         m_size = 0;
+    bool                m_signed = false;
     std::uint8_t        m_buffer[sizeof(std::uint64_t)];
 
     mutable bool        m_value_string_valid = false;
@@ -30,14 +32,16 @@ private:
 public:
     value() = default;
 
-    value(const value::type p_type, const std::size_t p_size, const void* p_buffer);
+    value(const value::type p_type, const std::size_t p_size, const bool p_signed, const void* p_buffer);
 
-    value(const type p_type, const std::size_t p_size, const std::string& p_value);
+    value(const value::type p_type, const std::size_t p_size, const bool p_signed, const std::string& p_value);
 
 public:
     bool is_valid() const;
 
-    std::uint64_t get_size() const;
+    bool is_signed() const;
+
+    std::size_t get_size() const;
 
     type get_type() const;
 
@@ -103,4 +107,33 @@ public:
     static type string_to_type(const std::string& p_type);
 
     static std::string type_to_string(const type p_type);
+
+    template <typename TypeValue>
+    static type get_type() {
+        if constexpr (std::is_integral<std::remove_reference<TypeValue>::type>::value) {
+            return type::integral;
+        }
+        else if constexpr (std::is_same<double, std::remove_reference<TypeValue>::type>::value) {
+            return type::doubling;
+        }
+        else if constexpr (std::is_same<float, std::remove_reference<TypeValue>::type>::value) {
+            return type::floating;
+        }
+        else {
+            static_assert(false);
+        }
+    }
+
+    template <typename TypeValue>
+    static value create(TypeValue p_value) {
+        if constexpr (std::is_signed<TypeValue>::value) {
+            return value(get_type<TypeValue>(), sizeof(TypeValue), true, &p_value);
+        }
+        else if constexpr (std::is_unsigned<TypeValue>::value) {
+            return value(get_type<TypeValue>(), sizeof(TypeValue), false, &p_value);
+        }
+        else {
+            static_assert(false);
+        }
+    }
 };

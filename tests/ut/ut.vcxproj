@@ -93,6 +93,11 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ut-proc_reader.cpp" />
     <ClCompile Include="ut-proc_table.cpp" />
+    <ClCompile Include="ut-value.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ut-proc_reader.h" />
+    <ClInclude Include="ut-value.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

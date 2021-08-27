@@ -12,6 +12,7 @@
 
 
 const std::size_t state_create_filter::INVALID_SIZE = std::numeric_limits<std::size_t>::max();
+const std::size_t state_create_filter::INVALID_SIGN = std::numeric_limits<std::size_t>::max();
 
 
 event state_create_filter::operator()(context& p_context) {
@@ -30,11 +31,19 @@ void state_create_filter::ask_filter(context& p_context) const {
     }
 
     std::size_t size = 0;
+    bool sign = true;
     if (type == value::type::integral) {
         size = ask_value_size();
         while (size == INVALID_SIZE) {
             size = ask_value_size();
         }
+
+        std::optional<bool> is_signed = ask_value_sign();
+        while (!is_signed.has_value()) {
+            is_signed = ask_value_sign();
+        }
+
+        sign = is_signed.value();
     }
 
     std::string value = filter_reader_value::read(p_context.get_filter());
@@ -42,7 +51,7 @@ void state_create_filter::ask_filter(context& p_context) const {
         value = filter_reader_value::read(p_context.get_filter());
     }
 
-    p_context.get_filter() = filter_equal({ type, size, value });
+    p_context.get_filter() = filter_equal({ type, size, sign, value });
 }
 
 
@@ -82,7 +91,7 @@ std::size_t state_create_filter::ask_value_size() const {
         std::cout << " " << i;
         console::set_defaut_color();
 
-        std::cout << " - " << options[i] << " byte(s)" << std::endl;
+        std::cout << " - " << options[i] << " byte" << (options[i] == 1 ? "" : "s") << std::endl;
     }
 
     std::cout << "Enter option number (0-" << options.size() - 1 << "): ";
@@ -94,4 +103,29 @@ std::size_t state_create_filter::ask_value_size() const {
     }
 
     return INVALID_SIZE;
+}
+
+
+std::optional<bool> state_create_filter::ask_value_sign() const {
+    std::cout << "Select integral value type:" << std::endl;
+
+    std::vector<std::string> options = { "signed", "unsigned" };
+    for (std::size_t i = 0; i < options.size(); i++) {
+        console::set_foreground_color(color::blue, true);
+        std::cout << " " << i;
+        console::set_defaut_color();
+
+        std::cout << " - " << options[i] << std::endl;
+    }
+
+
+    std::cout << "Enter option number (0-" << options.size() - 1 << "): ";
+    std::size_t index_option = asker::ask_index(options.size());
+
+    if (index_option != asker::INVALID_INDEX) {
+        std::cout << std::endl;
+        return (index_option == 0) ? true : false;
+    }
+
+    return { };
 }

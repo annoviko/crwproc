@@ -19,18 +19,20 @@ const std::unordered_map<value::type, std::string> value::TYPE_STR_DICT = {
 };
 
 
-value::value(const value::type p_type, const std::size_t p_size, const void* p_buffer) :
+value::value(const value::type p_type, const std::size_t p_size, const bool p_signed, const void* p_buffer) :
     m_type(p_type),
-    m_size(p_size)
+    m_size(p_size),
+    m_signed(p_signed)
 {
     std::memset((void*)m_buffer, 0x00, sizeof(m_buffer));
     std::memcpy((void*)m_buffer, (void*)p_buffer, p_size);
 }
 
 
-value::value(const value::type p_type, const std::size_t p_size, const std::string& p_value) :
+value::value(const value::type p_type, const std::size_t p_size, const bool p_signed, const std::string& p_value) :
     m_type(p_type),
     m_size(p_size),
+    m_signed(p_signed),
     m_value_string_valid(true)
 {
     std::memset((void*)m_buffer, 0x00, sizeof(m_buffer));
@@ -43,7 +45,12 @@ bool value::is_valid() const {
 }
 
 
-std::uint64_t value::get_size() const {
+bool value::is_signed() const {
+    return m_signed;
+}
+
+
+std::size_t value::get_size() const {
     return m_size;
 }
 
@@ -58,23 +65,23 @@ std::string value::evaluate_string_value() const {
     case value::type::integral:
         switch (m_size) {
         case 1:
-            return std::to_string(*((std::uint8_t*)m_buffer));
+            return m_signed ? std::to_string(*((std::int8_t*)m_buffer)) : std::to_string(*((std::uint8_t*)m_buffer));
 
         case 2:
-            return std::to_string(*((std::uint16_t*)m_buffer));
+            return m_signed ? std::to_string(*((std::int16_t*)m_buffer)) : std::to_string(*((std::uint16_t*)m_buffer));
 
         case 4:
-            return std::to_string(*((std::uint32_t*)m_buffer));
+            return m_signed ? std::to_string(*((std::int32_t*)m_buffer)) : std::to_string(*((std::uint32_t*)m_buffer));
 
         case 8:
-            return std::to_string(*((std::uint64_t*)m_buffer));
+            return m_signed ? std::to_string(*((std::int64_t*)m_buffer)) : std::to_string(*((std::uint64_t*)m_buffer));
         }
 
     case value::type::floating:
-        return std::to_string(*((float*)m_buffer));
+        return m_signed ? std::to_string(*((float*)m_buffer)) : std::to_string(*((float*)m_buffer));
 
     case value::type::doubling:
-        return std::to_string(*((double*)m_buffer));
+        return m_signed ? std::to_string(*((double*)m_buffer)) : std::to_string(*((double*)m_buffer));
     }
 
     return "invalid";
