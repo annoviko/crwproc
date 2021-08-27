@@ -18,7 +18,10 @@
 #include "core/proc_reader.h"
 
 
+std::uint8_t  value_uint8_in_data_segment = 128;
+std::uint16_t value_uint16_in_data_segment = 40000;
 std::uint32_t value_uint32_in_data_segment = 149567;
+std::uint64_t value_uint64_in_data_segment = 2000000000;
 
 
 using incrementor = std::function<void(void)>;
@@ -52,6 +55,26 @@ static void test_template_find_value(const value::type p_type, const std::size_t
 
     ASSERT_NE(-1, index_value);
     ASSERT_EQ((std::uint64_t)p_pointer, result[index_value].get_address());
+}
+
+
+TEST(ut_proc_reader, find_value_int8_in_data_segment) {
+    test_template_find_value(value::type::integral, sizeof(decltype(value_uint8_in_data_segment)), &value_uint8_in_data_segment, []() { value_uint8_in_data_segment++; });
+}
+
+
+TEST(ut_proc_reader, find_value_int16_in_data_segment) {
+    test_template_find_value(value::type::integral, sizeof(decltype(value_uint16_in_data_segment)), &value_uint16_in_data_segment, []() { value_uint16_in_data_segment++; });
+}
+
+
+TEST(ut_proc_reader, find_value_int32_in_data_segment) {
+    test_template_find_value(value::type::integral, sizeof(decltype(value_uint32_in_data_segment)), &value_uint32_in_data_segment, []() { value_uint32_in_data_segment++; });
+}
+
+
+TEST(ut_proc_reader, find_value_int64_in_data_segment) {
+    test_template_find_value(value::type::integral, sizeof(decltype(value_uint64_in_data_segment)), &value_uint64_in_data_segment, []() { value_uint64_in_data_segment++; });
 }
 
 

@@ -145,7 +145,7 @@ proc_reader::proc_memblocks proc_reader::get_proc_memblocks(const handle& p_hand
     proc_memblocks result;
 
     while (VirtualQueryEx(p_handle(), (LPCVOID)current_address, &memory_info, sizeof(memory_info))) {
-        if ((memory_info.State == MEM_COMMIT) && ((memory_info.Type == MEM_MAPPED) || (memory_info.Type == MEM_PRIVATE))) {
+        if (memory_info.State == MEM_COMMIT) {
             result.total_size += memory_info.RegionSize;
             result.blocks.push_back(memory_info);
         }
