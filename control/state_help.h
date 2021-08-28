@@ -7,9 +7,6 @@
 
 
 class state_help : public state_base {
-private:
-    static std::size_t LONGEST_COMMAND_NAME;
-
 public:
     event operator()(context& p_context);
 

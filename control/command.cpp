@@ -56,6 +56,14 @@ const std::unordered_map<std::string, std::vector<std::string>> command::EXAMPLE
 };
 
 
+const command::description_dict& command::get_description() {
+    return DESCRIPTION;
+}
+
+
+const command::example_dict& command::get_examples() {
+    return EXAMPLES;
+}
 
 
 event command::to_event(const std::string& p_command) {

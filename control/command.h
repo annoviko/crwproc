@@ -9,6 +9,10 @@
 
 class command {
 public:
+    using description_dict = std::unordered_map<std::string, std::string>;
+    using example_dict = std::unordered_map<std::string, std::vector<std::string>>;
+
+public:
     class name {
     private:
         name() = delete;
@@ -30,13 +34,16 @@ public:
 private:
     static const std::unordered_map<std::string, event> COMMANDS;
 
-public:
     static const std::unordered_map<std::string, std::string> DESCRIPTION;
 
     static const std::unordered_map<std::string, std::vector<std::string>> EXAMPLES;
 
 public:
     static event to_event(const std::string& p_command);
+
+    static const description_dict& get_description();
+
+    static const example_dict& get_examples();
 };
 
 
