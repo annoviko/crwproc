@@ -28,12 +28,18 @@
     <ClCompile Include="ut-value.cpp">
       <Filter>tests</Filter>
     </ClCompile>
+    <ClCompile Include="ut-proc_writer.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ut-value.h">
       <Filter>tests</Filter>
     </ClInclude>
     <ClInclude Include="ut-proc_reader.h">
+      <Filter>tests</Filter>
+    </ClInclude>
+    <ClInclude Include="ut-proc_writer.h">
       <Filter>tests</Filter>
     </ClInclude>
   </ItemGroup>

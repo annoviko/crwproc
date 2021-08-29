@@ -15,8 +15,8 @@
 #include <tlhelp32.h>
 
 #include "filter_equal.h"
-#include "handle.h"
 #include "parallel.h"
+#include "proc_handle.h"
 #include "proc_pointer.h"
 #include "proc_info.h"
 
@@ -78,13 +78,13 @@ public:
     void force_parallel_processing();
 
 private:
-    proc_pointer_sequence read_and_filter_eval(const handle& p_proc_handler, const proc_pointer_sequence& p_values, const proc_memblocks& p_memblocks) const;
+    proc_pointer_sequence read_and_filter_eval(const proc_handle& p_proc_handler, const proc_pointer_sequence& p_values, const proc_memblocks& p_memblocks) const;
 
     std::uint64_t get_proc_size(const std::uint64_t p_pid) const;
 
-    proc_pointer read_value(const handle& p_proc_handler, const std::uint64_t p_address, const value& p_value) const;
+    proc_pointer read_value(const proc_handle& p_proc_handler, const std::uint64_t p_address, const value& p_value) const;
 
-    proc_memblocks get_proc_memblocks(const handle& proc_handler) const;
+    proc_memblocks get_proc_memblocks(const proc_handle& proc_handler) const;
 
     std::uint64_t get_progress() const;
 
@@ -96,7 +96,7 @@ private:
 
 private:
     template <typename TypeValue>
-    proc_pointer_sequence read_and_filter_whole_process(const handle& p_handle, const memblock_container& p_blocks) const {
+    proc_pointer_sequence read_and_filter_whole_process(const proc_handle& p_handle, const memblock_container& p_blocks) const {
         proc_pointer_sequence result;
 
         for (const auto& memory_info : p_blocks) {
@@ -116,7 +116,7 @@ private:
 
 
     template <typename TypeValue>
-    proc_pointer_sequence read_and_filter_whole_process_parallel_cpu(const handle& p_handle, const memblock_container& p_blocks) const {
+    proc_pointer_sequence read_and_filter_whole_process_parallel_cpu(const proc_handle& p_handle, const memblock_container& p_blocks) const {
         proc_pointer_sequence total_result;
         std::vector<proc_pointer_sequence> partial_results(crwproc::parallel::get_amount_threads());
 
@@ -151,7 +151,7 @@ private:
 
 
     template <typename TypeValue>
-    proc_pointer_sequence read_and_filter_values(const handle& p_handle, const proc_pointer_sequence& p_values) const {
+    proc_pointer_sequence read_and_filter_values(const proc_handle& p_handle, const proc_pointer_sequence& p_values) const {
         proc_pointer_sequence result;
 
         for (const auto& pointer : p_values) {
@@ -179,7 +179,7 @@ private:
 
 
     template <typename TypeValue>
-    proc_pointer_sequence read_and_filter_with_type(const handle& p_handle, const proc_pointer_sequence& p_values, const proc_memblocks& p_blocks) const {
+    proc_pointer_sequence read_and_filter_with_type(const proc_handle& p_handle, const proc_pointer_sequence& p_values, const proc_memblocks& p_blocks) const {
         if (p_values.empty()) {
             if (m_force_parallel || (p_blocks.total_size >= TRIGGER_CPU_PARALLEL)) {
                 return read_and_filter_whole_process_parallel_cpu<TypeValue>(p_handle, p_blocks.blocks);

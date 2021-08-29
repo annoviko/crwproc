@@ -17,7 +17,7 @@
     <ClInclude Include="filter_equal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="handle.h">
+    <ClInclude Include="proc_handle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="parallel.h">
@@ -52,7 +52,7 @@
     <ClCompile Include="filter_equal.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="handle.cpp">
+    <ClCompile Include="proc_handle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="parallel.cpp">

@@ -86,7 +86,7 @@
   <ItemGroup>
     <ClInclude Include="console.h" />
     <ClInclude Include="filter_equal.h" />
-    <ClInclude Include="handle.h" />
+    <ClInclude Include="proc_handle.h" />
     <ClInclude Include="parallel.h" />
     <ClInclude Include="proc_info.h" />
     <ClInclude Include="proc_pointer.h" />
@@ -99,7 +99,7 @@
   <ItemGroup>
     <ClCompile Include="console.cpp" />
     <ClCompile Include="filter_equal.cpp" />
-    <ClCompile Include="handle.cpp" />
+    <ClCompile Include="proc_handle.cpp" />
     <ClCompile Include="parallel.cpp" />
     <ClCompile Include="proc_info.cpp" />
     <ClCompile Include="proc_pointer.cpp" />

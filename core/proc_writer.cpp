@@ -5,7 +5,7 @@
 
 #include <windows.h>
 
-#include "handle.h"
+#include "proc_handle.h"
 
 
 proc_writer::proc_writer(const proc_info& p_info) :
@@ -14,7 +14,7 @@ proc_writer::proc_writer(const proc_info& p_info) :
 
 
 bool proc_writer::write(const proc_pointer& p_pointer) const {
-    handle proc_handler = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_WRITE, FALSE, static_cast<DWORD>(m_proc_info.pid()));
+    proc_handle proc_handler(m_proc_info.pid(), proc_handle::access::write);
 
     switch (p_pointer.get_value().get_type()) {
     case value::type::integral:
@@ -31,7 +31,7 @@ bool proc_writer::write(const proc_pointer& p_pointer) const {
 }
 
 
-bool proc_writer::write_integral(const handle& p_handle, const proc_pointer& p_pointer) const {
+bool proc_writer::write_integral(const proc_handle& p_handle, const proc_pointer& p_pointer) const {
     switch (p_pointer.get_value().get_size()) {
     case 1:
         return write_value(p_handle, p_pointer.get_address(), p_pointer.get_value().get<std::uint8_t>());

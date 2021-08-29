@@ -5,12 +5,12 @@
 #include <windows.h>
 #include <psapi.h>
 
-#include "handle.h"
+#include "proc_handle.h"
 
 
 proc_info proc_table::get_info(const std::size_t p_pid) const
 {
-    handle proc_handler = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, static_cast<DWORD>(p_pid));
+    proc_handle proc_handler(p_pid, proc_handle::access::read);
     if (!proc_handler()) {
         return proc_info();
     }

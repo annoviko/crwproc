@@ -16,7 +16,7 @@ proc_reader::~proc_reader() {
 
 
 proc_pointer_sequence proc_reader::read_and_filter() const {
-    handle proc_handler = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, static_cast<DWORD>(m_proc_info.pid()));
+    proc_handle proc_handler(m_proc_info.pid(), proc_handle::access::read);
 
     proc_memblocks blocks = get_proc_memblocks(proc_handler);
 
@@ -36,7 +36,7 @@ proc_pointer_sequence proc_reader::read_and_filter(const proc_pointer_sequence& 
     m_bytes_read = 0;
     run_notifier();
 
-    handle proc_handler = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, static_cast<DWORD>(m_proc_info.pid()));
+    proc_handle proc_handler(m_proc_info.pid(), proc_handle::access::read);
     proc_pointer_sequence result = read_and_filter_eval(proc_handler, p_values, { });
 
     stop_notifier();
@@ -49,7 +49,7 @@ void proc_reader::force_parallel_processing() {
 }
 
 
-proc_pointer_sequence proc_reader::read_and_filter_eval(const handle& p_proc_handler, const proc_pointer_sequence& p_values, const proc_memblocks& p_blocks) const {
+proc_pointer_sequence proc_reader::read_and_filter_eval(const proc_handle& p_proc_handler, const proc_pointer_sequence& p_values, const proc_memblocks& p_blocks) const {
     switch (m_filter.get_value().get_type()) {
     case value::type::integral:
         switch (m_filter.get_value().get_size()) {
@@ -81,12 +81,11 @@ proc_pointer_sequence proc_reader::read_and_filter_eval(const handle& p_proc_han
 }
 
 
-
 proc_pointer_sequence proc_reader::read(const proc_pointer_sequence& p_values) const {
     proc_pointer_sequence result;
     result.reserve(p_values.size());
 
-    handle proc_handler = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, static_cast<DWORD>(m_proc_info.pid()));
+    proc_handle proc_handler(m_proc_info.pid(), proc_handle::access::read);
 
     for (const auto& pointer : p_values) {
         proc_pointer new_pointer = read_value(proc_handler, pointer.get_address(), pointer.get_value());
@@ -122,7 +121,7 @@ std::uint64_t proc_reader::get_proc_size(const std::uint64_t p_pid) const {
 }
 
 
-proc_pointer proc_reader::read_value(const handle& p_proc_handler, const std::uint64_t p_address, const value& p_value) const {
+proc_pointer proc_reader::read_value(const proc_handle& p_proc_handler, const std::uint64_t p_address, const value& p_value) const {
     std::uint8_t buffer[READ_VALUE_SIZE];
     std::memset(buffer, 0x00, READ_VALUE_SIZE);
 
@@ -137,7 +136,7 @@ proc_pointer proc_reader::read_value(const handle& p_proc_handler, const std::ui
 }
 
 
-proc_reader::proc_memblocks proc_reader::get_proc_memblocks(const handle& p_handle) const {
+proc_reader::proc_memblocks proc_reader::get_proc_memblocks(const proc_handle& p_handle) const {
     MEMORY_BASIC_INFORMATION  memory_info;
 
     std::uint64_t current_address = 0;
