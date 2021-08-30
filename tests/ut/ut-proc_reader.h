@@ -48,8 +48,8 @@ void test_template_find_value(TypeValue* p_value, const changer& p_func) {
     ASSERT_FALSE(result.empty());
 
     /* In case of heap the operation system might not be ready to provide information about memory block allocations, need to wait when these information is going to available. */
-    const static std::size_t attempts = 10;
-    for (std::size_t i = 0; i < 10 && !contains_address(result, p_value); i++) {
+    const static std::size_t attempts = 20;
+    for (std::size_t i = 0; i < attempts && !contains_address(result, p_value); i++) {
         result = proc_reader(info, filter).read_and_filter();
     }
 
