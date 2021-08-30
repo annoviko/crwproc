@@ -1,3 +1,11 @@
+/*!
+
+@authors Andrei Novikov (spb.andr@yandex.ru)
+@copyright BSD-3-Clause
+
+*/
+
+
 #include "state_edit.h"
 
 #include <iomanip>
@@ -21,8 +29,11 @@ event state_edit::operator()(context& p_context) {
 
 
 void state_edit::show_table(context& p_context) {
-    proc_reader reader(p_context.get_proc_info(), p_context.get_filter());
-    p_context.get_user_table() = reader.read(p_context.get_user_table());
+    std::visit([&p_context](auto&& filter) {
+        proc_reader reader(p_context.get_proc_info(), filter);
+        p_context.get_user_table() = reader.read(p_context.get_user_table());
+    }, p_context.get_filter());
+
 
     for (std::size_t i = 0; i < p_context.get_user_table().size(); i++) {
         proc_pointer& pointer = p_context.get_user_table().at(i);

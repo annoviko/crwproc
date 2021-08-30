@@ -14,14 +14,9 @@
 #include "value.h"
 
 
-class filter_equal {
-private:
-    value       m_value;
-
+class filter_none {
 public:
-    filter_equal() = default;
-
-    filter_equal(const value& p_value);
+    filter_none() = default;
 
 public: /* template filter contract section */
     bool is_valid() const;
@@ -34,15 +29,9 @@ public: /* template filter contract section */
 
     template <typename TypeValue>
     bool is_satisfying(TypeValue p_value) const {
-        return m_value.get<TypeValue>() == p_value;
-    }
-
-public: /* class specific section */
-    template <typename TypeValue>
-    void set_value(TypeValue p_value) {
-        m_value.set(p_value);
+        return true;
     }
 
 public:
-    friend std::ostream& operator<<(std::ostream& p_stream, const filter_equal& p_info);
+    friend std::ostream& operator<<(std::ostream& p_stream, const filter_none& p_info);
 };

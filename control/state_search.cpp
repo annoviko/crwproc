@@ -1,3 +1,11 @@
+/*!
+
+@authors Andrei Novikov (spb.andr@yandex.ru)
+@copyright BSD-3-Clause
+
+*/
+
+
 #include "state_search.h"
 
 #include <chrono>
@@ -14,32 +22,34 @@
 event state_search::operator()(context& p_context) {
     intro_builder::show(p_context, "Run search process, please wait...");
 
-    std::size_t reported_progress = 0;
-    proc_reader reader(p_context.get_proc_info(), p_context.get_filter());
-    auto observer = [&reported_progress](std::size_t p_progress) {
-        std::size_t bars_to_display = (p_progress - reported_progress) / 2;
-        if (bars_to_display != 0) {
-            reported_progress = p_progress;
-            std::cout << std::string(bars_to_display, char(219));
+    std::visit([&p_context](auto&& filter) {
+        std::size_t reported_progress = 0;
+        proc_reader reader(p_context.get_proc_info(), filter);
+        auto observer = [&reported_progress](std::size_t p_progress) {
+            std::size_t bars_to_display = (p_progress - reported_progress) / 2;
+            if (bars_to_display != 0) {
+                reported_progress = p_progress;
+                std::cout << std::string(bars_to_display, char(219));
+            }
+        };
+
+        reader.subscribe(observer);
+        std::cout << "Progress: ";
+
+        if (p_context.get_found_values().empty()) {
+            const auto start_time = std::chrono::system_clock::now();
+            p_context.get_found_values() = reader.read_and_filter();
+            const auto end_time = std::chrono::system_clock::now();
+
+            std::chrono::duration<double> processing_time = end_time - start_time;
+            std::cout << std::endl << "Processing time: " << processing_time.count() << " seconds.";
         }
-    };
+        else {
+            p_context.get_found_values() = reader.read_and_filter(p_context.get_found_values());
+        }
 
-    reader.subscribe(observer);
-    std::cout << "Progress: ";
-
-    if (p_context.get_found_values().empty()) {
-        const auto start_time = std::chrono::system_clock::now();
-        p_context.get_found_values() = reader.read_and_filter();
-        const auto end_time = std::chrono::system_clock::now();
-
-        std::chrono::duration<double> processing_time = end_time - start_time;
-        std::cout << std::endl << "Processing time: " << processing_time.count() << " seconds.";
-    }
-    else {
-        p_context.get_found_values() = reader.read_and_filter(p_context.get_found_values());
-    }
-
-    std::cout << std::endl;
+        std::cout << std::endl;
+    }, p_context.get_filter());
 
     if (p_context.get_found_values().empty()) {
         console::warning_and_wait_key("Nothing has been found, please change filter.");

@@ -1,3 +1,11 @@
+/*!
+
+@authors Andrei Novikov (spb.andr@yandex.ru)
+@copyright BSD-3-Clause
+
+*/
+
+
 #pragma once
 
 #include "context.h"
@@ -7,7 +15,4 @@
 class state_update_filter_value {
 public:
     event operator()(context& p_context);
-
-private:
-    std::string update_value(const filter_equal& p_filter) const;
 };

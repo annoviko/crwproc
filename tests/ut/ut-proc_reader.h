@@ -18,6 +18,7 @@
 
 #include <windows.h>
 
+#include "core/filter.h"
 #include "core/proc_table.h"
 #include "core/proc_reader.h"
 

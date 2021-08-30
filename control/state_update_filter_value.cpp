@@ -1,3 +1,11 @@
+/*!
+
+@authors Andrei Novikov (spb.andr@yandex.ru)
+@copyright BSD-3-Clause
+
+*/
+
+
 #include "state_update_filter_value.h"
 
 #include <iostream>
@@ -8,20 +16,11 @@
 
 
 event state_update_filter_value::operator()(context& p_context) {
-    intro_builder::show(p_context, "Update value for the current filter.");
+    intro_builder::show(p_context, "Update the current filter.");
 
-    const std::string value = update_value(p_context.get_filter());
-    p_context.get_filter().get_value().set(value);
-
-    return event_done{};
-}
-
-
-std::string state_update_filter_value::update_value(const filter_equal& p_filter) const {
-    std::string value = filter_reader_value::read(p_filter);
-    if (value.empty()) {
-        value = filter_reader_value::read(p_filter);
+    if (filter_reader_value::read(p_context.get_filter())) {
+        return event_done{};
     }
 
-    return value;
+    return event_error{};
 }

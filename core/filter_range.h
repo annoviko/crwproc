@@ -5,7 +5,6 @@
 
 */
 
-
 #pragma once
 
 #include <iostream>
@@ -14,14 +13,15 @@
 #include "value.h"
 
 
-class filter_equal {
+class filter_range {
 private:
-    value       m_value;
+    value       m_begin;
+    value       m_end;
 
 public:
-    filter_equal() = default;
+    filter_range() = default;
 
-    filter_equal(const value& p_value);
+    filter_range(const value& p_begin, const value& p_end);
 
 public: /* template filter contract section */
     bool is_valid() const;
@@ -34,15 +34,21 @@ public: /* template filter contract section */
 
     template <typename TypeValue>
     bool is_satisfying(TypeValue p_value) const {
-        return m_value.get<TypeValue>() == p_value;
+        return (p_value >= m_begin.get<TypeValue>()) && (p_value <= m_end.get<TypeValue>());
     }
 
 public: /* class specific section */
     template <typename TypeValue>
-    void set_value(TypeValue p_value) {
-        m_value.set(p_value);
+    void set_begin_value(TypeValue p_value) {
+        m_begin.set(p_value);
+    }
+
+    template <typename TypeValue>
+    void set_end_value(TypeValue p_value) {
+        m_end.set(p_value);
     }
 
 public:
-    friend std::ostream& operator<<(std::ostream& p_stream, const filter_equal& p_info);
+    friend std::ostream& operator<<(std::ostream& p_stream, const filter_range& p_info);
 };
+

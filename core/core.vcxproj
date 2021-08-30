@@ -85,7 +85,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="console.h" />
+    <ClInclude Include="filter.h" />
     <ClInclude Include="filter_equal.h" />
+    <ClInclude Include="filter_none.h" />
+    <ClInclude Include="filter_range.h" />
     <ClInclude Include="proc_handle.h" />
     <ClInclude Include="parallel.h" />
     <ClInclude Include="proc_info.h" />
@@ -98,7 +101,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="console.cpp" />
+    <ClCompile Include="filter.cpp" />
     <ClCompile Include="filter_equal.cpp" />
+    <ClCompile Include="filter_none.cpp" />
+    <ClCompile Include="filter_range.cpp" />
     <ClCompile Include="proc_handle.cpp" />
     <ClCompile Include="parallel.cpp" />
     <ClCompile Include="proc_info.cpp" />

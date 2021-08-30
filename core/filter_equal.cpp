@@ -1,3 +1,11 @@
+/*!
+
+@authors Andrei Novikov (spb.andr@yandex.ru)
+@copyright BSD-3-Clause
+
+*/
+
+
 #include "filter_equal.h"
 
 
@@ -11,17 +19,22 @@ bool filter_equal::is_valid() const {
 }
 
 
-value& filter_equal::get_value() {
-    return m_value;
+bool filter_equal::is_value_signed() const {
+    return m_value.is_signed();
 }
 
 
-const value& filter_equal::get_value() const {
-    return m_value;
+value::type filter_equal::get_value_type() const {
+    return m_value.get_type();
+}
+
+
+std::size_t filter_equal::get_value_size() const {
+    return m_value.get_size();
 }
 
 
 std::ostream& operator<<(std::ostream& p_stream, const filter_equal& p_info) {
-    p_stream << "FilterEqual (" << p_info.get_value() << ")";
+    p_stream << "FilterEqual (" << p_info.m_value << ")";
     return p_stream;
 }

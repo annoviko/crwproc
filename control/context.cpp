@@ -1,3 +1,11 @@
+/*!
+
+@authors Andrei Novikov (spb.andr@yandex.ru)
+@copyright BSD-3-Clause
+
+*/
+
+
 #include "context.h"
 
 
@@ -11,12 +19,12 @@ const proc_info& context::get_proc_info() const {
 }
 
 
-filter_equal& context::get_filter() {
+filter& context::get_filter() {
     return m_filter;
 }
 
 
-const filter_equal& context::get_filter() const {
+const filter& context::get_filter() const {
     return m_filter;
 }
 
@@ -46,9 +54,7 @@ std::ostream& operator<<(std::ostream& p_stream, const context& p_info) {
         std::cout << p_info.get_proc_info() << std::endl;
     }
 
-    if (p_info.get_filter().is_valid()) {
-        std::cout << p_info.get_filter() << std::endl;
-    }
+    std::cout << p_info.get_filter() << std::endl;
 
     std::cout << "Found values: " << p_info.get_found_values().size() << std::endl;
     std::cout << "Saved values: " << p_info.get_user_table().size() << std::endl;

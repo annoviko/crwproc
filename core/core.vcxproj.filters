@@ -44,6 +44,15 @@
     <ClInclude Include="value.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="filter_range.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="filter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="filter_none.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="console.cpp">
@@ -74,6 +83,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="value.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="filter_range.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="filter_none.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="filter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

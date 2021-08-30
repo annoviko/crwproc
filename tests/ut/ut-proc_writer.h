@@ -10,6 +10,7 @@
 
 #include <gtest/gtest.h>
 
+#include "core/filter.h"
 #include "core/proc_reader.h"
 #include "core/proc_table.h"
 #include "core/proc_writer.h"
@@ -26,7 +27,7 @@ void test_template_write_value(void* p_address, TypeValue p_next_value) {
 
     proc_writer(collection[pid]).write(pointer);
 
-    proc_pointer_sequence proc_ptrs = proc_reader(collection[pid], {}).read({ pointer });
+    proc_pointer_sequence proc_ptrs = proc_reader(collection[pid], filter_none{ }).read({ pointer });
 
     ASSERT_FALSE(proc_ptrs.empty());
     ASSERT_EQ(1, proc_ptrs.size());

@@ -1,6 +1,14 @@
+/*!
+
+@authors Andrei Novikov (spb.andr@yandex.ru)
+@copyright BSD-3-Clause
+
+*/
+
+
 #pragma once
 
-#include "core/filter_equal.h"
+#include "core/filter.h"
 #include "core/proc_pointer.h"
 #include "core/proc_info.h"
 
@@ -8,7 +16,7 @@
 class context {
 private:
     proc_info               m_proc;
-    filter_equal            m_filter;
+    filter                  m_filter = filter_none{ };
     proc_pointer_sequence   m_found_values;
     proc_pointer_sequence   m_user_table;
 
@@ -17,9 +25,9 @@ public:
 
     const proc_info& get_proc_info() const;
 
-    const filter_equal& get_filter() const;
+    const filter& get_filter() const;
 
-    filter_equal& get_filter();
+    filter& get_filter();
 
     proc_pointer_sequence& get_found_values();
 
