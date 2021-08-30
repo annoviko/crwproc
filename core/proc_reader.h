@@ -119,9 +119,8 @@ public:
         proc_handle proc_handler(m_proc_info.pid(), proc_handle::access::read);
 
         for (const auto& pointer : p_values) {
-            proc_pointer new_pointer = read_value(proc_handler, pointer.get_address(), pointer.get_value());
-
-            result.push_back(read_value(proc_handler, pointer.get_address(), pointer.get_value()));
+            const proc_pointer new_pointer = read_value(proc_handler, pointer.get_address(), pointer.get_value());
+            result.push_back(new_pointer);
         }
 
         return result;

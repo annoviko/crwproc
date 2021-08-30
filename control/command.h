@@ -34,6 +34,7 @@ public:
         static constexpr char show[]            = "\\show";
         static constexpr char edit[]            = "\\edit";
         static constexpr char set[]             = "\\set";
+        static constexpr char address[]         = "\\address";
         static constexpr char refresh[]         = "\\refresh";
         static constexpr char remove[]          = "\\remove";
         static constexpr char help[]            = "\\help";

@@ -19,7 +19,7 @@ event state_base::ask_next_action(context& p_context) {
     std::cin >> user_input;
 
     event action = command::to_event(user_input);
-    std::visit([&user_input, &p_context, &action](auto&& instance) {
+    std::visit([this, &user_input, &p_context, &action](auto&& instance) {
         using EventType = std::decay_t<decltype(instance)>;
         if constexpr (std::is_same_v<EventType, event_error>) {
             console::error_and_wait_key("Error: unknown command is specified '" + user_input + "'.");

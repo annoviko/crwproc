@@ -22,6 +22,7 @@ const std::unordered_map<std::string, event> command::COMMANDS = {
     { command::name::show,              event_show()     },
     { command::name::edit,              event_edit()     },
     { command::name::set,               event_set()      },
+    { command::name::address,           event_address()  },
     { command::name::refresh,           event_refresh()  },
     { command::name::remove,            event_remove()   },
     { command::name::help,              event_help()     }
@@ -33,11 +34,12 @@ const std::unordered_map<std::string, std::string> command::DESCRIPTION = {
     { command::name::choose,            "Open a menu where process (application) can be chosen for processing." },
     { command::name::create_filter,     "Open a menu to create a new filter (table of variables is cleaned)." },
     { command::name::update_filter,     "Open a menu to update current filter." },
-    { command::name::add,               "Add variable with a specific index from the table of found variables to the edit table.\nSyntax: \\add <variable_index>" },
+    { command::name::add,               "Add variable with a specific index from a current table to the edit table.\nSyntax: \\add <variable_index>" },
     { command::name::show,              "Open a menu where found variables are displayed." },
     { command::name::edit,              "Open a menu where variables to edit are displayed." },
     { command::name::set,               "Set new value for a specific variable in the edit table.\nSyntax: \\set <variable_index> <value>" },
-    { command::name::refresh,           "Refresh current view."  },
+    { command::name::address,           "Open a menu to read a value from the specific address." },
+    { command::name::refresh,           "Refresh current view." },
     { command::name::remove,            "Remove a variable with a specific index from a table.\nSyntax: \\remove <variable_index>" },
     { command::name::help,              "Show help information: existed commands with examples." }
 };

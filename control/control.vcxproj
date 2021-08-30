@@ -107,6 +107,7 @@
     <ClCompile Include="context.cpp" />
     <ClCompile Include="filter_reader_value.cpp" />
     <ClCompile Include="intro_builder.cpp" />
+    <ClCompile Include="state_address.cpp" />
     <ClCompile Include="state_base.cpp" />
     <ClCompile Include="state_choose_proc.cpp" />
     <ClCompile Include="state_create_filter.cpp" />
@@ -127,6 +128,7 @@
     <ClInclude Include="filter_reader_value.h" />
     <ClInclude Include="intro_builder.h" />
     <ClInclude Include="state.h" />
+    <ClInclude Include="state_address.h" />
     <ClInclude Include="state_base.h" />
     <ClInclude Include="state_choose_proc.h" />
     <ClInclude Include="state_create_filter.h" />

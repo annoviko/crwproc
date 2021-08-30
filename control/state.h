@@ -10,6 +10,7 @@
 
 #include <variant>
 
+#include "state_address.h"
 #include "state_choose_proc.h"
 #include "state_create_filter.h"
 #include "state_search.h"
@@ -21,6 +22,7 @@
 
 
 using state = std::variant<
+    state_address,
     state_choose_proc,
     state_create_filter,
     state_search,

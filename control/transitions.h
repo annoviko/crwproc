@@ -24,6 +24,9 @@ public:
     state operator()(TypeState& state, event_refresh&) { return state; }
 
     template <typename TypeState>
+    state operator()(TypeState& state, event_address&) { return state_address{}; }
+
+    template <typename TypeState>
     state operator()(TypeState& state, event_filter&) { return state_create_filter{}; }
 
     template <typename TypeState>
