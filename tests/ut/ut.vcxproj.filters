@@ -31,6 +31,9 @@
     <ClCompile Include="ut-proc_writer.cpp">
       <Filter>tests</Filter>
     </ClCompile>
+    <ClCompile Include="ut-asker.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ut-value.h">
