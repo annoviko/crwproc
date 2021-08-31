@@ -89,3 +89,12 @@ event command::to_event(const std::string& p_command) {
 
     return iter->second;
 }
+
+
+void command::throw_if_command(const std::string& p_user_input) {
+    event action = command::to_event(p_user_input);
+    if (!is_event_type<event_error>(action)) {
+        throw action;
+    }
+}
+

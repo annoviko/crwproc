@@ -14,13 +14,22 @@
 
 #include "core/console.h"
 
+#include "command.h"
+
 
 std::size_t asker::ask_index(const std::size_t p_limit, const action_index& p_action) {
-    std::size_t index_value = 0;
-    std::cin >> index_value;
+    std::string user_input;
+    std::cin >> user_input;
 
-    if (std::cin.fail()) {
-        console::error_and_wait_key("Error: integer value is expected.");
+    command::throw_if_command(user_input);
+
+    std::size_t index_value = 0;
+
+    try {
+        index_value = std::stoull(user_input);
+    }
+    catch (std::exception&) {
+        console::error_and_wait_key("Error: unsigned integer value is expected.");
         std::cin.clear();
         std::cin.ignore(256, '\n');
         return INVALID_INDEX;
@@ -146,6 +155,8 @@ std::optional<uint64_t> asker::ask_address() {
 
     std::string string_address;
     std::cin >> string_address;
+
+    command::throw_if_command(string_address);
 
     std::stringstream stream;
     stream << std::hex << string_address;

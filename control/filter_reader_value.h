@@ -11,9 +11,10 @@
 
 #include <string>
 
+#include "core/console.h"
 #include "core/filter.h"
 
-#include "core/console.h"
+#include "command.h"
 
 
 class filter_reader_value {
@@ -94,6 +95,8 @@ private:
 
         std::string value;
         std::cin >> value;
+
+        command::throw_if_command(value);
 
         try {
             switch (p_filter.get_value_type()) {

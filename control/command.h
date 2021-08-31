@@ -53,6 +53,8 @@ public:
     static const description_dict& get_description();
 
     static const example_dict& get_examples();
+
+    static void throw_if_command(const std::string& p_user_input);
 };
 
 
