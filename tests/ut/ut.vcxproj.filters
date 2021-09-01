@@ -5,6 +5,9 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="utils">
+      <UniqueIdentifier>{4ff4179b-5c25-498a-96b0-42e1e1d6037e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -34,6 +37,15 @@
     <ClCompile Include="ut-asker.cpp">
       <Filter>tests</Filter>
     </ClCompile>
+    <ClCompile Include="ut-filter_more.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="utils.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="ut-filter_less.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ut-value.h">
@@ -44,6 +56,9 @@
     </ClInclude>
     <ClInclude Include="ut-proc_writer.h">
       <Filter>tests</Filter>
+    </ClInclude>
+    <ClInclude Include="utils.h">
+      <Filter>utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

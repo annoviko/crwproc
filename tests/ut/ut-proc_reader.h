@@ -22,27 +22,18 @@
 #include "core/proc_table.h"
 #include "core/proc_reader.h"
 
+#include "utils.h"
+
 
 using changer = std::function<void(void)>;
 
 
-bool contains_address(const proc_pointer_sequence& p_seq, const void* p_address) {
-    for (const auto& p_entry : p_seq) {
-        if ((std::uint64_t) p_address == p_entry.get_address()) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-
-template <typename TypeValue>
+template <typename TypeFilter, typename TypeValue>
 void test_template_find_value(TypeValue* p_value, const changer& p_func) {
     std::size_t pid = static_cast<std::size_t>(GetCurrentProcessId());
     proc_info info = proc_table().get().at(pid);
 
-    filter_equal filter(value::create(*p_value));
+    TypeFilter filter(value::create(*p_value));
     auto result = proc_reader(info, filter).read_and_filter();
 
     ASSERT_FALSE(result.empty());
@@ -58,7 +49,7 @@ void test_template_find_value(TypeValue* p_value, const changer& p_func) {
     const static std::size_t attempts_limit = 10;
     for (std::size_t i = 0; (i < attempts_limit) && (result.size() > 1); i++) {
         p_func();
-        filter_equal updated_filter = filter_equal(value::create(*p_value));
+        TypeFilter updated_filter = TypeFilter(value::create(*p_value));
         result = proc_reader(info, updated_filter).read_and_filter(result);
     }
 
