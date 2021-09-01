@@ -20,7 +20,9 @@
 
 const std::unordered_map<state_create_filter::filter_type, std::string> state_create_filter::FILTER_TYPE_DICT = {
     { state_create_filter::filter_type::equal, "Filter Equal - to search exact value" },
-    { state_create_filter::filter_type::range, "Filter Range - to search value in range (from 'A' to 'B')" }
+    { state_create_filter::filter_type::range, "Filter Range - to search value in range (from 'A' to 'B')" },
+    { state_create_filter::filter_type::more, "Filter More - to search value that are greater than before (x[t] > x[t-1])" },
+    { state_create_filter::filter_type::less, "Filter Less - to search value that are smaller than before (x[t] < x[t-1])" }
 };
 
 
@@ -46,6 +48,14 @@ void state_create_filter::create_filter(context& p_context) const {
 
     case filter_type::range:
         ask_filter<filter_range>(p_context);
+        break;
+
+    case filter_type::more:
+        ask_filter<filter_more>(p_context);
+        break;
+
+    case filter_type::less:
+        ask_filter<filter_less>(p_context);
         break;
 
     default:

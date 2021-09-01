@@ -8,18 +8,16 @@
 
 #include "filter_reader_value.h"
 
-#include <iostream>
-
-#include "core/console.h"
-#include "core/traits.h"
-
 
 bool filter_reader_value::read(filter& p_filter) {
     bool reading_result = false;
-    std::visit([&reading_result](auto&& instance) {
+    std::visit([&reading_result, &p_filter](auto&& instance) {
         using FilterType = std::decay_t<decltype(instance)>;
         if constexpr (crwproc::traits::is_any<FilterType, filter_equal, filter_range>::value) {
-            reading_result = read(instance);
+            reading_result = read_filter(instance);
+        }
+        else if constexpr (crwproc::traits::is_any<FilterType, filter_more, filter_less>::value) {
+            reading_result = read_filter<FilterType>(p_filter);
         }
     }, p_filter);
 
@@ -27,7 +25,7 @@ bool filter_reader_value::read(filter& p_filter) {
 }
 
 
-bool filter_reader_value::read(filter_equal& p_filter) {
+bool filter_reader_value::read_filter(filter_equal& p_filter) {
     const std::string value = ask_value("Enter value that is going to be searched in the process: ", p_filter);
     if (value.empty()) {
         return false;
@@ -39,7 +37,7 @@ bool filter_reader_value::read(filter_equal& p_filter) {
 }
 
 
-bool filter_reader_value::read(filter_range& p_filter) {
+bool filter_reader_value::read_filter(filter_range& p_filter) {
     std::string value = ask_value("Enter 'from' value for the range to search in the process: ", p_filter);
     if (value.empty()) {
         return false;

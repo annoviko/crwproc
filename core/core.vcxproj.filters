@@ -53,6 +53,12 @@
     <ClInclude Include="filter_none.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="filter_more.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="filter_less.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="console.cpp">
@@ -73,9 +79,6 @@
     <ClCompile Include="proc_pointer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="proc_reader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="proc_table.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -92,6 +95,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="filter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="filter_more.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="filter_less.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -9,19 +9,68 @@
 #pragma once
 
 
+#include <iostream>
 #include <string>
+#include <vector>
 
 #include "core/console.h"
 #include "core/filter.h"
+#include "core/traits.h"
+#include "core/value.h"
 
+#include "asker.h"
 #include "command.h"
 
 
 class filter_reader_value {
 public:
     static bool read(filter& p_filter);
-    static bool read(filter_equal& p_filter);
-    static bool read(filter_range& p_filter);
+
+private:
+    static bool read_filter(filter_equal& p_filter);
+    static bool read_filter(filter_range& p_filter);
+
+    template <typename TypeFilter>
+    static typename std::enable_if<crwproc::traits::is_any<TypeFilter, filter_more, filter_less>::value, bool>::type
+    read_filter(filter& p_filter) {
+        const static std::vector<std::string> directions = { "More (x[t] > x[t-1]", "Less (x[t] < x[t-1]" };
+
+        std::cout << "Choose filtering type: " << std::endl;
+        for (std::size_t i = 0; i < directions.size(); i++) {
+            console::set_foreground_color(color::blue, true);
+            std::cout << " " << i;
+            console::set_defaut_color();
+
+            std::cout << " - " << directions[i] << std::endl;
+        }
+
+        std::cout << "Enter option number (0-" << directions.size() - 1 << "): ";
+        std::size_t index_option = asker::ask_index(directions.size());
+        if (index_option == asker::INVALID_INDEX) {
+            return false;
+        }
+
+        value blank_value;
+        std::visit([&blank_value](auto&& instance) {
+            blank_value = value(instance.get_value_type(), instance.get_value_size(), instance.is_value_signed(), "0");
+        }, p_filter);
+
+        switch (index_option) {
+        case 0:
+            p_filter = filter_more(blank_value);
+            break;
+
+        case 1:
+            p_filter = filter_less(blank_value);
+            break;
+
+        default:
+            return false;
+        }
+
+        return true;
+    }
+
 
 private:
     template <typename TypeFilter>

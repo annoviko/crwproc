@@ -50,7 +50,7 @@
     <ClCompile Include="state_show_search_result.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="state_update_filter_value.cpp">
+    <ClCompile Include="state_update_filter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ui.cpp">
@@ -109,7 +109,7 @@
     <ClInclude Include="state_show_search_result.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="state_update_filter_value.h">
+    <ClInclude Include="state_update_filter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="transitions.h">

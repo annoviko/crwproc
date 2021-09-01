@@ -48,6 +48,11 @@ value::value(const value::type p_type, const std::size_t p_size, const bool p_si
 }
 
 
+value::value(const value::type p_type, const std::size_t p_size, const bool p_signed) :
+    value(p_type, p_size, p_signed, "0")
+{ }
+
+
 bool value::is_valid() const {
     return m_type != value::type::invalid;
 }

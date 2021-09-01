@@ -124,7 +124,7 @@ std::optional<bool> asker::ask_value_sign() {
 }
 
 
-value asker::ask_value() {
+value asker::ask_blank_value() {
     value::type type = asker::ask_value_type();
     while (type == value::type::invalid) {
         type = asker::ask_value_type();
@@ -146,7 +146,7 @@ value asker::ask_value() {
         sign = is_signed.value();
     }
 
-    return value(type, size, sign, std::string("0"));
+    return value(type, size, sign);
 }
 
 

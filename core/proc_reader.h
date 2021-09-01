@@ -24,10 +24,12 @@
 #include <psapi.h>
 #include <tlhelp32.h>
 
+#include "filter.h"
 #include "parallel.h"
 #include "proc_handle.h"
 #include "proc_pointer.h"
 #include "proc_info.h"
+#include "traits.h"
 
 
 #undef max
@@ -269,10 +271,16 @@ private:
 
 private:
     template <typename TypeValue>
-    proc_pointer_sequence read_and_filter_whole_process(const proc_handle& p_handle, const memblock_container& p_blocks) const {
+    proc_pointer_sequence read_and_filter_whole_process(const proc_handle& p_handle, const proc_memblocks& p_blocks) const {
         proc_pointer_sequence result;
 
-        for (const auto& memory_info : p_blocks) {
+        if constexpr (crwproc::traits::is_any<TypeFilter, filter_more, filter_less>::value) {
+            result.reserve(p_blocks.total_size);
+        }
+
+        const auto& blocks = p_blocks.blocks;
+
+        for (const auto& memory_info : blocks) {
             std::shared_ptr<std::uint8_t[]> buffer(new std::uint8_t[memory_info.RegionSize]);
             std::memset(buffer.get(), 0x00, memory_info.RegionSize);
 
@@ -289,12 +297,18 @@ private:
 
 
     template <typename TypeValue>
-    proc_pointer_sequence read_and_filter_whole_process_parallel_cpu(const proc_handle& p_handle, const memblock_container& p_blocks) const {
+    proc_pointer_sequence read_and_filter_whole_process_parallel_cpu(const proc_handle& p_handle, const proc_memblocks& p_blocks) const {
         proc_pointer_sequence total_result;
         std::vector<proc_pointer_sequence> partial_results(crwproc::parallel::get_amount_threads());
 
-        auto task = [this, &p_handle, &p_blocks, &partial_results](const std::size_t p_idx, const std::size_t p_tidx) {
-            const auto& memory_info = p_blocks[p_idx];
+        if constexpr (crwproc::traits::is_any<TypeFilter, filter_more, filter_less>::value) {
+            total_result.reserve(p_blocks.total_size);
+        }
+
+        const auto& blocks = p_blocks.blocks;
+
+        auto task = [this, &p_handle, &blocks, &partial_results](const std::size_t p_idx, const std::size_t p_tidx) {
+            const auto& memory_info = blocks[p_idx];
 
             std::shared_ptr<std::uint8_t[]> buffer(new std::uint8_t[memory_info.RegionSize]);
             std::memset(buffer.get(), 0x00, memory_info.RegionSize);
@@ -307,7 +321,7 @@ private:
             }
         };
 
-        crwproc::parallel::parallel_for_with_tidx(std::size_t(0), p_blocks.size(), task);
+        crwproc::parallel::parallel_for_with_tidx(std::size_t(0), blocks.size(), task);
 
         std::uint64_t length = 0;
         for (const auto& result : partial_results) {
@@ -340,9 +354,17 @@ private:
 
             const TypeValue actual_value = *((TypeValue*)(buffer));
 
-            if (m_filter.is_satisfying(actual_value)) {
-                result.push_back({ pointer.get_address(), value::create(actual_value) });
+            if constexpr (crwproc::traits::is_any <TypeFilter, filter_more, filter_less>::value) {
+                if (m_filter.is_satisfying(actual_value, pointer.get_value().get<TypeValue>())) {
+                    result.push_back({ pointer.get_address(), value::create(actual_value) });
+                }
             }
+            else {
+                if (m_filter.is_satisfying(actual_value)) {
+                    result.push_back({ pointer.get_address(), value::create(actual_value) });
+                }
+            }
+
 
             m_bytes_read += pointer.get_value().get_size();
         }
@@ -355,10 +377,10 @@ private:
     proc_pointer_sequence read_and_filter_with_type(const proc_handle& p_handle, const proc_pointer_sequence& p_values, const proc_memblocks& p_blocks) const {
         if (p_values.empty()) {
             if (m_force_parallel || (p_blocks.total_size >= TRIGGER_CPU_PARALLEL)) {
-                return read_and_filter_whole_process_parallel_cpu<TypeValue>(p_handle, p_blocks.blocks);
+                return read_and_filter_whole_process_parallel_cpu<TypeValue>(p_handle, p_blocks);
             }
 
-            return read_and_filter_whole_process<TypeValue>(p_handle, p_blocks.blocks);
+            return read_and_filter_whole_process<TypeValue>(p_handle, p_blocks);
         }
 
         return read_and_filter_values<TypeValue>(p_handle, p_values);
@@ -369,8 +391,14 @@ private:
     void extract_values(const std::uint8_t* p_buffer, const std::uint64_t p_length, const std::uint64_t p_address, const TypeFilter& p_filter, proc_pointer_sequence& p_result) const {
         for (std::uint64_t offset = 0; offset < p_length; ++offset) {
             const TypeValue actual_value = *((TypeValue*)(p_buffer + offset));
-            if (p_filter.is_satisfying(actual_value)) {
+
+            if constexpr (crwproc::traits::is_any<TypeFilter, filter_more, filter_less>::value) {
                 p_result.emplace_back(p_address + offset, value::create(actual_value));
+            }
+            else {
+                if (p_filter.is_satisfying(actual_value)) {
+                    p_result.emplace_back(p_address + offset, value::create(actual_value));
+                }
             }
         }
     }

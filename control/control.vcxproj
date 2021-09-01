@@ -116,7 +116,7 @@
     <ClCompile Include="state_help.cpp" />
     <ClCompile Include="state_search.cpp" />
     <ClCompile Include="state_show_search_result.cpp" />
-    <ClCompile Include="state_update_filter_value.cpp" />
+    <ClCompile Include="state_update_filter.cpp" />
     <ClCompile Include="ui.cpp" />
     <ClCompile Include="ui_stm.cpp" />
   </ItemGroup>
@@ -137,7 +137,7 @@
     <ClInclude Include="state_help.h" />
     <ClInclude Include="state_search.h" />
     <ClInclude Include="state_show_search_result.h" />
-    <ClInclude Include="state_update_filter_value.h" />
+    <ClInclude Include="state_update_filter.h" />
     <ClInclude Include="transitions.h" />
     <ClInclude Include="ui.h" />
     <ClInclude Include="ui_stm.h" />

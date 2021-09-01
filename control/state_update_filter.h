@@ -12,7 +12,7 @@
 #include "event.h"
 
 
-class state_update_filter_value {
+class state_update_filter {
 public:
     event operator()(context& p_context);
 };

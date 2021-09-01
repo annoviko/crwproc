@@ -6,7 +6,7 @@
 */
 
 
-#include "state_update_filter_value.h"
+#include "state_update_filter.h"
 
 #include <iostream>
 #include <string>
@@ -15,7 +15,7 @@
 #include "intro_builder.h"
 
 
-event state_update_filter_value::operator()(context& p_context) {
+event state_update_filter::operator()(context& p_context) {
     intro_builder::show(p_context, "Update the current filter.");
 
     if (filter_reader_value::read(p_context.get_filter())) {

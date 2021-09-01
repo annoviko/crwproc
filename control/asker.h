@@ -33,7 +33,7 @@ public:
 
     static std::optional<bool> ask_value_sign();
 
-    static value ask_value();
+    static value ask_blank_value();
 
     static std::optional<uint64_t> ask_address();
 };

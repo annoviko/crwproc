@@ -44,6 +44,8 @@ public:
 
     value(const value::type p_type, const std::size_t p_size, const bool p_signed, const std::string& p_value);
 
+    value(const value::type p_type, const std::size_t p_size, const bool p_signed);
+
 public:
     bool is_valid() const;
 

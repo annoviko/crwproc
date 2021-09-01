@@ -34,7 +34,7 @@ event state_address::operator()(context& p_context) {
 
 
 proc_pointer state_address::create_view() const {
-    value variable = asker::ask_value();
+    value variable = asker::ask_blank_value();
 
     std::optional<std::uint64_t> address = asker::ask_address();
     while (!address.has_value()) {

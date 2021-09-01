@@ -23,6 +23,8 @@ private:
     enum class filter_type {
         equal = 0,
         range,
+        more,
+        less,
         last_item
     };
 
@@ -40,18 +42,23 @@ private:
 private:
     template <typename TypeFilter>
     void ask_filter(context& p_context) const {
-        value variable = asker::ask_value();
+        value variable = asker::ask_blank_value();
 
         if constexpr (std::is_same<TypeFilter, filter_equal>::value) {
-            p_context.get_filter() = filter_equal(variable);
+            p_context.get_filter() = TypeFilter(variable);
+
+            while (!filter_reader_value::read(p_context.get_filter())) { }
         }
         else if constexpr (std::is_same<TypeFilter, filter_range>::value) {
             p_context.get_filter() = filter_range(variable, variable);
+
+            while (!filter_reader_value::read(p_context.get_filter())) { }
+        }
+        else if constexpr (crwproc::traits::is_any<TypeFilter, filter_more, filter_less>::value) {
+            p_context.get_filter() = TypeFilter(variable);
         }
         else {
             static_assert(false);
         }
-
-        while (!filter_reader_value::read(p_context.get_filter())) {}
     }
 };

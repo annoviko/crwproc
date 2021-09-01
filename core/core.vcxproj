@@ -87,6 +87,8 @@
     <ClInclude Include="console.h" />
     <ClInclude Include="filter.h" />
     <ClInclude Include="filter_equal.h" />
+    <ClInclude Include="filter_less.h" />
+    <ClInclude Include="filter_more.h" />
     <ClInclude Include="filter_none.h" />
     <ClInclude Include="filter_range.h" />
     <ClInclude Include="proc_handle.h" />
@@ -103,13 +105,14 @@
     <ClCompile Include="console.cpp" />
     <ClCompile Include="filter.cpp" />
     <ClCompile Include="filter_equal.cpp" />
+    <ClCompile Include="filter_less.cpp" />
+    <ClCompile Include="filter_more.cpp" />
     <ClCompile Include="filter_none.cpp" />
     <ClCompile Include="filter_range.cpp" />
     <ClCompile Include="proc_handle.cpp" />
     <ClCompile Include="parallel.cpp" />
     <ClCompile Include="proc_info.cpp" />
     <ClCompile Include="proc_pointer.cpp" />
-    <ClCompile Include="proc_reader.cpp" />
     <ClCompile Include="proc_table.cpp" />
     <ClCompile Include="proc_writer.cpp" />
     <ClCompile Include="value.cpp" />
