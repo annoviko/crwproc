@@ -66,7 +66,8 @@ private:
 private:
     static constexpr std::uint64_t READ_VALUE_SIZE = 16;
 
-    static constexpr std::uint64_t TRIGGER_CPU_PARALLEL = 10 * 1000 * 1000;     /* 10Mbytes */
+    static constexpr std::uint64_t TRIGGER_CPU_PARALLEL_BYTES = 10 * 1000 * 1000;     /* 10Mbytes */
+    static constexpr std::uint64_t TRIGGER_CPU_PARALLEL_ITEMS = 100000;
 
     static constexpr std::uint64_t INVALID_PROC_SIZE = std::numeric_limits<std::uint64_t>::max();
     static constexpr std::uint64_t INVALID_INTEGER_VALUE = std::numeric_limits<std::uint64_t>::max();
@@ -115,17 +116,13 @@ public:
 
 
     proc_pointer_sequence read(const proc_pointer_sequence& p_values) const {
-        proc_pointer_sequence result;
-        result.reserve(p_values.size());
-
         proc_handle proc_handler(m_proc_info.pid(), proc_handle::access::read);
 
-        for (const auto& pointer : p_values) {
-            const proc_pointer new_pointer = read_value(proc_handler, pointer.get_address(), pointer.get_value());
-            result.push_back(new_pointer);
+        if (m_force_parallel || p_values.size() > TRIGGER_CPU_PARALLEL_ITEMS) {
+            return read_parallel_cpu(proc_handler, p_values);
         }
 
-        return result;
+        return read_sequentially(proc_handler, p_values);
     }
 
 
@@ -139,6 +136,49 @@ public:
     }
 
 private:
+    proc_pointer_sequence combine_partial_results(const std::vector<proc_pointer_sequence>& partial_results) const {
+        std::uint64_t length = 0;
+        for (const auto& result : partial_results) {
+            length += result.size();
+        }
+
+        proc_pointer_sequence total_result;
+        total_result.reserve(length + 1);
+        for (const auto& result : partial_results) {
+            total_result.insert(total_result.end(), result.cbegin(), result.cend());
+        }
+
+        return total_result;
+    }
+
+
+    proc_pointer_sequence read_sequentially(const proc_handle& p_handle, const proc_pointer_sequence& p_values) const {
+        proc_pointer_sequence result;
+        result.reserve(p_values.size());
+
+        for (const auto& pointer : p_values) {
+            const proc_pointer new_pointer = read_value(p_handle, pointer.get_address(), pointer.get_value());
+            result.push_back(new_pointer);
+        }
+
+        return result;
+    }
+
+
+    proc_pointer_sequence read_parallel_cpu(const proc_handle& p_handle, const proc_pointer_sequence& p_values) const {
+        std::vector<proc_pointer_sequence> partial_results(crwproc::parallel::get_amount_threads());
+
+        auto task = [this, &p_handle, &p_values, &partial_results](const std::size_t p_idx, const std::size_t p_tidx) {
+            const proc_pointer new_pointer = read_value(p_handle, p_values[p_idx].get_address(), p_values[p_idx].get_value());
+            partial_results[p_tidx].push_back(new_pointer);
+        };
+
+        crwproc::parallel::parallel_for_with_tidx(std::size_t(0), p_values.size(), task);
+
+        return combine_partial_results(partial_results);
+    }
+
+
     proc_pointer_sequence read_and_filter_eval(const proc_handle& p_proc_handler, const proc_pointer_sequence& p_values, const proc_memblocks& p_blocks) const {
         switch (m_filter.get_value_type()) {
         case value::type::integral:
@@ -271,7 +311,7 @@ private:
 
 private:
     template <typename TypeValue>
-    proc_pointer_sequence read_and_filter_whole_process(const proc_handle& p_handle, const proc_memblocks& p_blocks) const {
+    proc_pointer_sequence read_and_filter_whole_process_sequentially(const proc_handle& p_handle, const proc_memblocks& p_blocks) const {
         proc_pointer_sequence result;
 
         if constexpr (crwproc::traits::is_any<TypeFilter, filter_more, filter_less>::value) {
@@ -298,12 +338,7 @@ private:
 
     template <typename TypeValue>
     proc_pointer_sequence read_and_filter_whole_process_parallel_cpu(const proc_handle& p_handle, const proc_memblocks& p_blocks) const {
-        proc_pointer_sequence total_result;
         std::vector<proc_pointer_sequence> partial_results(crwproc::parallel::get_amount_threads());
-
-        if constexpr (crwproc::traits::is_any<TypeFilter, filter_more, filter_less>::value) {
-            total_result.reserve(p_blocks.total_size);
-        }
 
         const auto& blocks = p_blocks.blocks;
 
@@ -323,50 +358,54 @@ private:
 
         crwproc::parallel::parallel_for_with_tidx(std::size_t(0), blocks.size(), task);
 
-        std::uint64_t length = 0;
-        for (const auto& result : partial_results) {
-            length += result.size();
-        }
-
-        total_result.reserve(length + 1);
-        for (const auto& result : partial_results) {
-            total_result.insert(total_result.end(), result.cbegin(), result.cend());
-        }
-
-        return total_result;
+        return combine_partial_results(partial_results);
     }
 
 
     template <typename TypeValue>
-    proc_pointer_sequence read_and_filter_values(const proc_handle& p_handle, const proc_pointer_sequence& p_values) const {
+    void read_and_filter_values_iteration(const proc_handle& p_handle, const proc_pointer& p_pointer, proc_pointer_sequence& p_result) const {
+        TypeValue actual_value;
+        std::uint64_t bytes_was_read = 0;
+
+        if (!ReadProcessMemory(p_handle(), (LPCVOID)p_pointer.get_address(), (void *) &actual_value, sizeof(TypeValue), (SIZE_T*)&bytes_was_read)) {
+            return;
+        }
+
+        if constexpr (crwproc::traits::is_any <TypeFilter, filter_more, filter_less>::value) {
+            if (m_filter.is_satisfying(actual_value, p_pointer.get_value().get<TypeValue>())) {
+                p_result.emplace_back(p_pointer.get_address(), value::create(actual_value));
+            }
+        }
+        else {
+            if (m_filter.is_satisfying(actual_value)) {
+                p_result.emplace_back(p_pointer.get_address(), value::create(actual_value));
+            }
+        }
+
+        m_bytes_read += p_pointer.get_value().get_size();
+    }
+
+
+    template <typename TypeValue>
+    proc_pointer_sequence read_and_filter_values_parallel_cpu(const proc_handle& p_handle, const proc_pointer_sequence& p_values) const {
+        std::vector<proc_pointer_sequence> partial_results(crwproc::parallel::get_amount_threads());
+
+        auto task = [this, &p_handle, &p_values, &partial_results](const std::size_t p_idx, const std::size_t p_tidx) {
+            read_and_filter_values_iteration<TypeValue>(p_handle, p_values[p_idx], partial_results[p_tidx]);
+        };
+
+        crwproc::parallel::parallel_for_with_tidx(std::size_t(0), p_values.size(), task);
+
+        return combine_partial_results(partial_results);
+    }
+
+
+    template <typename TypeValue>
+    proc_pointer_sequence read_and_filter_values_sequentially(const proc_handle& p_handle, const proc_pointer_sequence& p_values) const {
         proc_pointer_sequence result;
 
         for (const auto& pointer : p_values) {
-            std::uint8_t buffer[READ_VALUE_SIZE];
-            std::memset(buffer, 0x00, READ_VALUE_SIZE);
-
-            const std::uint64_t bytes_to_read = pointer.get_value().get_size();
-            std::uint64_t bytes_was_read = 0;
-
-            if (!ReadProcessMemory(p_handle(), (LPCVOID)pointer.get_address(), buffer, bytes_to_read, (SIZE_T*)&bytes_was_read)) {
-                continue;
-            }
-
-            const TypeValue actual_value = *((TypeValue*)(buffer));
-
-            if constexpr (crwproc::traits::is_any <TypeFilter, filter_more, filter_less>::value) {
-                if (m_filter.is_satisfying(actual_value, pointer.get_value().get<TypeValue>())) {
-                    result.push_back({ pointer.get_address(), value::create(actual_value) });
-                }
-            }
-            else {
-                if (m_filter.is_satisfying(actual_value)) {
-                    result.push_back({ pointer.get_address(), value::create(actual_value) });
-                }
-            }
-
-
-            m_bytes_read += pointer.get_value().get_size();
+            read_and_filter_values_iteration<TypeValue>(p_handle, pointer, result);
         }
 
         return result;
@@ -376,14 +415,18 @@ private:
     template <typename TypeValue>
     proc_pointer_sequence read_and_filter_with_type(const proc_handle& p_handle, const proc_pointer_sequence& p_values, const proc_memblocks& p_blocks) const {
         if (p_values.empty()) {
-            if (m_force_parallel || (p_blocks.total_size >= TRIGGER_CPU_PARALLEL)) {
+            if (m_force_parallel || (p_blocks.total_size >= TRIGGER_CPU_PARALLEL_BYTES)) {
                 return read_and_filter_whole_process_parallel_cpu<TypeValue>(p_handle, p_blocks);
             }
 
-            return read_and_filter_whole_process<TypeValue>(p_handle, p_blocks);
+            return read_and_filter_whole_process_sequentially<TypeValue>(p_handle, p_blocks);
         }
 
-        return read_and_filter_values<TypeValue>(p_handle, p_values);
+        if (m_force_parallel || (p_values.size() >= TRIGGER_CPU_PARALLEL_ITEMS)) {
+            return read_and_filter_values_parallel_cpu<TypeValue>(p_handle, p_values);
+        }
+
+        return read_and_filter_values_sequentially<TypeValue>(p_handle, p_values);
     }
 
 
