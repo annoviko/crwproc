@@ -50,18 +50,17 @@ private:
             return false;
         }
 
-        value blank_value;
-        std::visit([&blank_value](auto&& instance) {
-            blank_value = value(instance.get_value_type(), instance.get_value_size(), instance.is_value_signed(), "0");
+        const type_desc type = std::visit([](auto&& instance) {
+            return instance.get_type();
         }, p_filter);
 
         switch (index_option) {
         case 0:
-            p_filter = filter_more(blank_value);
+            p_filter = filter_more(type);
             break;
 
         case 1:
-            p_filter = filter_less(blank_value);
+            p_filter = filter_less(type);
             break;
 
         default:
@@ -75,22 +74,22 @@ private:
 private:
     template <typename TypeFilter>
     static std::uint64_t get_integral_max_value(const TypeFilter& p_filter) {
-        if (p_filter.is_value_signed()) {
-            switch (p_filter.get_value_size()) {
+        if (p_filter.get_type().is_signed()) {
+            switch (p_filter.get_type().get_size()) {
                 case 1: return std::numeric_limits<std::int8_t>::max();
                 case 2: return std::numeric_limits<std::int16_t>::max();
                 case 4: return std::numeric_limits<std::int32_t>::max();
                 case 8: return std::numeric_limits<std::int64_t>::max();
-                default: throw std::invalid_argument("Invalid value size '" + std::to_string(p_filter.get_value_size()) + "' is specified.");
+                default: throw std::invalid_argument("Invalid value size '" + std::to_string(p_filter.get_type().get_size()) + "' is specified.");
             }
         }
         else {
-            switch (p_filter.get_value_size()) {
+            switch (p_filter.get_type().get_size()) {
                 case 1: return std::numeric_limits<std::uint8_t>::max();
                 case 2: return std::numeric_limits<std::uint16_t>::max();
                 case 4: return std::numeric_limits<std::uint32_t>::max();
                 case 8: return std::numeric_limits<std::uint64_t>::max();
-                default: throw std::invalid_argument("Invalid value size '" + std::to_string(p_filter.get_value_size()) + "' is specified.");
+                default: throw std::invalid_argument("Invalid value size '" + std::to_string(p_filter.get_type().get_size()) + "' is specified.");
             }
         }
     }
@@ -98,13 +97,13 @@ private:
 
     template <typename TypeFilter>
     static std::int64_t get_integral_min_value(const TypeFilter & p_filter) {
-        if (p_filter.is_value_signed()) {
-            switch (p_filter.get_value_size()) {
+        if (p_filter.get_type().is_signed()) {
+            switch (p_filter.get_type().get_size()) {
                 case 1: return std::numeric_limits<std::int8_t>::min();
                 case 2: return std::numeric_limits<std::int16_t>::min();
                 case 4: return std::numeric_limits<std::int32_t>::min();
                 case 8: return std::numeric_limits<std::int64_t>::min();
-                default: throw std::invalid_argument("Invalid value size '" + std::to_string(p_filter.get_value_size()) + "' is specified.");
+                default: throw std::invalid_argument("Invalid value size '" + std::to_string(p_filter.get_type().get_size()) + "' is specified.");
             }
         }
         
@@ -114,7 +113,7 @@ private:
 
     template <typename TypeFilter>
     static bool is_out_of_range(const std::uint64_t p_value, const TypeFilter& p_filter) {
-        if (p_filter.is_value_signed()) {
+        if (p_filter.get_type().is_signed()) {
             const std::int64_t value_signed = static_cast<std::int64_t>(p_value);
             if (value_signed > static_cast<std::int64_t>(get_integral_max_value(p_filter))) {
                 return true;
@@ -148,8 +147,8 @@ private:
         command::throw_if_command(value);
 
         try {
-            switch (p_filter.get_value_type()) {
-            case value::type::integral:
+            switch (p_filter.get_type().get_type()) {
+            case value_type::integral:
                 if (is_out_of_range(std::stoull(value), p_filter)) {
                     console::error_and_wait_key("Error: specified value '" + value + "' is out of range (" 
                         + std::to_string(get_integral_min_value(p_filter)) + ", " + std::to_string(get_integral_max_value(p_filter)) + ").");
@@ -159,11 +158,11 @@ private:
                 break;
 
 
-            case value::type::floating:
+            case value_type::floating:
                 std::stof(value);
                 break;
 
-            case value::type::doubling:
+            case value_type::doubling:
                 std::stod(value);
                 break;
 

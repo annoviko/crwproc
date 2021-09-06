@@ -14,6 +14,7 @@
 #include <optional>
 
 #include "core/value.h"
+#include "core/type_desc.h"
 
 
 class asker {
@@ -27,13 +28,13 @@ public:
 public:
     static std::size_t ask_index(const std::size_t p_limit, const action_index& p_action = nullptr);
 
-    static value::type ask_value_type();
+    static value_type ask_value_type();
 
     static std::size_t ask_value_size();
 
     static std::optional<bool> ask_value_sign();
 
-    static value ask_blank_value();
+    static type_desc ask_type_desc();
 
     static std::optional<uint64_t> ask_address();
 };

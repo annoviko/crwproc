@@ -29,6 +29,7 @@ event state_edit::operator()(context& p_context) {
 
 
 void state_edit::show_table(context& p_context) {
+#if 0
     std::visit([&p_context](auto&& filter) {
         proc_reader reader(p_context.get_proc_info(), filter);
         p_context.get_user_table() = reader.read(p_context.get_user_table());
@@ -43,7 +44,7 @@ void state_edit::show_table(context& p_context) {
             "type: "    << std::setw(10) << value::type_to_string(pointer.get_value().get_type()) << "| " <<
             "value: "   << std::setw(10) << pointer.get_value().get<std::string>() << std::endl;
     }
-
+#endif
     std::cout << std::endl;
 }
 
@@ -55,6 +56,7 @@ event state_edit::ask_next_action(context& p_context) const {
     std::cin >> user_input;
 
     event action = command::to_event(user_input);
+#if 0
     std::visit([&user_input, &p_context, &action](auto&& instance) {
         using EventType = std::decay_t<decltype(instance)>;
         if constexpr (std::is_same_v<EventType, event_error>) {
@@ -90,6 +92,6 @@ event state_edit::ask_next_action(context& p_context) const {
             });
         }
     }, action);
-
+#endif
     return action;
 }

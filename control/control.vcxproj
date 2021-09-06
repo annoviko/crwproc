@@ -105,6 +105,7 @@
     <ClCompile Include="asker.cpp" />
     <ClCompile Include="command.cpp" />
     <ClCompile Include="context.cpp" />
+    <ClCompile Include="edit_table_entry.cpp" />
     <ClCompile Include="filter_reader_value.cpp" />
     <ClCompile Include="intro_builder.cpp" />
     <ClCompile Include="state_address.cpp" />
@@ -124,6 +125,8 @@
     <ClInclude Include="asker.h" />
     <ClInclude Include="command.h" />
     <ClInclude Include="context.h" />
+    <ClInclude Include="edit_table.h" />
+    <ClInclude Include="edit_table_entry.h" />
     <ClInclude Include="event.h" />
     <ClInclude Include="filter_reader_value.h" />
     <ClInclude Include="intro_builder.h" />

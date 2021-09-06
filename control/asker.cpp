@@ -48,13 +48,13 @@ std::size_t asker::ask_index(const std::size_t p_limit, const action_index& p_ac
 }
 
 
-value::type asker::ask_value_type() {
+value_type asker::ask_value_type() {
     std::cout << "Select value type that is going to be searched in the process:" << std::endl;
 
-    std::vector<decltype(value::STR_TYPE_DICT)::const_iterator> options;
-    options.reserve(value::STR_TYPE_DICT.size());
+    std::vector<decltype(STR_TYPE_DICT)::const_iterator> options;
+    options.reserve(STR_TYPE_DICT.size());
 
-    for (auto iter = value::STR_TYPE_DICT.cbegin(); iter != value::STR_TYPE_DICT.cend(); iter++) {
+    for (auto iter = STR_TYPE_DICT.cbegin(); iter != STR_TYPE_DICT.cend(); iter++) {
         console::set_foreground_color(color::blue, true);
         std::cout << " " << options.size();
         console::set_defaut_color();
@@ -71,7 +71,7 @@ value::type asker::ask_value_type() {
         return options[index_option]->second;
     }
 
-    return value::type::invalid;
+    return value_type::invalid;
 }
 
 
@@ -124,15 +124,15 @@ std::optional<bool> asker::ask_value_sign() {
 }
 
 
-value asker::ask_blank_value() {
-    value::type type = asker::ask_value_type();
-    while (type == value::type::invalid) {
+type_desc asker::ask_type_desc() {
+    value_type type = asker::ask_value_type();
+    while (type == value_type::invalid) {
         type = asker::ask_value_type();
     }
 
     std::size_t size = 0;
     bool sign = true;
-    if (type == value::type::integral) {
+    if (type == value_type::integral) {
         size = asker::ask_value_size();
         while (size == asker::INVALID_SIZE) {
             size = asker::ask_value_size();
@@ -146,7 +146,7 @@ value asker::ask_blank_value() {
         sign = is_signed.value();
     }
 
-    return value(type, size, sign);
+    return type_desc(type, size, sign);
 }
 
 

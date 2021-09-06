@@ -11,14 +11,17 @@
 #include "core/filter.h"
 #include "core/proc_pointer.h"
 #include "core/proc_info.h"
+#include "core/search_result.h"
+
+#include "edit_table.h"
 
 
 class context {
 private:
-    proc_info               m_proc;
-    filter                  m_filter = filter_none{ };
-    proc_pointer_sequence   m_found_values;
-    proc_pointer_sequence   m_user_table;
+    proc_info         m_proc;
+    filter            m_filter = filter_none{ };
+    search_result     m_found_values;
+    edit_table        m_user_table;
 
 public:
     void set_proc_info(const proc_info& p_proc);
@@ -29,13 +32,13 @@ public:
 
     filter& get_filter();
 
-    proc_pointer_sequence& get_found_values();
+    search_result& get_found_values();
 
-    const proc_pointer_sequence& get_found_values() const;
+    const search_result& get_found_values() const;
 
-    proc_pointer_sequence& get_user_table();
+    edit_table& get_user_table();
 
-    const proc_pointer_sequence& get_user_table() const;
+    const edit_table& get_user_table() const;
 
 public:
     friend std::ostream& operator<<(std::ostream& p_stream, const context& p_info);

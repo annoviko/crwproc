@@ -29,22 +29,22 @@ const filter& context::get_filter() const {
 }
 
 
-proc_pointer_sequence& context::get_found_values() {
+search_result& context::get_found_values() {
     return m_found_values;
 }
 
 
-const proc_pointer_sequence& context::get_found_values() const {
+const search_result& context::get_found_values() const {
     return m_found_values;
 }
 
 
-proc_pointer_sequence& context::get_user_table() {
+edit_table& context::get_user_table() {
     return m_user_table;
 }
 
 
-const proc_pointer_sequence& context::get_user_table() const {
+const edit_table& context::get_user_table() const {
     return m_user_table;
 }
 
@@ -56,7 +56,7 @@ std::ostream& operator<<(std::ostream& p_stream, const context& p_info) {
 
     std::cout << p_info.get_filter() << std::endl;
 
-    std::cout << "Found values: " << p_info.get_found_values().size() << std::endl;
+    std::cout << "Found values: " << p_info.get_found_values().get_amount_values() << std::endl;
     std::cout << "Saved values: " << p_info.get_user_table().size() << std::endl;
 
     return p_stream;
