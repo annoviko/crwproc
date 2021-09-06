@@ -12,6 +12,7 @@
 #include <iostream>
 #include <string>
 
+#include "core/proc_info.h"
 #include "core/proc_pointer.h"
 #include "core/type_desc.h"
 
@@ -30,11 +31,17 @@ public:
     edit_table_entry(const proc_pointer& p_pointer, const type_desc& p_type);
 
 public:
+    const std::string& get_name() const;
+
+    const proc_pointer& get_pointer() const;
+
+    const type_desc& get_type() const;
+
     void set_name(const std::string& p_name);
 
-    void set_value(const std::string& p_value);
+    bool set_value(const std::string& p_value, const proc_info& p_info);
 
-    void refresh();
+    void refresh(const proc_info& p_info);
 
 public:
     friend std::ostream& operator<<(std::ostream& p_stream, const edit_table_entry& p_entry);

@@ -15,17 +15,19 @@
 
 #include "core/proc_info.h"
 #include "core/proc_pointer.h"
+#include "core/type_desc.h"
 
 
 class state_address : public state_base {
 private:
     proc_pointer m_pointer;
+    type_desc    m_type;
 
 public:
     event operator()(context& p_context);
 
 private:
-    proc_pointer create_view() const;
+    proc_pointer create_view();
 
     void read(const proc_info& p_info);
 

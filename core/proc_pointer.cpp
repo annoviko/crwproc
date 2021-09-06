@@ -26,6 +26,11 @@ bool proc_pointer::is_valid() const {
 }
 
 
+void proc_pointer::invalidate() {
+    m_address = INVALID_ADDRESS;
+}
+
+
 std::uint64_t proc_pointer::get_address() const {
     return m_address;
 }

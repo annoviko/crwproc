@@ -33,8 +33,8 @@ event state_address::operator()(context& p_context) {
 }
 
 
-proc_pointer state_address::create_view() const {
-    type_desc type = asker::ask_type_desc();
+proc_pointer state_address::create_view() {
+    m_type = asker::ask_type_desc();
 
     std::optional<std::uint64_t> address = asker::ask_address();
     while (!address.has_value()) {
@@ -46,10 +46,8 @@ proc_pointer state_address::create_view() const {
 
 
 void state_address::read(const proc_info& p_info) {
-    proc_reader reader(p_info, filter_none{ });
-#if 0
-    m_pointer = reader.read({ m_pointer })[0];
-#endif
+    proc_reader reader(p_info);
+    reader.refresh(m_type, m_pointer);
 }
 
 
@@ -59,22 +57,22 @@ void state_address::show_value(const context& p_context) const {
     intro_builder::show(p_context, "View value that is mapped on a specific address.");
 
     std::cout << std::right <<
-        "address: " << std::setw(10) << (void*)m_pointer.get_address() << "| " <<
-        /*"type: "    << std::setw(10) << value::type_to_string(m_pointer.get_value().get_type()) << "| " <<*/
-        "value: "   << std::setw(10) << m_pointer.get_value().get<std::string>() << std::endl << std::endl;
+        "address: " << std::setw(10) << (void*)m_pointer.get_address() << " | " <<
+        "type: "    << std::setw(10) << m_type << " | " <<
+        "value: "   << std::setw(10) << m_pointer.get_value().to_string(m_type) << std::endl << std::endl;
 }
 
 
 event state_address::ask_next_action(context& p_context) {
     event action = state_base::ask_next_action(p_context);
-#if 0
+
     std::visit([this, &p_context, &action](auto&& instance) {
         using EventType = std::decay_t<decltype(instance)>;
 
         if constexpr (std::is_same_v<EventType, event_add>) {
-            p_context.get_user_table().push_back(m_pointer);
+            p_context.get_user_table().push_back({ m_pointer, m_type });
         }
     }, action);
-#endif
+
     return action;
 }

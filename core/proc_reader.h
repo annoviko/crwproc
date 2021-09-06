@@ -38,7 +38,7 @@
 #undef min
 
 
-template <typename TypeFilter>
+template <typename TypeFilter = filter_none>
 class proc_reader {
 private:
     using memblock_info_container = std::vector<MEMORY_BASIC_INFORMATION>;
@@ -88,6 +88,11 @@ private:
     static constexpr std::size_t   NOTIFICATION_PERIOD_MS = 200;
 
 public:
+    proc_reader(const proc_info& p_info) :
+        m_proc_info(p_info),
+        m_filter(filter_none{ })
+    { }
+
     proc_reader(const proc_info& p_info, const TypeFilter& p_filter) :
         m_proc_info(p_info),
         m_filter(p_filter)
@@ -127,17 +132,24 @@ public:
         return result;
     }
 
-#if 0
-    proc_pointer_sequence read(const proc_pointer_sequence& p_values) const {
+
+    void refresh(const type_desc p_type, proc_pointer& p_pointer) const {
+        proc_handle proc_handler(m_proc_info.pid(), proc_handle::access::read);
+        refresh_value(proc_handler, p_type, p_pointer);
+    }
+
+
+    template <typename TypePointerGetter, typename TypeCollection>
+    void refresh(const type_desc p_type, const TypePointerGetter& p_getter, TypeCollection& p_collection) const {
         proc_handle proc_handler(m_proc_info.pid(), proc_handle::access::read);
 
-        if (m_force_parallel || p_values.size() > TRIGGER_CPU_PARALLEL_ITEMS) {
-            return read_parallel_cpu(proc_handler, p_values);
+        if (m_force_parallel || p_collection.size() > TRIGGER_CPU_PARALLEL_ITEMS) {
+            return read_parallel_cpu(proc_handler, p_getter, p_collection);
         }
 
-        return read_sequentially(proc_handler, p_values);
+        return read_sequentially(proc_handler, p_getter, p_collection);
     }
-#endif
+
 
     void subscribe(const progress_observer& p_observer) {
         m_observer = p_observer;
@@ -165,48 +177,39 @@ private:
         return total_result;
     }
 
-#if 0
-    search_result read_sequentially(const proc_handle& p_handle, const search_result& p_values) const {
-        search_result result;
-        result.reserve(p_values.size());
 
-        for (const auto& pointer : p_values) {
-            const proc_pointer new_pointer = read_value(p_handle, pointer.get_address(), pointer.get_base_address(), pointer.get_value());
-            result.push_back(new_pointer);
+    template <typename TypePointerGetter, typename TypeCollection>
+    search_result refresh_sequentially(const proc_handle& p_handle, const type_desc p_type, const TypePointerGetter& p_getter, TypeCollection& p_collection) const {
+        for (std::size_t i = 0; i < p_collection.size(); i++) {
+            refresh_value(p_handle, p_type, p_getter(i));
         }
-
-        return result;
     }
 
 
-    search_result read_parallel_cpu(const proc_handle& p_handle, const search_result& p_values) const {
-        std::vector<search_result> partial_results(crwproc::parallel::get_amount_threads());
-
-        auto task = [this, &p_handle, &p_values, &partial_results](const std::size_t p_idx, const std::size_t p_tidx) {
-            const proc_pointer new_pointer = read_value(p_handle, p_values[p_idx].get_address(), p_values[p_idx].get_base_address(), p_values[p_idx].get_value());
-            partial_results[p_tidx].push_back(new_pointer);
+    template <typename TypePointerGetter, typename TypeCollection>
+    void refresh_parallel_cpu(const proc_handle& p_handle, const type_desc p_type, const TypePointerGetter& p_getter, TypeCollection& p_collection) const {
+        auto task = [this, &p_handle, &p_type, &p_getter, &p_collection](const std::size_t p_idx) {
+            refresh_value(p_handle, p_type, p_getter(p_idx));
         };
 
-        crwproc::parallel::parallel_for_with_tidx(std::size_t(0), p_values.size(), task);
-
-        return combine_partial_results(partial_results);
+        crwproc::parallel::parallel_for(std::size_t(0), p_collection.size(), task);
     }
 
 
-    proc_pointer read_value(const proc_handle& p_proc_handler, const std::uint64_t p_address, const std::uint64_t p_base_address, const value& p_value) const {
-        std::uint8_t buffer[READ_VALUE_SIZE];
-        std::memset(buffer, 0x00, READ_VALUE_SIZE);
+    void refresh_value(const proc_handle& p_proc_handler, const type_desc p_type, proc_pointer& p_value) const {
+        const std::size_t value_size = p_type.get_size();
 
-        std::uint64_t bytes_to_read = p_value.get_size();
-        std::uint64_t bytes_was_read = 0;
+        std::shared_ptr<std::uint8_t[]> buffer(new std::uint8_t[value_size]);
+        std::uint8_t* raw_buffer = buffer.get();
 
-        if (!ReadProcessMemory(p_proc_handler(), (LPCVOID)p_address, buffer, bytes_to_read, (SIZE_T*)&bytes_was_read)) {
-            return { p_address, proc_pointer::INVALID_ADDRESS, value{ } };
+        if (!ReadProcessMemory(p_proc_handler(), (LPCVOID)p_value.get_address(), (void *)raw_buffer, value_size, nullptr)) {
+            p_value.invalidate();
+            return;
         }
 
-        return { p_address, p_base_address, value(p_value.get_type(), p_value.get_size(), p_value.is_signed(), buffer) };
+        return p_value.get_value().set((void *)raw_buffer, value_size);
     }
-#endif
+
 
     search_result read_and_filter_eval(const proc_handle& p_proc_handler, const search_result& p_values, const memblocks_info& p_info_blocks) const {
         switch (m_filter.get_type().get_type()) {
@@ -477,11 +480,11 @@ private:
 
             return read_and_filter_whole_process_sequentially<TypeValue>(p_handle, p_info_blocks);
         }
-#if 0
+
         if (m_force_parallel || (p_values.get_amount_values() >= TRIGGER_CPU_PARALLEL_ITEMS)) {
             return read_and_filter_values_parallel_cpu<TypeValue>(p_handle, p_values);
         }
-#endif
+
         return read_and_filter_values_sequentially<TypeValue>(p_handle, p_values);
     }
 

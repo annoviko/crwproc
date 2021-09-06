@@ -31,6 +31,8 @@ public:
 public:
     bool is_valid() const;
 
+    void invalidate();
+
     std::uint64_t get_address() const;
 
     const memory_value& get_value() const;

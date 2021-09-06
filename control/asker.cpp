@@ -51,10 +51,10 @@ std::size_t asker::ask_index(const std::size_t p_limit, const action_index& p_ac
 value_type asker::ask_value_type() {
     std::cout << "Select value type that is going to be searched in the process:" << std::endl;
 
-    std::vector<decltype(STR_TYPE_DICT)::const_iterator> options;
-    options.reserve(STR_TYPE_DICT.size());
+    std::vector<decltype(STR_VALUE_TYPE_DICT)::const_iterator> options;
+    options.reserve(STR_VALUE_TYPE_DICT.size());
 
-    for (auto iter = STR_TYPE_DICT.cbegin(); iter != STR_TYPE_DICT.cend(); iter++) {
+    for (auto iter = STR_VALUE_TYPE_DICT.cbegin(); iter != STR_VALUE_TYPE_DICT.cend(); iter++) {
         console::set_foreground_color(color::blue, true);
         std::cout << " " << options.size();
         console::set_defaut_color();

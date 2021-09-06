@@ -40,12 +40,14 @@ public:
     }
 
     template <typename TypeValue>
-    TypeValue get() const {
+    typename std::enable_if<std::is_fundamental<TypeValue>::value, TypeValue>::type
+    get() const {
         return *((TypeValue*)m_buffer);
     }
 
     template <typename TypeValue>
-    void set(const TypeValue p_value) {
+    typename std::enable_if<std::is_fundamental<TypeValue>::value, void>::type
+    set(const TypeValue p_value) {
         *((TypeValue*)m_buffer) = p_value;
     }
 };

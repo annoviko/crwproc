@@ -9,6 +9,7 @@
 #pragma once
 
 
+#include <iostream>
 #include <string>
 #include <unordered_map>
 
@@ -21,9 +22,12 @@ enum class value_type {
 };
 
 
-const std::unordered_map<std::string, value_type> STR_TYPE_DICT = {
-    { "integral", value_type::integral },
-    { "floating", value_type::floating },
-    { "doubling", value_type::doubling }
-};
+extern const std::unordered_map<std::string, value_type> STR_VALUE_TYPE_DICT;
 
+extern const std::unordered_map<value_type, std::string> VALUE_TYPE_STR_DICT;
+
+
+std::string value_type_to_string(const value_type p_type);
+
+
+std::ostream& operator<<(std::ostream& p_stream, const value_type& p_type);

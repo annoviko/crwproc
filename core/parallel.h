@@ -15,6 +15,8 @@
 #include <string>
 #include <thread>
 
+#include <ppl.h>
+
 
 namespace crwproc
 {
@@ -65,6 +67,12 @@ void parallel_for_with_tidx(TypeIndex p_begin, TypeIndex p_end, const TypeTaskWi
     for (auto& feature : future_storage) {
         feature.get();
     }
+}
+
+
+template <typename TypeIndex, typename TypeTask>
+void parallel_for(TypeIndex p_begin, TypeIndex p_end, const TypeTask& p_task) {
+    concurrency::parallel_for(p_begin, p_end, p_task);
 }
 
 

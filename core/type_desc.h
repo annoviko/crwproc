@@ -10,6 +10,7 @@
 
 
 #include <cstddef>
+#include <string>
 #include <type_traits>
 
 #include "value_type.h"
@@ -34,6 +35,8 @@ public:
     std::size_t get_size() const;
 
     bool is_signed() const;
+
+    std::string to_string() const;
 
 private:
     template <typename Type>
@@ -61,4 +64,7 @@ public:
 
         return type_info(type, size, is_signed);
     }
+
+public:
+    friend std::ostream& operator<<(std::ostream& p_stream, const type_desc& p_type);
 };
