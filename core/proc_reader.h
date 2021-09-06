@@ -167,7 +167,7 @@ private:
             length += result.get_amount_memory_blocks();
         }
 
-        search_result total_result;
+        search_result total_result(m_filter.get_type());
         total_result.reserve(length);
         for (auto& result : partial_results) {
             total_result.move(std::move(result));
@@ -387,6 +387,7 @@ private:
         std::uint8_t* raw_buffer = buffer.get();
 
         if (!ReadProcessMemory(p_handle(), (LPCVOID)p_block.get_begin(), (void *) raw_buffer, region_size, nullptr)) {
+            m_bytes_read += region_size;
             return;
         }
 

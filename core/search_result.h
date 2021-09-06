@@ -48,5 +48,5 @@ public:
 
     std::size_t get_amount_values() const;
 
-    std::size_t get_size() const;
+    std::uint64_t get_size() const;
 };

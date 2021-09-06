@@ -71,6 +71,6 @@ std::size_t search_result::get_amount_values() const {
 }
 
 
-std::size_t search_result::get_size() const {
+std::uint64_t search_result::get_size() const {
     return get_amount_values() * m_info.get_size();
 }
