@@ -19,6 +19,7 @@
 #include <windows.h>
 
 #include "core/filter.h"
+#include "core/search_result.h"
 #include "core/proc_table.h"
 #include "core/proc_reader.h"
 
@@ -30,40 +31,48 @@ using changer = std::function<void(void)>;
 
 template <typename TypeFilter, typename TypeValue>
 void test_template_find_value(TypeValue* p_value, const changer& p_func) {
+    //std::cout << "Address:     " << (void*)p_value << " - " << (void*)p_value << std::endl;
+
     std::size_t pid = static_cast<std::size_t>(GetCurrentProcessId());
     proc_info info = proc_table().get().at(pid);
 
-    TypeFilter filter(value::create(*p_value));
-    auto result = proc_reader(info, filter).read_and_filter();
-
-    ASSERT_FALSE(result.empty());
+    type_desc type = type_desc::create<TypeValue>();
+    TypeFilter filter(type);
+    filter.set_value(*p_value);
+    search_result result = proc_reader(info, filter).read_and_filter();
 
     /* In case of heap the operation system might not be ready to provide information about memory block allocations, need to wait when these information is going to available. */
-    const static std::size_t attempts = 20;
+    const static std::size_t attempts = 30;
     for (std::size_t i = 0; i < attempts && !contains_address(result, p_value); i++) {
         result = proc_reader(info, filter).read_and_filter();
     }
 
+    ASSERT_FALSE(result.is_empty());
     ASSERT_TRUE(contains_address(result, p_value));
 
     const static std::size_t attempts_limit = 10;
-    for (std::size_t i = 0; (i < attempts_limit) && (result.size() > 1); i++) {
+
+    for (std::size_t i = 0; (i < attempts_limit) && (result.get_amount_values() > 1); i++) {
         p_func();
-        TypeFilter updated_filter = TypeFilter(value::create(*p_value));
+
+        TypeFilter updated_filter = TypeFilter(type);
+        updated_filter.set_value(*p_value);
+
         result = proc_reader(info, updated_filter).read_and_filter(result);
+
+        ASSERT_TRUE(contains_address(result, p_value));
     }
 
-    ASSERT_FALSE(result.empty());
+    ASSERT_FALSE(result.is_empty());
 
-    int index_value = -1;
-    for (std::size_t i = 0; i < result.size(); i++) {
-        if (result[i].get_address() == (std::uint64_t)p_value) {
-            index_value = (int)i;
-            break;
+    for (const auto& block : result.get_memory_blocks()) {
+        for (const auto& pointer : block.get_values()) {
+            if (pointer.get_address() == (std::uint64_t)p_value) {
+                ASSERT_EQ(*p_value, pointer.get_value().get<TypeValue>());
+                return;
+            }
         }
     }
 
-    ASSERT_NE(-1, index_value);
-    ASSERT_EQ((std::uint64_t) p_value, result[index_value].get_address());
-    ASSERT_EQ(*p_value, result[index_value].get_value().get<TypeValue>());
+    FAIL() << "Value is not found";
 }

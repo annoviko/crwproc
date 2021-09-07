@@ -28,23 +28,14 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\lib\native\src\gmock\gmock-all.cc">
       <Filter>tests</Filter>
     </ClCompile>
-    <ClCompile Include="ut-value.cpp">
-      <Filter>tests</Filter>
-    </ClCompile>
     <ClCompile Include="ut-proc_writer.cpp">
       <Filter>tests</Filter>
     </ClCompile>
     <ClCompile Include="ut-asker.cpp">
       <Filter>tests</Filter>
     </ClCompile>
-    <ClCompile Include="ut-filter_more.cpp">
-      <Filter>tests</Filter>
-    </ClCompile>
     <ClCompile Include="utils.cpp">
       <Filter>utils</Filter>
-    </ClCompile>
-    <ClCompile Include="ut-filter_less.cpp">
-      <Filter>tests</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

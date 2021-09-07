@@ -62,7 +62,7 @@ public:
         const bool is_signed = std::is_signed<Type>::value;
         const value_type type = get_type<Type>();
 
-        return type_info(type, size, is_signed);
+        return type_desc(type, size, is_signed);
     }
 
 public:

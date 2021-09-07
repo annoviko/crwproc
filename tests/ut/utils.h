@@ -9,6 +9,7 @@
 
 
 #include "core/proc_pointer.h"
+#include "core/search_result.h"
 
 
-bool contains_address(const proc_pointer_sequence& p_seq, const void* p_address);
+bool contains_address(const search_result& p_seq, const void* p_address);
