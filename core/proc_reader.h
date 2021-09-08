@@ -403,7 +403,8 @@ private:
             }
 
             /* TODO: do we really need to consider blocks with protection 1? */
-            result.emplace_back(address, address + memory_info.RegionSize);
+            const std::size_t address_end = std::min(address + memory_info.RegionSize, p_block.get_end());
+            result.emplace_back(address, address_end);
         }
         
         return result;
