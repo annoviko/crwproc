@@ -64,6 +64,7 @@ private:
     proc_info            m_proc_info;
     TypeFilter           m_filter;
     bool                 m_force_parallel = false;
+    proc_handle          m_proc_handle;
 
     /* statistics */
     mutable std::uint64_t   m_bytes_to_read = 0;
@@ -90,12 +91,14 @@ private:
 public:
     proc_reader(const proc_info& p_info) :
         m_proc_info(p_info),
-        m_filter(filter_none{ })
+        m_filter(filter_none{ }),
+        m_proc_handle(m_proc_info.pid(), proc_handle::access::read)
     { }
 
     proc_reader(const proc_info& p_info, const TypeFilter& p_filter) :
         m_proc_info(p_info),
-        m_filter(p_filter)
+        m_filter(p_filter),
+        m_proc_handle(m_proc_info.pid(), proc_handle::access::read)
     { }
 
 
@@ -105,15 +108,13 @@ public:
 
 public:
     search_result read_and_filter() const {
-        proc_handle proc_handler(m_proc_info.pid(), proc_handle::access::read);
-
-        memblocks_info info_blocks = get_proc_memblocks(proc_handler);
+        memblocks_info info_blocks = get_proc_memblocks();
 
         m_bytes_to_read = info_blocks.total_size;
         m_bytes_read = 0;
         run_notifier();
 
-        search_result result = read_and_filter_eval(proc_handler, { }, info_blocks);
+        search_result result = read_and_filter_eval({ }, info_blocks);
 
         stop_notifier();
         return result;
@@ -125,8 +126,7 @@ public:
         m_bytes_read = 0;
         run_notifier();
 
-        proc_handle proc_handler(m_proc_info.pid(), proc_handle::access::read);
-        search_result result = read_and_filter_eval(proc_handler, p_values, { });
+        search_result result = read_and_filter_eval(p_values, { });
 
         stop_notifier();
         return result;
@@ -134,20 +134,17 @@ public:
 
 
     void refresh(const type_desc p_type, proc_pointer& p_pointer) const {
-        proc_handle proc_handler(m_proc_info.pid(), proc_handle::access::read);
-        refresh_value(proc_handler, p_type, p_pointer);
+        refresh_value(p_type, p_pointer);
     }
 
 
     template <typename TypePointerGetter, typename TypeCollection>
     void refresh(const type_desc p_type, const TypePointerGetter& p_getter, TypeCollection& p_collection) const {
-        proc_handle proc_handler(m_proc_info.pid(), proc_handle::access::read);
-
         if (m_force_parallel || p_collection.size() > TRIGGER_CPU_PARALLEL_ITEMS) {
-            return read_parallel_cpu(proc_handler, p_getter, p_collection);
+            return read_parallel_cpu(p_getter, p_collection);
         }
 
-        return read_sequentially(proc_handler, p_getter, p_collection);
+        return read_sequentially(p_getter, p_collection);
     }
 
 
@@ -196,13 +193,13 @@ private:
     }
 
 
-    void refresh_value(const proc_handle& p_proc_handler, const type_desc p_type, proc_pointer& p_value) const {
+    void refresh_value(const type_desc p_type, proc_pointer& p_value) const {
         const std::size_t value_size = p_type.get_size();
 
         std::shared_ptr<std::uint8_t[]> buffer(new std::uint8_t[value_size]);
         std::uint8_t* raw_buffer = buffer.get();
 
-        if (!ReadProcessMemory(p_proc_handler(), (LPCVOID)p_value.get_address(), (void *)raw_buffer, value_size, nullptr)) {
+        if (!ReadProcessMemory(m_proc_handle(), (LPCVOID)p_value.get_address(), (void *)raw_buffer, value_size, nullptr)) {
             p_value.invalidate();
             return;
         }
@@ -211,31 +208,31 @@ private:
     }
 
 
-    search_result read_and_filter_eval(const proc_handle& p_proc_handler, const search_result& p_values, const memblocks_info& p_info_blocks) const {
+    search_result read_and_filter_eval(const search_result& p_values, const memblocks_info& p_info_blocks) const {
         switch (m_filter.get_type().get_type()) {
         case value_type::integral:
             switch (m_filter.get_type().get_size()) {
             case 1:
-                return read_and_filter_with_type<std::uint8_t>(p_proc_handler, p_values, p_info_blocks);
+                return read_and_filter_with_type<std::uint8_t>(p_values, p_info_blocks);
 
             case 2:
-                return read_and_filter_with_type<std::uint16_t>(p_proc_handler, p_values, p_info_blocks);
+                return read_and_filter_with_type<std::uint16_t>(p_values, p_info_blocks);
 
             case 4:
-                return read_and_filter_with_type<std::uint32_t>(p_proc_handler, p_values, p_info_blocks);
+                return read_and_filter_with_type<std::uint32_t>(p_values, p_info_blocks);
 
             case 8:
-                return read_and_filter_with_type<std::uint64_t>(p_proc_handler, p_values, p_info_blocks);
+                return read_and_filter_with_type<std::uint64_t>(p_values, p_info_blocks);
 
             default:
                 throw std::logic_error("Invalid integer size '" + std::to_string(m_filter.get_type().get_size()) + "' is used by the filter.");
             }
 
         case value_type::floating:
-            return read_and_filter_with_type<float>(p_proc_handler, p_values, p_info_blocks);
+            return read_and_filter_with_type<float>(p_values, p_info_blocks);
 
         case value_type::doubling:
-            return read_and_filter_with_type<double>(p_proc_handler, p_values, p_info_blocks);
+            return read_and_filter_with_type<double>(p_values, p_info_blocks);
 
         default:
             throw std::logic_error("Unkown value type '" + std::to_string(static_cast<int>(m_filter.get_type().get_type())) + "' is used for filtering.");
@@ -262,14 +259,14 @@ private:
     }
 
 
-    memblocks_info get_proc_memblocks(const proc_handle& p_handle) const {
+    memblocks_info get_proc_memblocks() const {
         MEMORY_BASIC_INFORMATION  memory_info;
 
         std::uint64_t current_address = 0;
 
         memblocks_info result;
 
-        while (VirtualQueryEx(p_handle(), (LPCVOID)current_address, &memory_info, sizeof(memory_info))) {
+        while (VirtualQueryEx(m_proc_handle(), (LPCVOID)current_address, &memory_info, sizeof(memory_info))) {
             if (memory_info.State == MEM_COMMIT) {
                 result.total_size += memory_info.RegionSize;
                 result.blocks.push_back(memory_info);
@@ -331,13 +328,13 @@ private:
     /* initial search through the whole process memory */
 
     template <typename TypeValue>
-    inline void read_and_filter_whole_process_iteration(const proc_handle& p_handle, const MEMORY_BASIC_INFORMATION& p_memory_info, search_result& p_result) const {
+    inline void read_and_filter_whole_process_iteration(const MEMORY_BASIC_INFORMATION& p_memory_info, search_result& p_result) const {
         std::shared_ptr<std::uint8_t[]> buffer(new std::uint8_t[p_memory_info.RegionSize]);
         std::memset(buffer.get(), 0x00, p_memory_info.RegionSize);
 
         std::uint64_t bytes_was_read = 0;
 
-        if (ReadProcessMemory(p_handle(), (LPCVOID)p_memory_info.BaseAddress, buffer.get(), p_memory_info.RegionSize, (SIZE_T*)&bytes_was_read)) {
+        if (ReadProcessMemory(m_proc_handle(), (LPCVOID)p_memory_info.BaseAddress, buffer.get(), p_memory_info.RegionSize, (SIZE_T*)&bytes_was_read)) {
             m_bytes_read += bytes_was_read;
             memory_block block = extract_values<TypeValue>(buffer, bytes_was_read, (std::uint64_t)p_memory_info.BaseAddress);
             if (!block.is_empty()) {
@@ -348,13 +345,13 @@ private:
 
 
     template <typename TypeValue>
-    search_result read_and_filter_whole_process_sequentially(const proc_handle& p_handle, const memblocks_info& p_info_blocks) const {
+    search_result read_and_filter_whole_process_sequentially(const memblocks_info& p_info_blocks) const {
         search_result result(m_filter.get_type());
 
         const auto& info_blocks = p_info_blocks.blocks;
 
         for (const auto& memory_info : info_blocks) {
-            read_and_filter_whole_process_iteration<TypeValue>(p_handle, memory_info, result);
+            read_and_filter_whole_process_iteration<TypeValue>(memory_info, result);
         }
 
         return result;
@@ -362,14 +359,14 @@ private:
 
 
     template <typename TypeValue>
-    search_result read_and_filter_whole_process_parallel_cpu(const proc_handle& p_handle, const memblocks_info& p_info_blocks) const {
+    search_result read_and_filter_whole_process_parallel_cpu(const memblocks_info& p_info_blocks) const {
         std::vector<search_result> partial_results(crwproc::parallel::get_amount_threads(), search_result(m_filter.get_type()));
 
         const auto& info_blocks = p_info_blocks.blocks;
 
-        auto task = [this, &p_handle, &info_blocks, &partial_results](const std::size_t p_idx, const std::size_t p_tidx) {
+        auto task = [this, &info_blocks, &partial_results](const std::size_t p_idx, const std::size_t p_tidx) {
             const auto& memory_info = info_blocks[p_idx];
-            read_and_filter_whole_process_iteration<TypeValue>(p_handle, memory_info, partial_results[p_tidx]);
+            read_and_filter_whole_process_iteration<TypeValue>(memory_info, partial_results[p_tidx]);
         };
 
         crwproc::parallel::parallel_for_with_tidx(std::size_t(0), info_blocks.size(), task);
@@ -380,77 +377,166 @@ private:
 
     /* search among previously founded values (previous search result) */
 
-    template <typename TypeValue>
-    inline void read_and_filter_values_iteration(const proc_handle& p_handle, const memory_block& p_block, search_result& p_result) const {
+
+    inline std::shared_ptr<std::uint8_t[]> read_memory_for_block(const memory_block& p_block) const {
         const std::uint64_t region_size = p_block.get_region_size();
         std::shared_ptr<std::uint8_t[]> buffer(new std::uint8_t[region_size]);
+
+        m_bytes_read += region_size;
+        if (!ReadProcessMemory(m_proc_handle(), (LPCVOID)p_block.get_begin(), (void*)buffer.get(), region_size, nullptr)) {
+            return nullptr;
+        }
+
+
+        return buffer;
+    }
+
+
+    inline memory_block_sequence extract_dummy_blocks(const memory_block& p_block) const {
+        MEMORY_BASIC_INFORMATION memory_info;
+        std::memset(&memory_info, 0x00, sizeof(memory_info));
+
+        memory_block_sequence result;
+        for (std::uint64_t address = p_block.get_begin(); address < p_block.get_end(); address += memory_info.RegionSize) {
+            if (!VirtualQueryEx(m_proc_handle(), (LPCVOID)address, &memory_info, sizeof(memory_info))) {
+                return { };
+            }
+
+            /* TODO: do we really need to consider blocks with protection 1? */
+            result.emplace_back(address, address + memory_info.RegionSize);
+        }
+        
+        return result;
+    }
+
+
+    template <typename TypeValue>
+    inline std::size_t read_and_filter_values_dummy_block(const proc_pointer_collection& p_values, const std::size_t p_values_index, memory_block& p_dummy) const {
+        std::size_t index = p_values_index;
+
+        std::shared_ptr<std::uint8_t[]> buffer = read_memory_for_block(p_dummy);
+        if (buffer == nullptr) {
+            /* skip values for this region */
+            for (; (index < p_values.size()) && (p_values[index].get_address() < p_dummy.get_end()); index++) { }
+            return index;
+        }
+
         std::uint8_t* raw_buffer = buffer.get();
 
-        if (!ReadProcessMemory(p_handle(), (LPCVOID)p_block.get_begin(), (void *) raw_buffer, region_size, nullptr)) {
-            m_bytes_read += region_size;
-            return;
-        }
+        for (; (index < p_values.size()) && (p_values[index].get_address() < p_dummy.get_end()); index++) {
+            const std::uint64_t offset = p_values[index].get_address() - p_dummy.get_begin();
 
-        memory_block next_block(p_block.get_begin(), p_block.get_end());
-        if (p_block.is_raw_memory()) {
-            m_bytes_read += region_size;
+            const TypeValue actual_value = *((TypeValue*)(raw_buffer + offset));
 
-            if (region_size < sizeof(TypeValue)) {
-                return;
+            bool is_satisfying = false;
+            if constexpr (crwproc::traits::is_any<TypeFilter, filter_more, filter_less>::value) {
+                const TypeValue previous_value = p_values[index].get_value().get<TypeValue>();
+                is_satisfying = m_filter.is_satisfying(actual_value, previous_value);
+            }
+            else {
+                is_satisfying = m_filter.is_satisfying(actual_value);
             }
 
-            const std::size_t offset_last_value = region_size - sizeof(TypeValue) + 1;
-            for (std::uint64_t offset = 0; offset < offset_last_value; ++offset) {
-                const TypeValue actual_value = *((TypeValue*)(raw_buffer + offset));
-
-                bool is_satisfying = false;
-                if constexpr (crwproc::traits::is_any<TypeFilter, filter_more, filter_less>::value) {
-                    const TypeValue previous_value = *((TypeValue*)(p_block.get_memory().get() + offset));
-                    is_satisfying = m_filter.is_satisfying(actual_value, previous_value);
-                }
-                else {
-                    is_satisfying = m_filter.is_satisfying(actual_value);
-                }
-
-                if (is_satisfying) {
-                    next_block.add_value(proc_pointer::create(p_block.get_begin() + offset, actual_value));
-                }
-            }
-        }
-        else {
-            m_bytes_read += p_block.get_values().size() * sizeof(TypeValue);
-
-            for (const auto& p_pointer : p_block.get_values()) {
-                const std::uint64_t offset = p_pointer.get_address() - p_block.get_begin();
-                const TypeValue actual_value = *((TypeValue*)(raw_buffer + offset));
-
-                bool is_satisfying = false;
-                if constexpr (crwproc::traits::is_any<TypeFilter, filter_more, filter_less>::value) {
-                    const TypeValue previous_value = p_pointer.get_value().get<TypeValue>();
-                    is_satisfying = m_filter.is_satisfying(actual_value, previous_value);
-                }
-                else {
-                    is_satisfying = m_filter.is_satisfying(actual_value);
-                }
-
-                if (is_satisfying) {
-                    next_block.add_value(proc_pointer::create(p_pointer.get_address(), actual_value));
-                }
+            if (is_satisfying) {
+                p_dummy.add_value(proc_pointer::create(p_values[index].get_address(), actual_value));
             }
         }
 
-        if (!next_block.is_empty()) {
-            p_result.get_memory_blocks().push_back(next_block);
+        return index;
+    }
+
+
+    template <typename TypeValue>
+    inline void read_and_filter_values_dummy_blocks(const memory_block& p_block, memory_block_sequence& p_dummy_blocks, search_result& p_result) const {
+        std::size_t index_values = 0;
+        for (auto& dummy_block : p_dummy_blocks) {
+            index_values = read_and_filter_values_dummy_block<TypeValue>(p_block.get_values(), index_values, dummy_block);
+            if (!dummy_block.is_empty()) {
+                p_result.get_memory_blocks().push_back(std::move(dummy_block));
+            }
+
+            if (index_values >= p_block.get_values().size()) {
+                return; /* all values are processed, no need to continue */
+            }
         }
     }
 
 
     template <typename TypeValue>
-    search_result read_and_filter_values_sequentially(const proc_handle& p_handle, const search_result& p_previous_result) const {
+    inline void read_and_filter_raw_memory_dummy_block(const memory_block& p_block, memory_block& p_dummy) const {
+        const std::uint64_t region_size = p_dummy.get_region_size();
+        std::shared_ptr<std::uint8_t[]> buffer = read_memory_for_block(p_dummy);
+        if (buffer == nullptr) {
+            return; /* skip values for this region */
+        }
+
+        std::uint8_t* raw_buffer = buffer.get();
+
+        const std::size_t offset_last_value = region_size - sizeof(TypeValue) + 1;
+        std::uint64_t offset_parent_block = p_dummy.get_begin() - p_block.get_begin();
+        for (std::uint64_t offset = 0; offset < offset_last_value; ++offset, ++offset_parent_block) {
+            const TypeValue actual_value = *((TypeValue*)(raw_buffer + offset));
+
+            bool is_satisfying = false;
+            if constexpr (crwproc::traits::is_any<TypeFilter, filter_more, filter_less>::value) {
+                const TypeValue previous_value = *((TypeValue*)(p_block.get_memory().get() + offset_parent_block));
+                is_satisfying = m_filter.is_satisfying(actual_value, previous_value);
+            }
+            else {
+                is_satisfying = m_filter.is_satisfying(actual_value);
+            }
+
+            if (is_satisfying) {
+                p_dummy.add_value(proc_pointer::create(p_dummy.get_begin() + offset, actual_value));
+            }
+        }
+    }
+
+
+    template <typename TypeValue>
+    inline void read_and_filter_raw_memory_dummy_blocks(const memory_block& p_block, memory_block_sequence& p_dummy_blocks, search_result& p_result) const {
+        for (auto& dummy_block : p_dummy_blocks) {
+            read_and_filter_raw_memory_dummy_block<TypeValue>(p_block, dummy_block);
+            if (!dummy_block.is_empty()) {
+                p_result.get_memory_blocks().push_back(std::move(dummy_block));
+            }
+        }
+    }
+
+
+    template <typename TypeValue>
+    inline void read_and_filter_values_iteration(const memory_block& p_block, search_result& p_result) const {
+        /*
+           Block size might be changed, for example, there was a block with size 4096, but inside of it the protection 
+           has been changed from 4 to 1. It means that block has been divided into three blocks. Lets assume that it 
+           was done for 1024 to 2048, in this case we will have three following blocks:
+           1) 0 - 1024 with protection 4
+           2) 1024 - 2048 with protection 1
+           3) 2048 - 4096 - with protection 4 
+
+           It means that a block might be splitted into two or more blocks.
+        */
+
+        memory_block_sequence dummy_blocks = extract_dummy_blocks(p_block);
+        if (dummy_blocks.empty()) {
+            return;
+        }
+
+        if (p_block.is_raw_memory()) {
+            read_and_filter_raw_memory_dummy_blocks<TypeValue>(p_block, dummy_blocks, p_result);
+        }
+        else {
+            read_and_filter_values_dummy_blocks<TypeValue>(p_block, dummy_blocks, p_result);
+        }
+    }
+
+
+    template <typename TypeValue>
+    search_result read_and_filter_values_sequentially(const search_result& p_previous_result) const {
         search_result result(m_filter.get_type());
 
         for (const auto& block : p_previous_result.get_memory_blocks()) {
-            read_and_filter_values_iteration<TypeValue>(p_handle, block, result);
+            read_and_filter_values_iteration<TypeValue>(block, result);
         }
 
         return result;
@@ -458,13 +544,13 @@ private:
 
 
     template <typename TypeValue>
-    search_result read_and_filter_values_parallel_cpu(const proc_handle& p_handle, const search_result& p_previous_result) const {
+    search_result read_and_filter_values_parallel_cpu(const search_result& p_previous_result) const {
         std::vector<search_result> partial_results(crwproc::parallel::get_amount_threads(), search_result(m_filter.get_type()));
 
         const auto& blocks = p_previous_result.get_memory_blocks();
         crwproc::parallel::parallel_for_with_tidx(std::size_t(0), blocks.size(),
-            [this, &p_handle, &blocks, &partial_results](const std::size_t p_idx, const std::size_t p_tidx) {
-                read_and_filter_values_iteration<TypeValue>(p_handle, blocks[p_idx], partial_results[p_tidx]);
+            [this, &blocks, &partial_results](const std::size_t p_idx, const std::size_t p_tidx) {
+                read_and_filter_values_iteration<TypeValue>(blocks[p_idx], partial_results[p_tidx]);
             }
         );
 
@@ -473,20 +559,20 @@ private:
 
 
     template <typename TypeValue>
-    search_result read_and_filter_with_type(const proc_handle& p_handle, const search_result& p_values, const memblocks_info& p_info_blocks) const {
+    search_result read_and_filter_with_type(const search_result& p_values, const memblocks_info& p_info_blocks) const {
         if (p_values.is_empty()) {
             if (m_force_parallel || (p_info_blocks.total_size >= TRIGGER_CPU_PARALLEL_BYTES)) {
-                return read_and_filter_whole_process_parallel_cpu<TypeValue>(p_handle, p_info_blocks);
+                return read_and_filter_whole_process_parallel_cpu<TypeValue>(p_info_blocks);
             }
 
-            return read_and_filter_whole_process_sequentially<TypeValue>(p_handle, p_info_blocks);
+            return read_and_filter_whole_process_sequentially<TypeValue>(p_info_blocks);
         }
 
         if (m_force_parallel || (p_values.get_amount_values() >= TRIGGER_CPU_PARALLEL_ITEMS)) {
-            return read_and_filter_values_parallel_cpu<TypeValue>(p_handle, p_values);
+            return read_and_filter_values_parallel_cpu<TypeValue>(p_values);
         }
 
-        return read_and_filter_values_sequentially<TypeValue>(p_handle, p_values);
+        return read_and_filter_values_sequentially<TypeValue>(p_values);
     }
 
 
