@@ -93,12 +93,18 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ut-asker.cpp" />
+    <ClCompile Include="ut-filter_less.cpp" />
+    <ClCompile Include="ut-filter_more.cpp" />
+    <ClCompile Include="ut-filter_range.cpp" />
     <ClCompile Include="ut-proc_reader.cpp" />
     <ClCompile Include="ut-proc_table.cpp" />
     <ClCompile Include="ut-proc_writer.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ut-filter_less.h" />
+    <ClInclude Include="ut-filter_more.h" />
+    <ClInclude Include="ut-filter_range.h" />
     <ClInclude Include="ut-proc_reader.h" />
     <ClInclude Include="ut-proc_writer.h" />
     <ClInclude Include="ut-value.h" />

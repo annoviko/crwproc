@@ -26,6 +26,10 @@ event state_search::operator()(context& p_context) {
         std::size_t reported_progress = 0;
         proc_reader reader(p_context.get_proc_info(), filter);
         auto observer = [&reported_progress](std::size_t p_progress) {
+            if (p_progress > 100) {
+                return;
+            }
+
             std::size_t bars_to_display = (p_progress - reported_progress) / 2;
             if (bars_to_display != 0) {
                 reported_progress = p_progress;

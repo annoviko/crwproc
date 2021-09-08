@@ -58,6 +58,8 @@ public:
 
     void add_value(const proc_pointer& p_pointer);
 
+    void shrink_borders_using_values(const std::size_t p_value_size);
+
     const raw_memory& get_memory() const;
 
     void set_memory(const raw_memory& p_memory);

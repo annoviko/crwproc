@@ -35,11 +35,21 @@ public: /* template filter contract section */
 public: /* class specific section */
     template <typename TypeValue>
     void set_begin_value(TypeValue p_value) {
+        m_begin.set(p_value);
+    }
+
+    template <>
+    void set_begin_value<std::string>(std::string p_value) {
         m_begin.set(p_value, m_type);
     }
 
     template <typename TypeValue>
     void set_end_value(TypeValue p_value) {
+        m_end.set(p_value);
+    }
+
+    template <>
+    void set_end_value<std::string>(std::string p_value) {
         m_end.set(p_value, m_type);
     }
 

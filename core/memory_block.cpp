@@ -60,12 +60,25 @@ proc_pointer_collection& memory_block::get_values() {
 
 
 void memory_block::add_value(const proc_pointer& p_pointer) {
-    const std::uint64_t address_value = p_pointer.get_address();
-
-    m_begin = std::min(m_begin, address_value);
-    m_end = std::max(m_end, address_value);
-
     m_values.push_back(p_pointer);
+}
+
+
+void memory_block::shrink_borders_using_values(const std::size_t p_value_size) {
+    if (m_values.empty()) {
+        return;
+    }
+
+    std::uint64_t begin = std::numeric_limits<std::uint64_t>::max();
+    std::uint64_t end = 0;
+
+    for (const auto& value : m_values) {
+        begin = std::min(begin, value.get_address());
+        end = std::max(end, value.get_address() + p_value_size);
+    }
+
+    m_begin = begin;
+    m_end = end;
 }
 
 

@@ -29,16 +29,14 @@
 using changer = std::function<void(void)>;
 
 
-template <typename TypeFilter, typename TypeValue>
-void test_template_find_value(TypeValue* p_value, const changer& p_func) {
+template <typename TypeFilter, typename TypeValue, typename TypeFilterUpdater>
+void test_template_find_value(TypeValue* p_value, const changer& p_value_updater, const TypeFilterUpdater& p_filter_updater) {
     std::cout << "[DEBUG] Addr: (" << (void*)p_value << "-" << (void*)p_value << ")" << std::endl;
 
     std::size_t pid = static_cast<std::size_t>(GetCurrentProcessId());
     proc_info info = proc_table().get().at(pid);
 
-    type_desc type = type_desc::create<TypeValue>();
-    TypeFilter filter(type);
-    filter.set_value(*p_value);
+    TypeFilter filter = p_filter_updater();
     search_result result = proc_reader(info, filter).read_and_filter();
 
     /* In case of heap the operation system might not be ready to provide information about memory block allocations, need to wait when these information is going to available. */
@@ -53,10 +51,9 @@ void test_template_find_value(TypeValue* p_value, const changer& p_func) {
     const static std::size_t attempts_limit = 10;
 
     for (std::size_t i = 0; (i < attempts_limit) && (result.get_amount_values() > 1); i++) {
-        p_func();
+        p_value_updater();
 
-        TypeFilter updated_filter = TypeFilter(type);
-        updated_filter.set_value(*p_value);
+        TypeFilter updated_filter = p_filter_updater();
 
         result = proc_reader(info, updated_filter).read_and_filter(result);
 
@@ -75,4 +72,18 @@ void test_template_find_value(TypeValue* p_value, const changer& p_func) {
     }
 
     FAIL() << "Value is not found";
+}
+
+
+
+template <typename TypeFilter, typename TypeValue>
+void test_template_find_value(TypeValue* p_value, const changer& p_value_updater) {
+    auto filter_updater = [p_value]() {
+        type_desc type = type_desc::create<TypeValue>();
+        TypeFilter filter = TypeFilter(type);
+        filter.set_value(*p_value);
+        return filter;
+    };
+
+    test_template_find_value<TypeFilter>(p_value, p_value_updater, filter_updater);
 }

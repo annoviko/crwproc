@@ -382,7 +382,6 @@ private:
         const std::uint64_t region_size = p_block.get_region_size();
         std::shared_ptr<std::uint8_t[]> buffer(new std::uint8_t[region_size]);
 
-        m_bytes_read += region_size;
         if (!ReadProcessMemory(m_proc_handle(), (LPCVOID)p_block.get_begin(), (void*)buffer.get(), region_size, nullptr)) {
 #if 0
             std::cout << "[DEBUG] Block (" << (void*)p_block.get_begin() << "-" << (void*)p_block.get_end() << ") is not available due to " << GetLastError() << std::endl;
@@ -460,6 +459,9 @@ private:
             }
         }
 
+#if defined (SHRINK_BORDERS_FEATURE)
+        p_dummy.shrink_borders_using_values(sizeof(TypeValue));
+#endif
         return index;
     }
 
@@ -477,6 +479,8 @@ private:
                 return; /* all values are processed, no need to continue */
             }
         }
+
+        m_bytes_read += p_block.get_values().size() * sizeof(TypeValue);
     }
 
 
@@ -508,6 +512,10 @@ private:
                 p_dummy.add_value(proc_pointer::create(p_dummy.get_begin() + offset, actual_value));
             }
         }
+
+#if defined (SHRINK_BORDERS_FEATURE)
+        p_dummy.shrink_borders_using_values(sizeof(TypeValue));
+#endif
     }
 
 
@@ -612,6 +620,10 @@ private:
                     result.add_value(proc_pointer::create(p_base_address + offset, actual_value));
                 }
             }
+
+#if defined (SHRINK_BORDERS_FEATURE)
+            result.shrink_borders_using_values(sizeof(TypeValue));
+#endif
         }
 
         return result;
