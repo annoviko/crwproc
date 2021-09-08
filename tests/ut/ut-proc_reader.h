@@ -31,7 +31,7 @@ using changer = std::function<void(void)>;
 
 template <typename TypeFilter, typename TypeValue>
 void test_template_find_value(TypeValue* p_value, const changer& p_func) {
-    //std::cout << "Address:     " << (void*)p_value << " - " << (void*)p_value << std::endl;
+    std::cout << "[DEBUG] Addr: (" << (void*)p_value << "-" << (void*)p_value << ")" << std::endl;
 
     std::size_t pid = static_cast<std::size_t>(GetCurrentProcessId());
     proc_info info = proc_table().get().at(pid);

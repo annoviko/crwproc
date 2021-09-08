@@ -384,6 +384,17 @@ private:
 
         m_bytes_read += region_size;
         if (!ReadProcessMemory(m_proc_handle(), (LPCVOID)p_block.get_begin(), (void*)buffer.get(), region_size, nullptr)) {
+#if 0
+            std::cout << "[DEBUG] Block (" << (void*)p_block.get_begin() << "-" << (void*)p_block.get_end() << ") is not available due to " << GetLastError() << std::endl;
+
+            MEMORY_BASIC_INFORMATION memory_info;
+            VirtualQueryEx(m_proc_handle(), (LPCVOID)p_block.get_begin(), &memory_info, sizeof(memory_info));
+
+            std::cout << "[DEBUG] Info  (" << memory_info.BaseAddress << "-" << (void*) ((std::uint64_t) memory_info.BaseAddress + memory_info.RegionSize) << ") " <<
+                "protect = " << memory_info.Protect <<
+                ", alloc_protect = " << memory_info.AllocationProtect << 
+                ", state = " << memory_info.State << std::endl;
+#endif
             return nullptr;
         }
 
@@ -402,9 +413,10 @@ private:
                 return { };
             }
 
-            /* TODO: do we really need to consider blocks with protection 1? */
-            const std::size_t address_end = std::min(address + memory_info.RegionSize, p_block.get_end());
-            result.emplace_back(address, address_end);
+            if (memory_info.State == MEM_COMMIT) {  /* no need to consider block further if it was freed or reserved */
+                const std::size_t address_end = std::min(address + memory_info.RegionSize, p_block.get_end());
+                result.emplace_back(address, address_end);
+            }
         }
         
         return result;
@@ -425,6 +437,11 @@ private:
         std::uint8_t* raw_buffer = buffer.get();
 
         for (; (index < p_values.size()) && (p_values[index].get_address() < p_dummy.get_end()); index++) {
+            if (p_dummy.get_begin() > p_values[index].get_address()) {
+                /* Memory block was not allocated for this value because it is located in non-commit state (MEM_FREE or MEM_RESERVE). */
+                continue;
+            }
+
             const std::uint64_t offset = p_values[index].get_address() - p_dummy.get_begin();
 
             const TypeValue actual_value = *((TypeValue*)(raw_buffer + offset));
