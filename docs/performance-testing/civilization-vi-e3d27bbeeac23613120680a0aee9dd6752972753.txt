@@ -1,0 +1,23 @@
+filter_equal:
+- iterations:
+- - 1: 4.62458 seconds
+- - 2: 1.39831 seconds [found]
+
+filter_range:
+- iterations:
+- - 1: 5.47449 seconds (delta 1000)
+- - 2: 1.92786 seconds (delta 1000)
+- - 3: 0.993184 seconds (delta 1000)
+- - 4: 0.0122614 seconds (delta 1000)
+
+filter_more/filter_less:
+- iterations:
+- - 1: 3.70754 seconds (values 7648017024)
+- - 2: 5.10248 seconds (values 19024301)
+- - 3: 1.16398 seconds (values 3280801)
+- - 4: 0.861304 seconds (values 516083)
+- - 5: 0.818339 seconds (values 34527)
+- - 6: 0.527691 seconds (values 2949)
+- - 7: 0.793971 seconds (values 761)
+- - 8: 0.648573 seconds (values 388)
+- - 9: 0.106297 seconds (values 8)
