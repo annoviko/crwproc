@@ -392,7 +392,9 @@ private:
             We should ignore freed/reserved or protected blocks. And consider only commit-blocks that are available
             for reading. The block splitting is not the best solution, the same raise condition might happend again.
             For that purpose a virtual block should be created, when it is not retrieved as a memory patch, but every
-            value is checked separatly.
+            value is checked separately.
+
+            The function still returns nullptr, but the its client should handle this situation.
 
             */
 #if 0
@@ -435,13 +437,43 @@ private:
 
 
     template <typename TypeValue>
+    inline void insert_if_satisfies(const TypeValue p_actual_value, const proc_pointer& p_pointer, memory_block& p_dummy) const {
+        bool is_satisfying = false;
+        if constexpr (crwproc::traits::is_any<TypeFilter, filter_more, filter_less>::value) {
+            const TypeValue previous_value = p_pointer.get_value().get<TypeValue>();
+            is_satisfying = m_filter.is_satisfying(p_actual_value, previous_value);
+        }
+        else {
+            is_satisfying = m_filter.is_satisfying(p_actual_value);
+        }
+
+        if (is_satisfying) {
+            p_dummy.add_value(proc_pointer::create(p_pointer.get_address(), p_actual_value));
+        }
+    }
+
+
+    template <typename TypeValue>
     inline std::size_t read_and_filter_values_dummy_block(const proc_pointer_collection& p_values, const std::size_t p_values_index, memory_block& p_dummy) const {
         std::size_t index = p_values_index;
 
         std::shared_ptr<std::uint8_t[]> buffer = read_memory_for_block(p_dummy);
         if (buffer == nullptr) {
-            /* skip values for this region */
-            for (; (index < p_values.size()) && (p_values[index].get_address() < p_dummy.get_end()); index++) { }
+            /* 
+
+            Block belongs to dynamic memory and has been just changed (raise condition), try to get each value separately.
+            We still fill the block with defined borders. It will be splitted in the next iteration if it is needed.
+
+            */
+            std::uint8_t value_buffer[sizeof(TypeValue)];
+            for (; (index < p_values.size()) && (p_values[index].get_address() < p_dummy.get_end()); index++) {
+                if (!ReadProcessMemory(m_proc_handle(), (LPCVOID)p_values[index].get_address(), (void*)value_buffer, sizeof(TypeValue), nullptr)) {
+                    continue;   /* value is located in a block that was freed or reserved (MEM_FREE or MEM_RESERVE) */
+                }
+
+                const TypeValue actual_value = *((TypeValue*)value_buffer);
+                insert_if_satisfies(actual_value, p_values[index], p_dummy);
+            }
             return index;
         }
 
@@ -454,21 +486,9 @@ private:
             }
 
             const std::uint64_t offset = p_values[index].get_address() - p_dummy.get_begin();
-
             const TypeValue actual_value = *((TypeValue*)(raw_buffer + offset));
 
-            bool is_satisfying = false;
-            if constexpr (crwproc::traits::is_any<TypeFilter, filter_more, filter_less>::value) {
-                const TypeValue previous_value = p_values[index].get_value().get<TypeValue>();
-                is_satisfying = m_filter.is_satisfying(actual_value, previous_value);
-            }
-            else {
-                is_satisfying = m_filter.is_satisfying(actual_value);
-            }
-
-            if (is_satisfying) {
-                p_dummy.add_value(proc_pointer::create(p_values[index].get_address(), actual_value));
-            }
+            insert_if_satisfies(actual_value, p_values[index], p_dummy);
         }
 
 #if defined (SHRINK_BORDERS_FEATURE)
