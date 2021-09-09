@@ -99,6 +99,8 @@
     <ClCompile Include="ut-proc_reader.cpp" />
     <ClCompile Include="ut-proc_table.cpp" />
     <ClCompile Include="ut-proc_writer.cpp" />
+    <ClCompile Include="ut-traits.cpp" />
+    <ClCompile Include="ut-type_desc.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -107,7 +109,7 @@
     <ClInclude Include="ut-filter_range.h" />
     <ClInclude Include="ut-proc_reader.h" />
     <ClInclude Include="ut-proc_writer.h" />
-    <ClInclude Include="ut-value.h" />
+    <ClInclude Include="ut-type_desc.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

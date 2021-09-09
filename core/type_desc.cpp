@@ -17,17 +17,19 @@ type_desc::type_desc(const value_type p_type, const std::size_t p_size, const bo
     switch (m_type) {
     case value_type::doubling:
         m_size = sizeof(double);
+        m_signed = true;
         break;
 
     case value_type::floating:
         m_size = sizeof(float);
+        m_signed = true;
         break;
     }
 }
 
 
 bool type_desc::is_valid() const {
-    return m_type == value_type::invalid;
+    return m_type != value_type::invalid;
 }
 
 

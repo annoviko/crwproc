@@ -383,6 +383,18 @@ private:
         std::shared_ptr<std::uint8_t[]> buffer(new std::uint8_t[region_size]);
 
         if (!ReadProcessMemory(m_proc_handle(), (LPCVOID)p_block.get_begin(), (void*)buffer.get(), region_size, nullptr)) {
+            /*
+
+            Technically it is possible to be here due to raise condition, despite we have just checked blocks. 
+            This raise condition happens due to the HEAP pages - they are dynamic.
+
+            Thus, a block has been just splitted because some parts of the block were freed/reserved or protected.
+            We should ignore freed/reserved or protected blocks. And consider only commit-blocks that are available
+            for reading. The block splitting is not the best solution, the same raise condition might happend again.
+            For that purpose a virtual block should be created, when it is not retrieved as a memory patch, but every
+            value is checked separatly.
+
+            */
 #if 0
             std::cout << "[DEBUG] Block (" << (void*)p_block.get_begin() << "-" << (void*)p_block.get_end() << ") is not available due to " << GetLastError() << std::endl;
 

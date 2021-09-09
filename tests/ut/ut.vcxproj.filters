@@ -46,11 +46,14 @@
     <ClCompile Include="ut-filter_less.cpp">
       <Filter>tests</Filter>
     </ClCompile>
+    <ClCompile Include="ut-type_desc.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="ut-traits.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ut-value.h">
-      <Filter>tests</Filter>
-    </ClInclude>
     <ClInclude Include="ut-proc_reader.h">
       <Filter>tests</Filter>
     </ClInclude>
@@ -67,6 +70,9 @@
       <Filter>tests</Filter>
     </ClInclude>
     <ClInclude Include="ut-filter_less.h">
+      <Filter>tests</Filter>
+    </ClInclude>
+    <ClInclude Include="ut-type_desc.h">
       <Filter>tests</Filter>
     </ClInclude>
   </ItemGroup>
