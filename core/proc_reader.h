@@ -390,11 +390,11 @@ private:
 
             Thus, a block has been just splitted because some parts of the block were freed/reserved or protected.
             We should ignore freed/reserved or protected blocks. And consider only commit-blocks that are available
-            for reading. The block splitting is not the best solution, the same raise condition might happend again.
-            For that purpose a virtual block should be created, when it is not retrieved as a memory patch, but every
-            value is checked separately.
+            for reading. The block splitting is not the best solution, because it was already splitted few moments 
+            before and the same raise condition might happend again. For that purpose blocks should be considered as
+            virtual blocks, when every value is checked separately instead of reading full memory region of the block.
 
-            The function still returns nullptr, but the its client should handle this situation.
+            The function still returns nullptr, but every caller should handle this situation properly.
 
             */
 #if 0
