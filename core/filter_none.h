@@ -11,21 +11,19 @@
 #include <iostream>
 #include <string>
 
-#include "value.h"
+#include "filter_base.h"
 
 
-class filter_none {
+class filter_none : public filter_base {
 public:
     filter_none() = default;
 
-public: /* template filter contract section */
-    bool is_valid() const;
+public:
+    bool is_valid() const override;
 
-    bool is_value_signed() const;
+    const type_desc& get_type() const override;
 
-    value::type get_value_type() const;
-
-    std::size_t get_value_size() const;
+    type_desc& get_type() override;
 
     template <typename TypeValue>
     bool is_satisfying(TypeValue p_value) const {
@@ -33,5 +31,5 @@ public: /* template filter contract section */
     }
 
 public:
-    friend std::ostream& operator<<(std::ostream& p_stream, const filter_none& p_info);
+    friend std::ostream& operator<<(std::ostream& p_stream, const filter_none& p_filter);
 };

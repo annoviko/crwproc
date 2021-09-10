@@ -9,39 +9,39 @@
 #pragma once
 
 #include <cstdint>
-#include <limits>
-#include <string>
 
-#include "value.h"
+#include "memory_value.h"
 
 
-struct proc_pointer {
+class proc_pointer {
 public:
     static constexpr std::uint64_t INVALID_ADDRESS = 0;
 
 private:
     std::uint64_t   m_address = INVALID_ADDRESS;
-    std::uint64_t   m_base_address = INVALID_ADDRESS;
-    value           m_value;
+    memory_value    m_value;
 
 public:
     proc_pointer() = default;
 
-    proc_pointer(const std::uint64_t p_address, const value& p_value);
+    proc_pointer(const std::uint64_t p_address);
 
-    proc_pointer(const std::uint64_t p_address, const std::uint64_t p_base_address, const value& p_value);
+    proc_pointer(const std::uint64_t p_address, const void* p_buffer, const std::size_t p_size);
 
 public:
     bool is_valid() const;
 
+    void invalidate();
+
     std::uint64_t get_address() const;
 
-    std::uint64_t get_base_address() const;
+    const memory_value& get_value() const;
 
-    value& get_value();
+    memory_value& get_value();
 
-    const value& get_value() const;
+public:
+    template <typename TypeValue>
+    static proc_pointer create(const std::uint64_t p_address, const TypeValue p_value) {
+        return proc_pointer(p_address, (void*)&p_value, sizeof(TypeValue));
+    }
 };
-
-
-using proc_pointer_sequence = std::vector<proc_pointer>;

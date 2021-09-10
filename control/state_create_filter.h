@@ -42,20 +42,20 @@ private:
 private:
     template <typename TypeFilter>
     void ask_filter(context& p_context) const {
-        value variable = asker::ask_blank_value();
+        type_desc type = asker::ask_type_desc();
 
         if constexpr (std::is_same<TypeFilter, filter_equal>::value) {
-            p_context.get_filter() = TypeFilter(variable);
+            p_context.get_filter() = TypeFilter(type);
 
             while (!filter_reader_value::read(p_context.get_filter())) { }
         }
         else if constexpr (std::is_same<TypeFilter, filter_range>::value) {
-            p_context.get_filter() = filter_range(variable, variable);
+            p_context.get_filter() = filter_range(type);
 
             while (!filter_reader_value::read(p_context.get_filter())) { }
         }
         else if constexpr (crwproc::traits::is_any<TypeFilter, filter_more, filter_less>::value) {
-            p_context.get_filter() = TypeFilter(variable);
+            p_context.get_filter() = TypeFilter(type);
         }
         else {
             static_assert(false);

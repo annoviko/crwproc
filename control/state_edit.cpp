@@ -29,32 +29,33 @@ event state_edit::operator()(context& p_context) {
 
 
 void state_edit::show_table(context& p_context) {
-    std::visit([&p_context](auto&& filter) {
-        proc_reader reader(p_context.get_proc_info(), filter);
-        p_context.get_user_table() = reader.read(p_context.get_user_table());
-    }, p_context.get_filter());
-
+    std::visit([&p_context]() {
+        for (auto& entry : p_context.get_user_table()) {
+            entry.refresh(p_context.get_proc_info());
+        }
+    });
 
     for (std::size_t i = 0; i < p_context.get_user_table().size(); i++) {
-        proc_pointer& pointer = p_context.get_user_table().at(i);
+        const edit_table_entry& entry = p_context.get_user_table().at(i);
 
         std::cout << std::right << std::setw(4) << i << ") " <<
-            "address: " << std::setw(10) << (void*) pointer.get_address() << "| " << 
-            "type: "    << std::setw(10) << value::type_to_string(pointer.get_value().get_type()) << "| " <<
-            "value: "   << std::setw(10) << pointer.get_value().get<std::string>() << std::endl;
+            "address: " << std::setw(10) << (void*)entry.get_pointer().get_address() << " | " <<
+            "type: "    << std::setw(10) << entry.get_type() << " | " <<
+            "value: "   << std::setw(10) << entry.get_pointer().get_value().to_string(entry.get_type()) << std::endl;
     }
 
     std::cout << std::endl;
 }
 
 
-event state_edit::ask_next_action(context& p_context) const {
+event state_edit::ask_next_action(context& p_context) {
     std::cout << "Please enter the command to continue: ";
 
     std::string user_input;
     std::cin >> user_input;
 
     event action = command::to_event(user_input);
+
     std::visit([&user_input, &p_context, &action](auto&& instance) {
         using EventType = std::decay_t<decltype(instance)>;
         if constexpr (std::is_same_v<EventType, event_error>) {
@@ -73,19 +74,14 @@ event state_edit::ask_next_action(context& p_context) const {
             std::string string_value;
             std::cin >> string_value;
 
-            proc_pointer new_value = p_context.get_user_table().at(index_value);
-            new_value.get_value().set(string_value);
-
-            proc_writer writer(p_context.get_proc_info());
-            if (!writer.write(new_value)) {
+            edit_table_entry& entry = p_context.get_user_table().at(index_value);
+            if (!entry.set_value(string_value, p_context.get_proc_info())) {
                 console::error_and_wait_key("Error: impossible to write value to the process.");
                 return;
             }
-
-            p_context.get_found_values().at(index_value) = new_value;
         }
         else if (std::is_same_v<EventType, event_remove>) {
-            std::size_t index_value = asker::ask_index(p_context.get_found_values().size(), [&p_context](std::size_t p_index) {
+            std::size_t index_value = asker::ask_index(p_context.get_user_table().size(), [&p_context](std::size_t p_index) {
                 p_context.get_user_table().erase(p_context.get_user_table().begin() + p_index);
             });
         }

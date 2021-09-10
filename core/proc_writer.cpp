@@ -21,26 +21,26 @@ proc_writer::proc_writer(const proc_info& p_info) :
 { }
 
 
-bool proc_writer::write(const proc_pointer& p_pointer) const {
+bool proc_writer::write(const proc_pointer& p_pointer, const type_desc& p_type) const {
     proc_handle proc_handler(m_proc_info.pid(), proc_handle::access::write);
 
-    switch (p_pointer.get_value().get_type()) {
-    case value::type::integral:
-        return write_integral(proc_handler, p_pointer);
+    switch (p_type.get_type()) {
+    case value_type::integral:
+        return write_integral(proc_handler, p_pointer, p_type);
 
-    case value::type::floating:
+    case value_type::floating:
         return write_value(proc_handler, p_pointer.get_address(), p_pointer.get_value().get<float>());
 
-    case value::type::doubling:
+    case value_type::doubling:
         return write_value(proc_handler, p_pointer.get_address(), p_pointer.get_value().get<double>());
     }
 
-    throw std::logic_error("Impossible to write value to the process memory (reason: unknown value type '" + std::to_string(static_cast<std::uint64_t>(p_pointer.get_value().get_type())) + "' is detected).");
+    throw std::logic_error("Impossible to write value to the process memory (reason: unknown value type '" + std::to_string(static_cast<std::uint64_t>(p_type.get_type())) + "' is detected).");
 }
 
 
-bool proc_writer::write_integral(const proc_handle& p_handle, const proc_pointer& p_pointer) const {
-    switch (p_pointer.get_value().get_size()) {
+bool proc_writer::write_integral(const proc_handle& p_handle, const proc_pointer& p_pointer, const type_desc& p_type) const {
+    switch (p_type.get_size()) {
     case 1:
         return write_value(p_handle, p_pointer.get_address(), p_pointer.get_value().get<std::uint8_t>());
 
@@ -54,5 +54,5 @@ bool proc_writer::write_integral(const proc_handle& p_handle, const proc_pointer
         return write_value(p_handle, p_pointer.get_address(), p_pointer.get_value().get<std::uint64_t>());
     }
 
-    throw std::logic_error("Impossible to write value to the process memory (reason: incorrect value size '" + std::to_string(p_pointer.get_value().get_size()) + "').");
+    throw std::logic_error("Impossible to write value to the process memory (reason: incorrect value size '" + std::to_string(p_type.get_size()) + "').");
 }

@@ -62,6 +62,9 @@
     <ClCompile Include="state_address.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="edit_table_entry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="asker.h">
@@ -122,6 +125,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="state_address.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="edit_table_entry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="edit_table.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
