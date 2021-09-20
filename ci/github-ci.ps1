@@ -9,9 +9,80 @@ $ProjectUtName = "ut.vcxproj"
 $BinaryUtPath = "$SolutionPath\x64\Release"
 $BinaryUtName = "ut.exe"
 
+$InstallerMiniconda = "Miniconda3-4.7.12.1-Windows-x86_64.exe"
+$UrlInstallerMiniconda = "https://repo.continuum.io/miniconda/" + $InstallerMiniconda
+$MinicondaPath = "C:\Specific-Miniconda"
+
 
 function Announce-Step($Message) {
 	Write-Host "[New Step] $Message" -ForegroundColor green
+}
+
+
+function Download-Miniconda() {
+	Announce-Step "Download Miniconda."
+	
+	$WebClient = New-Object System.Net.WebClient
+
+    $Attempts = 3
+    for($i = 0; $i -lt $Attempts; $i++){
+        try {
+            $WebClient.DownloadFile($UrlInstallerMiniconda, $InstallerMiniconda)
+            break
+        }
+        Catch [Exception]{
+			Write-Host "[Info] Miniconda downloading failed (attempts: '$i')." -ForegroundColor Green
+            Start-Sleep 1
+        }
+    }
+	
+    if (Test-Path $InstallerMiniconda) {
+        Write-Host "[Info] Miniconda installer file has been download to '$InstallerMiniconda'." -ForegroundColor Green
+    }
+    else {
+        Write-Error -Message "[Error] Miniconda installer has not been downloaded." -Category ResourceUnavailable
+        Exit 1
+    }
+}
+
+
+function Install-Miniconda() {
+	Announce-Step "Install Miniconda."
+
+	$InstallArguments = "/InstallationType=AllUsers /S /AddToPath=1 /RegisterPython=1 /D=$MinicondaPath"
+
+	Start-Process -FilePath $InstallerMiniconda -ArgumentList $InstallArguments -Wait -Passthru
+	
+	if (Test-Path $MinicondaPath) {
+        Write-Host "[Info] Miniconda has been successfully installed to '$MinicondaPath'." -ForegroundColor Green
+        Remove-Item $InstallerMiniconda
+    }
+    else {
+        Write-Error -Message "[Info] Miniconda has not been installed to '$MinicondaPath' with error code: '$LastExitCode'."
+        Exit 1
+    }
+	
+	$env:PATH = "$env:PATH;$MinicondaPath\Scripts"
+}
+
+
+function Install-MinicondaPackages() {
+	Announce-Step "Install Miniconda Packages."
+	
+	conda config --set always_yes true
+	conda create -q -n test-environment python=3.9
+	conda install -q -n test-environment -c conda-forge robotframework
+	
+	activate test-environment
+	
+	$env:PYTHON_INTERPRETER = "$MinicondaPath\envs\test-environment\python.exe";
+    $env:PYTHONPATH = "$MinicondaPath\envs\test-environment";
+    
+    $env:PATH = "$MinicondaPath\envs\test-environment;$env:PATH";
+    $env:PATH = "$MinicondaPath\envs\test-environment\Scripts;$env:PATH";
+    $env:PATH = "$MinicondaPath\envs\test-environment\Library\bin;$env:PATH";
+	
+	conda info -a
 }
 
 
@@ -51,6 +122,25 @@ function Run-UnitTests {
 }
 
 
+function Run-SctTests {
+	Announce-Step "Run Sct-Tests."
+	
+	Download-Miniconda
+	Install-Miniconda
+	Install-MinicondaPackages
+	
+	cd tests\sct
+	python -m robot.run *.robot
+
+	if ($LastExitCode -ne 0) {
+		Write-Error "[Error] Sct-testing failed with error code '$LastExitCode'."
+		Exit 1
+	}
+	
+	cd ..\..
+}
+
+
 function Run-BuildTestJob {
 	Announce-Step "Run Build Test Job."
 	
@@ -58,6 +148,7 @@ function Run-BuildTestJob {
 	
 	Build-UnitTests
 	Run-UnitTests
+	Run-SctTests
 }
 
 
