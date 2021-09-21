@@ -19,7 +19,10 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "crwproc", "crwproc\crwproc.vcxproj", "{99C96D9C-F394-4E6A-9C51-5F3AF76887AC}"
 	ProjectSection(ProjectDependencies) = postProject
 		{E27FD38A-7BAD-4A46-AA13-AF56E52CD18F} = {E27FD38A-7BAD-4A46-AA13-AF56E52CD18F}
+		{CE70A6D1-D46A-4683-AE28-C179577C1605} = {CE70A6D1-D46A-4683-AE28-C179577C1605}
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "log", "log\log.vcxproj", "{CE70A6D1-D46A-4683-AE28-C179577C1605}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,6 +56,14 @@ Global
 		{99C96D9C-F394-4E6A-9C51-5F3AF76887AC}.Release|x64.ActiveCfg = Release|x64
 		{99C96D9C-F394-4E6A-9C51-5F3AF76887AC}.Release|x64.Build.0 = Release|x64
 		{99C96D9C-F394-4E6A-9C51-5F3AF76887AC}.Release|x86.ActiveCfg = Release|x64
+		{CE70A6D1-D46A-4683-AE28-C179577C1605}.Debug|x64.ActiveCfg = Debug|x64
+		{CE70A6D1-D46A-4683-AE28-C179577C1605}.Debug|x64.Build.0 = Debug|x64
+		{CE70A6D1-D46A-4683-AE28-C179577C1605}.Debug|x86.ActiveCfg = Debug|Win32
+		{CE70A6D1-D46A-4683-AE28-C179577C1605}.Debug|x86.Build.0 = Debug|Win32
+		{CE70A6D1-D46A-4683-AE28-C179577C1605}.Release|x64.ActiveCfg = Release|x64
+		{CE70A6D1-D46A-4683-AE28-C179577C1605}.Release|x64.Build.0 = Release|x64
+		{CE70A6D1-D46A-4683-AE28-C179577C1605}.Release|x86.ActiveCfg = Release|Win32
+		{CE70A6D1-D46A-4683-AE28-C179577C1605}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
