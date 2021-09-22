@@ -62,7 +62,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>control.lib;core.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>log.lib;control.lib;core.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -83,7 +83,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>control.lib;core.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>log.lib;control.lib;core.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -96,6 +96,7 @@
     <ClCompile Include="ut-filter_less.cpp" />
     <ClCompile Include="ut-filter_more.cpp" />
     <ClCompile Include="ut-filter_range.cpp" />
+    <ClCompile Include="ut-logging.cpp" />
     <ClCompile Include="ut-proc_reader.cpp" />
     <ClCompile Include="ut-proc_table.cpp" />
     <ClCompile Include="ut-proc_writer.cpp" />

@@ -97,3 +97,9 @@ event state_choose_proc::process_user_command(const std::string& p_command) cons
 
     return event_to_handle;
 }
+
+
+std::ostream& operator<<(std::ostream& p_stream, const state_choose_proc& p_state) {
+    p_stream << "state_choose_proc";
+    return p_stream;
+}

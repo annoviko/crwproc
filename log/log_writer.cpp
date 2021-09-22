@@ -17,7 +17,8 @@
 
 
 log_writer::log_writer(const std::string& p_prefix) :
-    m_stream(generate_filename(p_prefix)),
+    m_filename(generate_filename(p_prefix)),
+    m_stream(m_filename),
     m_writer_thread(&log_writer::thread_writer, this)
 { }
 
@@ -47,6 +48,11 @@ void log_writer::log(const std::string& p_message, const log_level p_level, cons
     if (m_buffer.size() > TRIGGER_FLUSH_LINES_AMOUNT) {
         send_flush_request();
     }
+}
+
+
+const std::string& log_writer::get_filename() const {
+    return m_filename;
 }
 
 

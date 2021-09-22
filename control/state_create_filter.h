@@ -39,6 +39,9 @@ private:
 
     filter_type ask_filter_type() const;
 
+public:
+    friend std::ostream& operator<<(std::ostream& p_stream, const state_create_filter& p_state);
+
 private:
     template <typename TypeFilter>
     void ask_filter(context& p_context) const {

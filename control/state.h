@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <ostream>
 #include <variant>
 
 #include "state_address.h"
@@ -32,3 +33,6 @@ using state = std::variant<
     state_help,
     state_exit
 >;
+
+
+std::ostream& operator<<(std::ostream& p_stream, const state& p_state);

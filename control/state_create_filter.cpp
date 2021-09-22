@@ -92,3 +92,9 @@ state_create_filter::filter_type state_create_filter::ask_filter_type() const {
 
     return filter_type::last_item;
 }
+
+
+std::ostream& operator<<(std::ostream& p_stream, const state_create_filter& p_state) {
+    p_stream << "state_create_filter";
+    return p_stream;
+}

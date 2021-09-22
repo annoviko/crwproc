@@ -52,3 +52,9 @@ std::size_t state_help::get_longest_command_name() {
 
     return result;
 }
+
+
+std::ostream& operator<<(std::ostream& p_stream, const state_help& p_state) {
+    p_stream << "state_help";
+    return p_stream;
+}

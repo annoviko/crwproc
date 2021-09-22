@@ -67,7 +67,7 @@
       <AdditionalDependencies>core.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib>
-      <AdditionalDependencies>core.lib</AdditionalDependencies>
+      <AdditionalDependencies>log.lib;core.lib</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
@@ -95,7 +95,7 @@
       <AdditionalDependencies>core.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib>
-      <AdditionalDependencies>core.lib</AdditionalDependencies>
+      <AdditionalDependencies>log.lib;core.lib</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
@@ -106,8 +106,10 @@
     <ClCompile Include="command.cpp" />
     <ClCompile Include="context.cpp" />
     <ClCompile Include="edit_table_entry.cpp" />
+    <ClCompile Include="event.cpp" />
     <ClCompile Include="filter_reader_value.cpp" />
     <ClCompile Include="intro_builder.cpp" />
+    <ClCompile Include="state.cpp" />
     <ClCompile Include="state_address.cpp" />
     <ClCompile Include="state_base.cpp" />
     <ClCompile Include="state_choose_proc.cpp" />

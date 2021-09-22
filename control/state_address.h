@@ -34,4 +34,7 @@ private:
     void show_value(const context& p_context) const;
 
     event ask_next_action(context& p_context);
+
+public:
+    friend std::ostream& operator<<(std::ostream& p_stream, const state_address& p_state);
 };

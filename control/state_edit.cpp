@@ -89,3 +89,9 @@ event state_edit::ask_next_action(context& p_context) {
 
     return action;
 }
+
+
+std::ostream& operator<<(std::ostream& p_stream, const state_edit& p_state) {
+    p_stream << "state_edit";
+    return p_stream;
+}

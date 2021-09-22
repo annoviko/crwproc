@@ -20,4 +20,7 @@
 class state_search : public state_base {
 public:
     event operator()(context& p_context);
+
+public:
+    friend std::ostream& operator<<(std::ostream& p_stream, const state_search& p_state);
 };

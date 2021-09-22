@@ -23,6 +23,7 @@
 
 class log_writer {
 private:
+    std::string m_filename;
     std::ofstream m_stream;
 
     std::thread m_writer_thread;
@@ -45,6 +46,8 @@ public:
 
 public:
     void log(const std::string& p_message, const log_level p_level, const std::string& p_filename, const std::size_t p_line);
+
+    const std::string& get_filename() const;
 
 private:
     std::string generate_filename(const std::string& p_prefix) const;

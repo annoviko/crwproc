@@ -24,3 +24,9 @@ event state_update_filter::operator()(context& p_context) {
 
     return event_error{};
 }
+
+
+std::ostream& operator<<(std::ostream& p_stream, const state_update_filter& p_state) {
+    p_stream << "state_update_filter";
+    return p_stream;
+}

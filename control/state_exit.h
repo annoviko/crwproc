@@ -15,4 +15,7 @@
 class state_exit {
 public:
     event operator()(context& p_context);
+
+public:
+    friend std::ostream& operator<<(std::ostream& p_stream, const state_exit& p_state);
 };

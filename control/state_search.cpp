@@ -69,3 +69,9 @@ event state_search::operator()(context& p_context) {
 
     return ask_next_action(p_context);
 }
+
+
+std::ostream& operator<<(std::ostream& p_stream, const state_search& p_state) {
+    p_stream << "state_search";
+    return p_stream;
+}

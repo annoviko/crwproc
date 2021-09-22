@@ -76,3 +76,9 @@ event state_address::ask_next_action(context& p_context) {
 
     return action;
 }
+
+
+std::ostream& operator<<(std::ostream& p_stream, const state_address& p_state) {
+    p_stream << "state_address";
+    return p_stream;
+}

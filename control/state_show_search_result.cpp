@@ -106,3 +106,8 @@ void state_show_search_result::build_view(context& p_context) {
     m_is_complete_view = true;
 }
 
+
+std::ostream& operator<<(std::ostream& p_stream, const state_show_search_result& p_state) {
+    p_stream << "state_show_search_result";
+    return p_stream;
+}
