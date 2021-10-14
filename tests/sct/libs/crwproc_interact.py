@@ -19,4 +19,4 @@ def crwproc_exit(application):
 
 
 def crwproc_press_any_key(application):
-    proc_interact.send_command(application, "\r\n")
+    proc_interact.send_command(application, "\n")
