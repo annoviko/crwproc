@@ -9,6 +9,7 @@
 #pragma once
 
 
+#include <ostream>
 #include <type_traits>
 #include <variant>
 
@@ -81,3 +82,19 @@ event continue_until_event_is_not(const FunctionType& p_function) {
     return current_event;
 }
 
+
+std::ostream& operator<<(std::ostream& p_stream, const event& p_event);
+std::ostream& operator<<(std::ostream& p_stream, const event_choose& p_event);
+std::ostream& operator<<(std::ostream& p_stream, const event_filter& p_event);
+std::ostream& operator<<(std::ostream& p_stream, const event_update& p_event);
+std::ostream& operator<<(std::ostream& p_stream, const event_show& p_event);
+std::ostream& operator<<(std::ostream& p_stream, const event_add& p_event);
+std::ostream& operator<<(std::ostream& p_stream, const event_edit& p_event);
+std::ostream& operator<<(std::ostream& p_stream, const event_set& p_event);
+std::ostream& operator<<(std::ostream& p_stream, const event_refresh& p_event);
+std::ostream& operator<<(std::ostream& p_stream, const event_remove& p_event);
+std::ostream& operator<<(std::ostream& p_stream, const event_help& p_event);
+std::ostream& operator<<(std::ostream& p_stream, const event_address& p_event);
+std::ostream& operator<<(std::ostream& p_stream, const event_done& p_event);
+std::ostream& operator<<(std::ostream& p_stream, const event_error& p_event);
+std::ostream& operator<<(std::ostream& p_stream, const event_exit& p_event);

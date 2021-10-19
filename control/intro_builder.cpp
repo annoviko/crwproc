@@ -8,6 +8,8 @@
 
 #include "intro_builder.h"
 
+#include "log/logging.h"
+
 #include <exception>
 #include <memory>
 
@@ -29,12 +31,14 @@ void intro_builder::show(const context& p_context) {
 void intro_builder::redraw(const context& p_context) const {
     position original_position = console::get_cursor_position();
 
-    console::set_cursor_position(m_begin_position);
-
     const int lines_to_clean = m_end_position.y - m_begin_position.y - 1;
     if (lines_to_clean < 0) {
-        throw std::logic_error("Error: impossible to redraw intro.");
+        /* it is possible in case of redefined output stream (sct-testing as an example). */
+        LOG_WARNING("Impossible to redraw intro (probably output stream is redefined). Just draw intro.")
+        show(p_context, m_intro);
     }
+
+    console::set_cursor_position(m_begin_position);
 
     console::clear_lines(lines_to_clean);
     show(p_context, m_intro);

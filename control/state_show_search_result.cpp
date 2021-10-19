@@ -14,6 +14,8 @@
 
 #include "core/console.h"
 
+#include "log/logging.h"
+
 #include "asker.h"
 #include "edit_table_entry.h"
 #include "intro_builder.h"
@@ -52,6 +54,8 @@ event state_show_search_result::ask_next_action(context& p_context) {
 
     std::string user_input;
     std::cin >> user_input;
+
+    LOG_INFO("User input: '" << user_input << "'.");
 
     event action = command::to_event(user_input);
     std::visit([this, &user_input, &p_context, &action](auto&& instance) {
@@ -106,3 +110,8 @@ void state_show_search_result::build_view(context& p_context) {
     m_is_complete_view = true;
 }
 
+
+std::ostream& operator<<(std::ostream& p_stream, const state_show_search_result& p_state) {
+    p_stream << "state_show_search_result";
+    return p_stream;
+}

@@ -23,4 +23,7 @@ private:
 
 private:
     static std::size_t get_longest_command_name();
+
+public:
+    friend std::ostream& operator<<(std::ostream& p_stream, const state_help& p_state);
 };

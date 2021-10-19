@@ -8,6 +8,8 @@
 
 #include "filter_reader_value.h"
 
+#include "log/logging.h"
+
 
 bool filter_reader_value::read(filter& p_filter) {
     bool reading_result = false;
@@ -28,11 +30,15 @@ bool filter_reader_value::read(filter& p_filter) {
 bool filter_reader_value::read_filter(filter_equal& p_filter) {
     const std::string value = ask_value("Enter value that is going to be searched in the process: ", p_filter);
     if (value.empty()) {
+        LOG_INFO("New value is empty for filter '" << p_filter << "'.");
         return false;
     }
 
     std::cout << std::endl;
     p_filter.set_value(value);
+
+    LOG_INFO("New value '" << value << "' for filter '" << p_filter << "'.");
+
     return true;
 }
 

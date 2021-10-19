@@ -14,6 +14,8 @@
 
 #include "core/console.h"
 
+#include "log/logging.h"
+
 #include "asker.h"
 #include "intro_builder.h"
 
@@ -23,6 +25,14 @@ const std::unordered_map<state_create_filter::filter_type, std::string> state_cr
     { state_create_filter::filter_type::range, "Filter Range - to search value in range (from 'A' to 'B')" },
     { state_create_filter::filter_type::more, "Filter More - to search value that are greater than before (x[t] > x[t-1])" },
     { state_create_filter::filter_type::less, "Filter Less - to search value that are smaller than before (x[t] < x[t-1])" }
+};
+
+
+const std::unordered_map<state_create_filter::filter_type, std::string> state_create_filter::FILTER_TYPE_SHORT_DICT = {
+    { state_create_filter::filter_type::equal, "Filter Equal" },
+    { state_create_filter::filter_type::range, "Filter Range)" },
+    { state_create_filter::filter_type::more, "Filter More" },
+    { state_create_filter::filter_type::less, "Filter Less" }
 };
 
 
@@ -40,6 +50,8 @@ void state_create_filter::create_filter(context& p_context) const {
     while (type == filter_type::last_item) {
         type = ask_filter_type();
     }
+
+    LOG_INFO("Filter type to create '" << type << "'.");
 
     switch (type) {
     case filter_type::equal:
@@ -91,4 +103,23 @@ state_create_filter::filter_type state_create_filter::ask_filter_type() const {
     }
 
     return filter_type::last_item;
+}
+
+
+std::ostream& operator<<(std::ostream& p_stream, const state_create_filter& p_state) {
+    p_stream << "state_create_filter";
+    return p_stream;
+}
+
+
+std::ostream& operator<<(std::ostream& p_stream, const state_create_filter::filter_type& p_state) {
+    auto iter = state_create_filter::FILTER_TYPE_SHORT_DICT.find(p_state);
+    if (iter == state_create_filter::FILTER_TYPE_SHORT_DICT.end()) {
+        p_stream << "Unknown Filter";
+    }
+    else {
+        p_stream << iter->second;
+    }
+
+    return p_stream;
 }
