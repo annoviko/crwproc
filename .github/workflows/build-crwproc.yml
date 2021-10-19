@@ -9,6 +9,8 @@ jobs:
     steps:
     - name: Clone repository
       uses: actions/checkout@v2
+      with: 
+        submodules: recursive
 
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
