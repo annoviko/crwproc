@@ -113,7 +113,7 @@ Set Subject Variable
     Should Be Equal     ${status}    ${202}
 
     Check Subject Variable   ${type}   ${value}
-    Sleep   2s
+    Sleep   3s
 
 
 Check Subject Variable
