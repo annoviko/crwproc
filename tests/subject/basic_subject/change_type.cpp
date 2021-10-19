@@ -1,3 +1,11 @@
+/*!
+
+@authors Andrei Novikov (spb.andr@yandex.ru)
+@copyright BSD-3-Clause
+
+*/
+
+
 #include "change_type.h"
 
 #include <unordered_map>

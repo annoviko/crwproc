@@ -1,3 +1,11 @@
+/*!
+
+@authors Andrei Novikov (spb.andr@yandex.ru)
+@copyright BSD-3-Clause
+
+*/
+
+
 #include "rest_server.h"
 
 #include <string>

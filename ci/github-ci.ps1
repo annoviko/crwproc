@@ -9,10 +9,6 @@ $ProjectUtName = "ut.vcxproj"
 $BinaryUtPath = "$SolutionPath\x64\Release"
 $BinaryUtName = "ut.exe"
 
-$InstallerMiniconda = "Miniconda3-4.7.12.1-Windows-x86_64.exe"
-$UrlInstallerMiniconda = "https://repo.continuum.io/miniconda/" + $InstallerMiniconda
-$MinicondaPath = "C:\Specific-Miniconda"
-
 
 function Announce-Step($Message) {
     Write-Host "[New Step] $Message" -ForegroundColor green
