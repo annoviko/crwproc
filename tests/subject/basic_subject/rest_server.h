@@ -21,6 +21,4 @@ public:
 
 public:
     void run();
-
-    bool handle_request();
 };

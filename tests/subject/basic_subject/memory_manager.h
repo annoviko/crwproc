@@ -15,7 +15,7 @@ private:
     storage  m_stack_storage;
 
 public:
-    void change(const value_type p_value_type, const memory_type p_memory_type, const change_type p_change_type, const std::string& p_value);
+    bool change(const value_type p_value_type, const memory_type p_memory_type, const change_type p_change_type, const std::string& p_value);
 
     std::string get(const value_type p_value_type, const memory_type p_memory_type);
 

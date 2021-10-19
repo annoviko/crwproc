@@ -11,7 +11,8 @@ from robot.api import logger
 
 
 def run_application(app_name, parameters=''):
-    application = Popen([app_name, parameters], stdout=subprocess.DEVNULL, stdin=PIPE, stderr=STDOUT,
+    stdout_file = open("stdout.txt", "w")
+    application = Popen([app_name, parameters], stdout=stdout_file, stdin=PIPE, stderr=STDOUT,
                         bufsize=1, universal_newlines=True)
 
     logger.info("Application '%s' was run." % application)
@@ -25,15 +26,16 @@ def clear_stdout(application):
 
 
 def send_command(application, command):
-    logger.info("Command to execute '%s' on the application '%s'." % (str.encode(command), application))
+    command_string = str(command)
+    logger.info("Command to execute '%s' on the application '%s'." % (str.encode(command_string), application))
 
-    if command[-1] != "\n":
-        command += "\n"
+    if command_string[-1] != "\n":
+        command_string += "\n"
 
-    application.stdin.write(command)
+    application.stdin.write(command_string)
     application.stdin.flush()
 
-    logger.info("Command '%s' was sent to the application '%s'." % (str.encode(command), application))
+    logger.info("Command '%s' was sent to the application '%s'." % (str.encode(command_string), application))
 
 
 def is_running(application):
@@ -48,3 +50,13 @@ def wait_for_exit(application):
 def get_exit_code(application):
     logger.info("Exit code '%s' of the application '%s'." % (application.returncode, application))
     return application.returncode
+
+
+def get_pid(application):
+    logger.info("PID of the application '%s' is '%d'." % (application, application.pid))
+    return application.pid
+
+
+def kill_application(application):
+    logger.info("Kill application '%s'." % application)
+    application.kill()

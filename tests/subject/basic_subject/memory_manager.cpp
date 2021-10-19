@@ -61,7 +61,7 @@ std::string memory_manager::get(const value_type p_value_type, const memory_type
 }
 
 
-void memory_manager::change(const value_type p_value_type, const memory_type p_memory_type, const change_type p_change_type, const std::string& p_value) {
+bool memory_manager::change(const value_type p_value_type, const memory_type p_memory_type, const change_type p_change_type, const std::string& p_value) {
     storage& content = get_storage(p_memory_type);
     switch (p_value_type) {
     case value_type::i8:
@@ -103,5 +103,10 @@ void memory_manager::change(const value_type p_value_type, const memory_type p_m
     case value_type::dbl:
         content.u64 = change(p_change_type, content.u64, s2v<std::uint64_t>(p_value));
         break;
+
+    default:
+        return false;
     }
+
+    return true;
 }

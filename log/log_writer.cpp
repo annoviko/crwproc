@@ -18,7 +18,7 @@
 
 log_writer::log_writer(const std::string& p_prefix) :
     m_filename(generate_filename(p_prefix)),
-    m_stream(m_filename),
+    m_stream(m_filename, std::ios_base::app),
     m_writer_thread(&log_writer::thread_writer, this)
 { }
 

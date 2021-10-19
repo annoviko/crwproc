@@ -15,6 +15,8 @@
 #include "core/proc_reader.h"
 #include "core/proc_writer.h"
 
+#include "log/logging.h"
+
 #include "asker.h"
 #include "command.h"
 #include "intro_builder.h"
@@ -53,6 +55,8 @@ event state_edit::ask_next_action(context& p_context) {
 
     std::string user_input;
     std::cin >> user_input;
+
+    LOG_INFO("User input: '" << user_input << "'.");
 
     event action = command::to_event(user_input);
 

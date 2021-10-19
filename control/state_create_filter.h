@@ -31,6 +31,8 @@ private:
 private:
     static const std::unordered_map<filter_type, std::string> FILTER_TYPE_DICT;
 
+    static const std::unordered_map<filter_type, std::string> FILTER_TYPE_SHORT_DICT;
+
 public:
     event operator()(context& p_context);
 
@@ -41,6 +43,8 @@ private:
 
 public:
     friend std::ostream& operator<<(std::ostream& p_stream, const state_create_filter& p_state);
+
+    friend std::ostream& operator<<(std::ostream& p_stream, const filter_type& p_state);
 
 private:
     template <typename TypeFilter>

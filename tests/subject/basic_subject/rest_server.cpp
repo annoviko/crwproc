@@ -36,7 +36,7 @@ rest_server::rest_server(const std::string& p_address, const std::size_t p_port)
         const std::string variable_type_name = p_request.matches[3];
         const std::string value = p_request.matches[4];
 
-        change_type chng_type = get_change_type_from_string(memory_type_name);
+        change_type chng_type = get_change_type_from_string(operation_type_name);
         if (chng_type == change_type::invalid) {
             p_response.status = 404;
             p_response.set_content("Provided operation type '" + operation_type_name + "' does not exist.", "text/plain");
@@ -58,24 +58,18 @@ rest_server::rest_server(const std::string& p_address, const std::size_t p_port)
         }
 
         try {
-            m_manager.change(val_type, mem_type, chng_type, value);
+            bool status = m_manager.change(val_type, mem_type, chng_type, value);
+            p_response.status = status ? 202 : 500;
         }
         catch (...) {
             p_response.set_content("Provided value is not convertable into specified type.", "text/plain");
             p_response.status = 400;
             return;
         }
-
-        p_response.status = 202;
     });
 }
 
 
 void rest_server::run() {
     m_server.listen(m_address.c_str(), m_port);
-}
-
-
-bool rest_server::handle_request() {
-
 }

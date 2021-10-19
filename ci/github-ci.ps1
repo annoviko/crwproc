@@ -75,6 +75,8 @@ function Install-MinicondaPackages() {
     
     activate test-environment
     
+    pip install robotframework-httpctrl
+    
     $env:PYTHON_INTERPRETER = "$MinicondaPath\envs\test-environment\python.exe";
     $env:PYTHONPATH = "$MinicondaPath\envs\test-environment";
 
