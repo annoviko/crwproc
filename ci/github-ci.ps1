@@ -112,6 +112,17 @@ function Build-UnitTests {
 }
 
 
+function Build-SubjectApplication {
+    Announce-Step "Build Subject Application."
+    
+    msbuild $SolutionName /t:basic_subject /p:configuration=$Configuration /p:platform=x64
+    if ($LastExitCode -ne 0) {
+        Write-Error "[Error] Building basic subject project failed with error code '$LastExitCode'."
+        Exit 1
+    }
+}
+
+
 function Run-UnitTests {
     Announce-Step "Run Unit-Tests."
     
@@ -127,6 +138,7 @@ function Run-UnitTests {
 function Run-SctTests {
     Announce-Step "Run Sct-Tests."
     
+    Build-SubjectApplication
     Download-Miniconda
     Install-Miniconda
     Install-MinicondaPackages
