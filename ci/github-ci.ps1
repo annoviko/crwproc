@@ -115,7 +115,7 @@ function Build-UnitTests {
 function Build-SubjectApplication {
     Announce-Step "Build Subject Application."
     
-    msbuild $SolutionName /t:basic_subject /p:configuration=release /p:platform=x64
+    msbuild $SolutionName /t:subject\basic_subject /p:configuration=release /p:platform=x64
     if ($LastExitCode -ne 0) {
         Write-Error "[Error] Building basic subject project failed with error code '$LastExitCode'."
         Exit 1
