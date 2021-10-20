@@ -13,6 +13,8 @@
 #include <string>
 #include <vector>
 
+#include "log/logging.h"
+
 #include "core/console.h"
 #include "core/filter.h"
 #include "core/traits.h"
@@ -143,6 +145,8 @@ private:
 
         std::string value;
         std::cin >> value;
+
+        LOG_INFO("User input: '" << value << "'.");
 
         command::throw_if_command(value);
 

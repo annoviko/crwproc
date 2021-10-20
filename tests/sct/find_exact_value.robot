@@ -14,6 +14,10 @@ Test Teardown    Terminate Object and Subject
 ${BINARY FOLDER}    ./../../x64/Release/
 ${SUBJECT PORT}     51425
 
+${MEM TYPE STACK}       stack
+${MEM TYPE HEAP}        heap
+${MEM TYPE GLOBAL}      global
+
 ${TYPE EXACT FILTER}    ${0}
 
 ${TYPE INT TYPE}        ${0}
@@ -39,49 +43,128 @@ Connect to Subject Process
     Send Command        ${CRWPROC}     ${subject pid}
 
 
-Find and Change Int32
-    ${subject pid}=     Get Pid        ${SUBJECT}
-    Send Command        ${CRWPROC}     ${subject pid}
-
-    ${value}=   Set Variable   0
-    Set Subject Variable    i32    ${value}
-    Create Exact Integral Filter   ${SIZE 4}   ${TYPE INT SIGNED}   ${value}
-
-    ${value}=   Set Variable   1024
-    Set Subject Variable    i32    ${value}
-    Update Filter and Continue    ${value}
-
-    ${value}=   Set Variable   32512
-    Set Subject Variable    i32    ${value}
-    Update Filter and Continue    ${value}
-
-    ${value}=   Set Variable   128
-    Set Value via CRWPROC   ${value}
-    Check Subject Variable   i32   ${value}
+Find and Change Stack Int8
+    ${value evolution}=    Create List   0   -16   32
+    Test Template Find and Change   ${MEM TYPE STACK}   i8   ${value evolution}   -8
 
 
-Find and Change Int64
-    ${subject pid}=     Get Pid        ${SUBJECT}
-    Send Command        ${CRWPROC}     ${subject pid}
+Find and Change Stack Int16
+    ${value evolution}=    Create List   0   -2048   4096
+    Test Template Find and Change   ${MEM TYPE STACK}   i16   ${value evolution}   1024
 
-    ${value}=   Set Variable   0
-    Set Subject Variable    i64    ${value}
-    Create Exact Integral Filter   ${SIZE 8}   ${TYPE INT SIGNED}   ${value}
 
-    ${value}=   Set Variable   128821
-    Set Subject Variable    i64    ${value}
-    Update Filter and Continue    ${value}
+Find and Change Stack Int32
+    ${value evolution}=    Create List   0   -4194304   8388608
+    Test Template Find and Change   ${MEM TYPE STACK}   i32   ${value evolution}   -16777216
 
-    ${value}=   Set Variable   325120945
-    Set Subject Variable    i64    ${value}
-    Update Filter and Continue    ${value}
 
-    ${value}=   Set Variable   16
-    Set Value via CRWPROC   ${value}
-    Check Subject Variable   i64   ${value}
+Find and Change Stack Int64
+    ${value evolution}=    Create List   0   -8589934592   8589934592
+    Test Template Find and Change   ${MEM TYPE STACK}   i64   ${value evolution}   16
+
+
+Find and Change Stack Uint8
+    ${value evolution}=    Create List   0   16   128
+    Test Template Find and Change   ${MEM TYPE STACK}   u8   ${value evolution}   8
+
+
+Find and Change Stack Uin16
+    ${value evolution}=    Create List   0   2048   32769
+    Test Template Find and Change   ${MEM TYPE STACK}   u16   ${value evolution}   1024
+
+
+Find and Change Stack Uint32
+    ${value evolution}=    Create List   0   4194304   2147483649
+    Test Template Find and Change   ${MEM TYPE STACK}   u32   ${value evolution}   16777216
+
+
+Find and Change Stack Uint64
+    ${value evolution}=    Create List   0   8589934592   9223372036854775808
+    Test Template Find and Change   ${MEM TYPE STACK}   u64   ${value evolution}   128
+
+
+Find and Change Heap Int8
+    ${value evolution}=    Create List   0   -16   32
+    Test Template Find and Change   ${MEM TYPE HEAP}   i8   ${value evolution}   -8
+
+
+Find and Change Heap Int16
+    ${value evolution}=    Create List   0   -2048   4096
+    Test Template Find and Change   ${MEM TYPE HEAP}   i16   ${value evolution}   1024
+
+
+Find and Change Heap Int32
+    ${value evolution}=    Create List   0   -4194304   8388608
+    Test Template Find and Change   ${MEM TYPE HEAP}   i32   ${value evolution}   -16777216
+
+
+Find and Change Heap Int64
+    ${value evolution}=    Create List   0   -8589934592   8589934592
+    Test Template Find and Change   ${MEM TYPE HEAP}   i64   ${value evolution}   16
+
+
+Find and Change Global Int8
+    ${value evolution}=    Create List   0   -16   32
+    Test Template Find and Change   ${MEM TYPE GLOBAL}   i8   ${value evolution}   -8
+
+
+Find and Change Global Int16
+    ${value evolution}=    Create List   0   -2048   4096
+    Test Template Find and Change   ${MEM TYPE GLOBAL}   i16   ${value evolution}   1024
+
+
+Find and Change Global Int32
+    ${value evolution}=    Create List   0   -4194304   8388608
+    Test Template Find and Change   ${MEM TYPE GLOBAL}   i32   ${value evolution}   -16777216
+
+
+Find and Change Global Int64
+    ${value evolution}=    Create List   0   -8589934592   8589934592
+    Test Template Find and Change   ${MEM TYPE GLOBAL}   i64   ${value evolution}   16
 
 
 *** Keywords ***
+
+Test Template Find and Change
+    [Arguments]   ${mem type}   ${var type}   ${value evolution}   ${value to set}
+    ${subject pid}=     Get Pid        ${SUBJECT}
+    Send Command        ${CRWPROC}     ${subject pid}
+
+    ${value}=   Set Variable   ${value evolution[0]}
+    Set Subject Variable    ${mem type}    ${var type}    ${value}
+    Create Exact Filter     ${var type}    ${value}
+
+    ${length}=    Get length    ${value evolution}
+    FOR    ${index}    IN RANGE    1    ${length}
+        ${value}=   Set Variable   ${value evolution[${index}]}
+        Set Subject Variable          ${mem type}    ${var type}    ${value}
+        Update Filter and Continue    ${value}
+    END
+
+    Set Value via CRWPROC    ${value to set}
+    Check Subject Variable   ${mem type}    ${var type}   ${value to set}
+
+
+Create Exact Filter
+    [Arguments]   ${var type}   ${value}
+    IF    "${var type}" == "i8"
+        Create Exact Integral Filter   ${SIZE 1}   ${TYPE INT SIGNED}   ${value}
+    ELSE IF    "${var type}" == "i16"
+        Create Exact Integral Filter   ${SIZE 2}   ${TYPE INT SIGNED}   ${value}
+    ELSE IF    "${var type}" == "i32"
+        Create Exact Integral Filter   ${SIZE 4}   ${TYPE INT SIGNED}   ${value}
+    ELSE IF    "${var type}" == "i64"
+        Create Exact Integral Filter   ${SIZE 8}   ${TYPE INT SIGNED}   ${value}
+    ELSE IF    "${var type}" == "u8"
+        Create Exact Integral Filter   ${SIZE 1}   ${TYPE INT UNSIGNED}   ${value}
+    ELSE IF    "${var type}" == "u16"
+        Create Exact Integral Filter   ${SIZE 2}   ${TYPE INT UNSIGNED}   ${value}
+    ELSE IF    "${var type}" == "u32"
+        Create Exact Integral Filter   ${SIZE 4}   ${TYPE INT UNSIGNED}   ${value}
+    ELSE IF    "${var type}" == "u64"
+        Create Exact Integral Filter   ${SIZE 8}   ${TYPE INT UNSIGNED}   ${value}
+    END
+
 
 Create Exact Integral Filter
     [Arguments]   ${value size}   ${type int}   ${value}
@@ -107,18 +190,17 @@ Set Value via CRWPROC
 
 
 Set Subject Variable
-    [Arguments]   ${type}    ${value}
-    Send HTTP Request   POST           /operation/set/memory/stack/variable/${type}/value/${value}
+    [Arguments]   ${mem type}   ${var type}    ${value}
+    Send HTTP Request   POST           /operation/set/memory/${mem type}/variable/${var type}/value/${value}
     ${status}=          Get Response Status
     Should Be Equal     ${status}    ${202}
 
-    Check Subject Variable   ${type}   ${value}
-    Sleep   3s
+    Check Subject Variable   ${mem type}   ${var type}   ${value}
 
 
 Check Subject Variable
-    [Arguments]   ${type}   ${expected value}
-    Send HTTP Request   GET           /memory/stack/variable/${type}
+    [Arguments]   ${mem type}   ${var type}   ${expected value}
+    Send HTTP Request   GET           /memory/${mem type}/variable/${var type}
     
     ${status}=          Get Response Status
     Should Be Equal     ${status}    ${200}
