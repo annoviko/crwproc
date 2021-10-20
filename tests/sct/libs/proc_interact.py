@@ -4,7 +4,8 @@
 @copyright BSD-3-Clause
 
 """
-import subprocess
+
+import time
 from subprocess import Popen, PIPE, STDOUT
 
 from robot.api import logger
@@ -25,7 +26,7 @@ def clear_stdout(application):
         application.stdout.flush()
 
 
-def send_command(application, command):
+def send_command(application, command, wait_app_ms=0.05):
     command_string = str(command)
     logger.info("Command to execute '%s' on the application '%s'." % (str.encode(command_string), application))
 
@@ -34,6 +35,8 @@ def send_command(application, command):
 
     application.stdin.write(command_string)
     application.stdin.flush()
+
+    time.sleep(wait_app_ms)  # give some time to the process to finish input command
 
     logger.info("Command '%s' was sent to the application '%s'." % (str.encode(command_string), application))
 

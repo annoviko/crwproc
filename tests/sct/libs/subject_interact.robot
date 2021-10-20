@@ -15,5 +15,5 @@ Run Subject
 Stop Subject
     [Arguments]     ${subject}
     IF    ${subject} == ${None}
-    Kill Application    ${subject}
+        Kill Application    ${subject}
     END

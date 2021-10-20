@@ -28,11 +28,11 @@ void memory_value::set(const std::string& p_value, const type_desc& p_type) {
     switch (p_type.get_type()) {
         case value_type::integral: {
             if (p_type.is_signed()) {
-                const std::uint64_t value = std::stoull(p_value);
+                const std::int64_t value = std::stoll(p_value);
                 std::memcpy((void*)m_buffer, (void*)&value, p_type.get_size());
             }
             else {
-                const std::int64_t value = std::stoll(p_value);
+                const std::uint64_t value = std::stoull(p_value);
                 std::memcpy((void*)m_buffer, (void*)&value, p_type.get_size());
             }
 
