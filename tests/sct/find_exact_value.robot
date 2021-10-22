@@ -123,7 +123,46 @@ Find and Change Global Int64
     Test Template Find and Change   ${MEM TYPE GLOBAL}   i64   ${value evolution}   16
 
 
+Filter Value Int8 is Out of Range
+    Test Template Filter Value is Out of Range   i8   -129
+
+
+Filter Value Uint8 is Out of Range
+    Test Template Filter Value is Out of Range   u8   256
+
+
+Filter Value Int8 is Lower Border
+    Test Template Filter Value on a Range Border   i8   -128
+
+
+Filter Value Uint8 is Upper Border
+    Test Template Filter Value on a Range Border   u8   255
+
+
+
 *** Keywords ***
+
+Test Template Filter Value is Out of Range
+    [Arguments]   ${var type}   ${value}
+    ${subject pid}=     Get Pid        ${SUBJECT}
+    Send Command        ${CRWPROC}     ${subject pid}
+
+    Clean Output Stream    ${CRWPROC}
+    Create Exact Filter    ${var type}   ${value}
+    ${result}=   Output Stream Contains    ${CRWPROC}    .*Error: specified value '-?\\d+' is out of range.*
+    Should Be True   ${result}
+
+
+Test Template Filter Value on a Range Border
+    [Arguments]   ${var type}   ${value}
+    ${subject pid}=     Get Pid        ${SUBJECT}
+    Send Command        ${CRWPROC}     ${subject pid}
+
+    Clean Output Stream    ${CRWPROC}
+    Create Exact Filter    u8   255
+    ${result}=   Output Stream Contains    ${CRWPROC}    .*Error: specified value '\\d+' is out of range.*
+    Should Be Equal    ${FALSE}    ${result}
+
 
 Test Template Find and Change
     [Arguments]   ${mem type}   ${var type}   ${value evolution}   ${value to set}
