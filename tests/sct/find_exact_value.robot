@@ -149,7 +149,7 @@ Test Template Filter Value is Out of Range
 
     Clean Output Stream    ${CRWPROC}
     Create Exact Filter    ${var type}   ${value}
-    ${result}=   Output Stream Contains    ${CRWPROC}    .*Error: specified value '-?\\d+' is out of range.*
+    ${result}=   Output Stream Contains    ${CRWPROC}    .*Error: specified value '.*' is out of range.*
     Should Be True   ${result}
 
 
@@ -160,7 +160,7 @@ Test Template Filter Value on a Range Border
 
     Clean Output Stream    ${CRWPROC}
     Create Exact Filter    u8   255
-    ${result}=   Output Stream Contains    ${CRWPROC}    .*Error: specified value '\\d+' is out of range.*
+    ${result}=   Output Stream Contains    ${CRWPROC}    .*Error: specified value '.*' is out of range.*
     Should Be Equal    ${FALSE}    ${result}
 
 
