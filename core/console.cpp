@@ -128,10 +128,11 @@ void console::color_output(const std::string& p_message, const std::uint64_t p_a
 
         if (ask_wait_key) {
             std::cout << "Press any key to continue...";
-            std::cin.get();
 
             std::cin.clear();
-            std::cin.ignore(256, '\n');
+            std::cin.ignore(2048, '\n');
+
+            std::getchar();
 
             std::cout << std::endl;
         }

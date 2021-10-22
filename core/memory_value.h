@@ -29,7 +29,7 @@ public:
 
     void set(const void* p_buffer, const std::size_t p_size);
 
-    void set(const std::string& p_value, const type_desc& p_type);
+    bool set(const std::string& p_value, const type_desc& p_type);
 
     std::string to_string(const type_desc& p_type) const;
 

@@ -17,11 +17,13 @@
 #include "command.h"
 
 
-std::size_t asker::ask_index(const std::size_t p_limit, const action_index& p_action) {
+std::size_t asker::ask_index(const std::size_t p_limit, const action_index& p_action, const bool p_interruptible) {
     std::string user_input;
     std::cin >> user_input;
 
-    command::throw_if_command(user_input);
+    if (p_interruptible) {
+        command::throw_if_command(user_input);
+    }
 
     std::size_t index_value = 0;
 
@@ -30,8 +32,6 @@ std::size_t asker::ask_index(const std::size_t p_limit, const action_index& p_ac
     }
     catch (std::exception&) {
         console::error_and_wait_key("Error: unsigned integer value is expected.");
-        std::cin.clear();
-        std::cin.ignore(256, '\n');
         return INVALID_INDEX;
     }
 
@@ -45,6 +45,11 @@ std::size_t asker::ask_index(const std::size_t p_limit, const action_index& p_ac
     }
     
     return index_value;
+}
+
+
+std::size_t asker::ask_index(const std::size_t p_limit, const bool p_interruptible) {
+    return asker::ask_index(p_limit, nullptr, p_interruptible);
 }
 
 

@@ -24,7 +24,7 @@ void memory_value::set(const void* p_buffer, const std::size_t p_size) {
 }
 
 
-void memory_value::set(const std::string& p_value, const type_desc& p_type) {
+bool memory_value::set(const std::string& p_value, const type_desc& p_type) try {
     switch (p_type.get_type()) {
         case value_type::integral: {
             if (p_type.is_signed()) {
@@ -50,7 +50,15 @@ void memory_value::set(const std::string& p_value, const type_desc& p_type) {
             std::memcpy((void*)m_buffer, (void*)&value, p_type.get_size());
             break;
         }
+
+        default:
+            return false;
     }
+
+    return true;
+}
+catch(std::exception&) {
+    return false;
 }
 
 

@@ -102,6 +102,7 @@
     <ClInclude Include="proc_reader.h" />
     <ClInclude Include="proc_table.h" />
     <ClInclude Include="proc_writer.h" />
+    <ClInclude Include="string_split.h" />
     <ClInclude Include="traits.h" />
     <ClInclude Include="value.h" />
     <ClInclude Include="type_desc.h" />

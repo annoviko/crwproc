@@ -60,38 +60,39 @@ event state_edit::ask_next_action(context& p_context) {
 
     event action = command::to_event(user_input);
 
-    std::visit([&user_input, &p_context, &action](auto&& instance) {
+    std::visit([this, &user_input, &p_context, &action](auto&& instance) {
         using EventType = std::decay_t<decltype(instance)>;
         if constexpr (std::is_same_v<EventType, event_error>) {
             const std::string message = "Error: unknown command is specified '" + user_input + "'.";
 
-            LOG_ERROR(message);
+            LOG_ERROR(message)
             console::error_and_wait_key(message);
         }
         else if (std::is_same_v<EventType, event_set>) {
-            std::size_t index_value = 0;
-            std::cin >> index_value;
+            std::size_t index_value = asker::ask_index(p_context.get_user_table().size(), false);
+            if (index_value == asker::INVALID_INDEX) {
+                return;
+            }
 
             if (index_value >= p_context.get_user_table().size()) {
                 const std::string message = "Error: specified index '" + std::to_string(index_value) +
                     "' is out of range. The total amount of monitored values: " + std::to_string(p_context.get_user_table().size()) + ".";
 
-                LOG_ERROR(message);
+                LOG_ERROR(message)
                 console::error_and_wait_key(message);
-
                 return;
             }
 
             std::string string_value;
             std::cin >> string_value;
 
-            LOG_INFO("Set new value '" << string_value << "' to the target process.");
+            LOG_INFO("Set new value '" << string_value << "' to the target process.")
 
             edit_table_entry& entry = p_context.get_user_table().at(index_value);
             if (!entry.set_value(string_value, p_context.get_proc_info())) {
-                const std::string message = "Error: impossible to write value to the process.";
+                const std::string message = "Error: impossible to write value '" + string_value + "' to the process.";
 
-                LOG_ERROR(message);
+                LOG_ERROR(message)
                 console::error_and_wait_key(message);
 
                 return;
