@@ -55,6 +55,9 @@
     <ClCompile Include="ut-logging.cpp">
       <Filter>tests</Filter>
     </ClCompile>
+    <ClCompile Include="ut-string_split.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ut-proc_reader.h">

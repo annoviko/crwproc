@@ -5,7 +5,6 @@
 
 """
 
-import io
 import ntpath
 import re
 import time

@@ -100,6 +100,7 @@
     <ClCompile Include="ut-proc_reader.cpp" />
     <ClCompile Include="ut-proc_table.cpp" />
     <ClCompile Include="ut-proc_writer.cpp" />
+    <ClCompile Include="ut-string_split.cpp" />
     <ClCompile Include="ut-traits.cpp" />
     <ClCompile Include="ut-type_desc.cpp" />
     <ClCompile Include="utils.cpp" />

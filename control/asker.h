@@ -26,7 +26,9 @@ public:
     static constexpr std::size_t INVALID_SIZE = std::numeric_limits<std::size_t>::max();
 
 public:
-    static std::size_t ask_index(const std::size_t p_limit, const action_index& p_action = nullptr);
+    static std::size_t ask_index(const std::size_t p_limit, const action_index& p_action, const bool p_interruptible = true);
+
+    static std::size_t ask_index(const std::size_t p_limit, const bool p_interruptible = true);
 
     static value_type ask_value_type();
 
