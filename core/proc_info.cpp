@@ -26,17 +26,17 @@ const std::string& proc_info::name() const {
 }
 
 
-const std::size_t proc_info::pid() const {
+std::size_t proc_info::pid() const {
     return m_pid;
 }
 
 
-const std::uint64_t proc_info::base_address() const {
+std::uint64_t proc_info::base_address() const {
     return m_address;
 }
 
 
-const bool proc_info::is_valid() const {
+bool proc_info::is_valid() const {
     return !(m_name.empty() || (m_pid == INVALID_PID));
 }
 

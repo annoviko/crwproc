@@ -12,6 +12,7 @@
 #include <sstream>
 
 #include "control/asker.h"
+#include "control/command_interrupt.h"
 #include "control/event.h"
 
 
@@ -50,7 +51,7 @@ protected:
             try {
                 const std::size_t actual_value = asker::ask_index(p_limit);
             }
-            catch (event&) {
+            catch (command_interrupt&) {
                 interrupted = true;
             }
 

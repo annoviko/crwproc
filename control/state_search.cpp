@@ -33,10 +33,10 @@ event state_search::operator()(context& p_context) {
                 return;
             }
 
-            std::size_t bars_to_display = (p_progress - reported_progress) / 2;
+            const std::size_t bars_to_display = (p_progress - reported_progress) / 2;
             if (bars_to_display != 0) {
                 reported_progress = p_progress;
-                std::cout << std::string(bars_to_display, char(219));
+                std::cout << std::string(bars_to_display, '=');
             }
         };
 
@@ -83,7 +83,7 @@ event state_search::operator()(context& p_context) {
 }
 
 
-std::ostream& operator<<(std::ostream& p_stream, const state_search& p_state) {
+std::ostream& operator<<(std::ostream& p_stream, const state_search&) {
     p_stream << "state_search";
     return p_stream;
 }

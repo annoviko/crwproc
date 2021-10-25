@@ -106,7 +106,7 @@ state_create_filter::filter_type state_create_filter::ask_filter_type() const {
 }
 
 
-std::ostream& operator<<(std::ostream& p_stream, const state_create_filter& p_state) {
+std::ostream& operator<<(std::ostream& p_stream, const state_create_filter&) {
     p_stream << "state_create_filter";
     return p_stream;
 }

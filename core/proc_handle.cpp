@@ -35,11 +35,6 @@ proc_handle::~proc_handle() {
 }
 
 
-HANDLE proc_handle::operator()() {
-    return m_handle;
-}
-
-
-const HANDLE proc_handle::operator()() const {
+HANDLE proc_handle::operator()() const {
     return m_handle;
 }

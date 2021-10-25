@@ -20,7 +20,7 @@ private:
     std::uint8_t    m_buffer[sizeof(std::uint64_t)];
 
 public:
-    memory_value() = default;
+    memory_value();
 
     memory_value(const void* p_buffer, const std::size_t p_size);
 

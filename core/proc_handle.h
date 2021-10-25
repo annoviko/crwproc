@@ -29,6 +29,5 @@ public:
     ~proc_handle();
 
 public:
-    HANDLE operator()();
-    const HANDLE operator()() const;
+    HANDLE operator()() const;
 };

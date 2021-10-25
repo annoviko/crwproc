@@ -38,7 +38,7 @@ void state_choose_proc::show_procs(const proc_collection& p_table) const {
     static const std::string highlighter(40, '-');
 
     std::cout << highlighter << std::endl;
-    for (const auto info : p_table) {
+    for (const auto& info : p_table) {
         std::cout << std::left << std::setw(10) << info.second.pid() << " | " << info.second.name() << std::endl;
     }
 
@@ -58,7 +58,7 @@ std::string state_choose_proc::ask_proc() const {
 
 
 event state_choose_proc::process_user_input(const std::string& p_input, const proc_collection& p_table, context& p_context) const {
-    std::size_t pid = try_get_pid(p_input);
+    const std::size_t pid = try_get_pid(p_input);
     if (pid != proc_info::INVALID_PID) {
         return assign_pid(pid, p_table, p_context);
     }
@@ -72,6 +72,7 @@ std::size_t state_choose_proc::try_get_pid(const std::string& p_input) const {
         return std::stoul(p_input);
     }
     catch (...) {
+        LOG_ERROR("Non-integer input '" << p_input << "' is provided as PID.")
         return proc_info::INVALID_PID;
     }
 }
@@ -109,7 +110,7 @@ event state_choose_proc::process_user_command(const std::string& p_command) cons
 }
 
 
-std::ostream& operator<<(std::ostream& p_stream, const state_choose_proc& p_state) {
+std::ostream& operator<<(std::ostream& p_stream, const state_choose_proc&) {
     p_stream << "state_choose_proc";
     return p_stream;
 }

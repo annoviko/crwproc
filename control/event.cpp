@@ -18,72 +18,72 @@ std::ostream& operator<<(std::ostream& p_stream, const event& p_event) {
 }
 
 
-std::ostream& operator<<(std::ostream& p_stream, const event_choose& p_event) {
+std::ostream& operator<<(std::ostream& p_stream, const event_choose&) {
     p_stream << "event_choose";
     return p_stream;
 }
 
-std::ostream& operator<<(std::ostream& p_stream, const event_filter& p_event) {
+std::ostream& operator<<(std::ostream& p_stream, const event_filter&) {
     p_stream << "event_filter";
     return p_stream;
 }
 
-std::ostream& operator<<(std::ostream& p_stream, const event_update& p_event) {
+std::ostream& operator<<(std::ostream& p_stream, const event_update&) {
     p_stream << "event_update";
     return p_stream;
 }
 
-std::ostream& operator<<(std::ostream& p_stream, const event_show& p_event) {
+std::ostream& operator<<(std::ostream& p_stream, const event_show&) {
     p_stream << "event_show";
     return p_stream;
 }
 
-std::ostream& operator<<(std::ostream& p_stream, const event_add& p_event) {
+std::ostream& operator<<(std::ostream& p_stream, const event_add&) {
     p_stream << "event_add";
     return p_stream;
 }
 
-std::ostream& operator<<(std::ostream& p_stream, const event_edit& p_event) {
+std::ostream& operator<<(std::ostream& p_stream, const event_edit&) {
     p_stream << "event_edit";
     return p_stream;
 }
 
-std::ostream& operator<<(std::ostream& p_stream, const event_set& p_event) {
+std::ostream& operator<<(std::ostream& p_stream, const event_set&) {
     p_stream << "event_set";
     return p_stream;
 }
 
-std::ostream& operator<<(std::ostream& p_stream, const event_refresh& p_event) {
+std::ostream& operator<<(std::ostream& p_stream, const event_refresh&) {
     p_stream << "event_refresh";
     return p_stream;
 }
 
-std::ostream& operator<<(std::ostream& p_stream, const event_remove& p_event) {
+std::ostream& operator<<(std::ostream& p_stream, const event_remove&) {
     p_stream << "event_remove";
     return p_stream;
 }
 
-std::ostream& operator<<(std::ostream& p_stream, const event_help& p_event) {
+std::ostream& operator<<(std::ostream& p_stream, const event_help&) {
     p_stream << "event_help";
     return p_stream;
 }
 
-std::ostream& operator<<(std::ostream& p_stream, const event_address& p_event) {
+std::ostream& operator<<(std::ostream& p_stream, const event_address&) {
     p_stream << "event_address";
     return p_stream;
 }
 
-std::ostream& operator<<(std::ostream& p_stream, const event_done& p_event) {
+std::ostream& operator<<(std::ostream& p_stream, const event_done&) {
     p_stream << "event_done";
     return p_stream;
 }
 
-std::ostream& operator<<(std::ostream& p_stream, const event_error& p_event) {
+std::ostream& operator<<(std::ostream& p_stream, const event_error&) {
     p_stream << "event_error";
     return p_stream;
 }
 
-std::ostream& operator<<(std::ostream& p_stream, const event_exit& p_event) {
+std::ostream& operator<<(std::ostream& p_stream, const event_exit&) {
     p_stream << "event_exit";
     return p_stream;
 }

@@ -9,6 +9,11 @@
 #include "memory_value.h"
 
 
+memory_value::memory_value() {
+    std::memset((void*)m_buffer, 0x00, sizeof(m_buffer));
+}
+
+
 memory_value::memory_value(const void* p_buffer, const std::size_t p_size) {
     std::memcpy((void*)m_buffer, p_buffer, p_size);
 }
@@ -85,7 +90,8 @@ std::string memory_value::to_string(const type_desc& p_type) const {
 
     case value_type::doubling:
         return p_type.is_signed() ? std::to_string(*((double*)m_buffer)) : std::to_string(*((double*)m_buffer));
-    }
 
-    return "invalid";
+    default:
+        return "invalid";
+    }
 }

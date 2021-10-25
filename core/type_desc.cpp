@@ -24,6 +24,9 @@ type_desc::type_desc(const value_type p_type, const std::size_t p_size, const bo
         m_size = sizeof(float);
         m_signed = true;
         break;
+
+    default:
+        break;
     }
 }
 
@@ -57,17 +60,18 @@ std::string type_desc::to_string() const {
                 case 2: return m_signed ? "int16_t" : "uint16_t";
                 case 4: return m_signed ? "int32_t" : "uint32_t";
                 case 8: return m_signed ? "int64_t" : "uint64_t";
+                default: return "invalid";
             }
-            break;
 
         case value_type::doubling:
             return "double";
 
         case value_type::floating:
             return "float";
-    }
 
-    return "invalid";
+        default:
+            return "invalid";
+    }
 }
 
 

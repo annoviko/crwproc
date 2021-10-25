@@ -88,6 +88,9 @@ std::string value::evaluate_string_value() const {
 
         case 8:
             return m_signed ? std::to_string(*((std::int64_t*)m_buffer)) : std::to_string(*((std::uint64_t*)m_buffer));
+
+        default:
+            return "invalid";
         }
 
     case value::type::floating:
@@ -95,9 +98,10 @@ std::string value::evaluate_string_value() const {
 
     case value::type::doubling:
         return m_signed ? std::to_string(*((double*)m_buffer)) : std::to_string(*((double*)m_buffer));
-    }
 
-    return "invalid";
+    default:
+        return "invalid";
+    }
 }
 
 
@@ -115,8 +119,8 @@ std::ostream& operator<<(std::ostream& p_stream, const value& p_info) {
 value::type value::string_to_type(const std::string& p_type) {
     std::string canonical_type;
     std::transform(p_type.begin(), p_type.end(), std::back_inserter(canonical_type), [](const char symbol) {
-        return std::tolower(symbol);
-        });
+        return static_cast<char>(std::tolower(symbol));
+    });
 
     const auto iter = STR_TYPE_DICT.find(canonical_type);
     if (iter == STR_TYPE_DICT.cend()) {

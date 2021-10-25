@@ -29,7 +29,7 @@ event state_update_filter::operator()(context& p_context) {
 }
 
 
-std::ostream& operator<<(std::ostream& p_stream, const state_update_filter& p_state) {
+std::ostream& operator<<(std::ostream& p_stream, const state_update_filter&) {
     p_stream << "state_update_filter";
     return p_stream;
 }

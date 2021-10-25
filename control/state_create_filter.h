@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <exception>
 #include <unordered_map>
 
 #include "core/filter.h"
@@ -63,9 +64,6 @@ private:
         }
         else if constexpr (crwproc::traits::is_any<TypeFilter, filter_more, filter_less>::value) {
             p_context.get_filter() = TypeFilter(type);
-        }
-        else {
-            static_assert(false);
         }
     }
 };

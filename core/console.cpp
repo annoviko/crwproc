@@ -132,7 +132,7 @@ void console::color_output(const std::string& p_message, const std::uint64_t p_a
             std::cin.clear();
             std::cin.ignore(2048, '\n');
 
-            std::getchar();
+            (void) std::getchar();
 
             std::cout << std::endl;
         }

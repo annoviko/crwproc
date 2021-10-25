@@ -26,7 +26,7 @@ public:
     type_desc& get_type() override;
 
     template <typename TypeValue>
-    bool is_satisfying(TypeValue p_value) const {
+    bool is_satisfying(TypeValue) const {
         return true;
     }
 

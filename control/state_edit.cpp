@@ -60,7 +60,7 @@ event state_edit::ask_next_action(context& p_context) {
 
     event action = command::to_event(user_input);
 
-    std::visit([this, &user_input, &p_context, &action](auto&& instance) {
+    std::visit([&user_input, &p_context](auto&& instance) {
         using EventType = std::decay_t<decltype(instance)>;
         if constexpr (std::is_same_v<EventType, event_error>) {
             const std::string message = "Error: unknown command is specified '" + user_input + "'.";
@@ -111,7 +111,7 @@ event state_edit::ask_next_action(context& p_context) {
 }
 
 
-std::ostream& operator<<(std::ostream& p_stream, const state_edit& p_state) {
+std::ostream& operator<<(std::ostream& p_stream, const state_edit&) {
     p_stream << "state_edit";
     return p_stream;
 }

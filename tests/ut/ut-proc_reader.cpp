@@ -222,25 +222,25 @@ TEST(ut_proc_reader, find_value_double_in_stack) {
 
 
 TEST(ut_proc_reader, find_value_uint8_in_heap) {
-    std::shared_ptr<std::uint8_t> stack_value = std::make_shared<std::uint8_t>(64);
+    std::shared_ptr<std::uint8_t> stack_value = std::make_shared<std::uint8_t>(static_cast<std::uint8_t>(64));
     test_template_find_value<filter_equal>(stack_value.get(), [stack_value]() { (*stack_value)++; });
 }
 
 
 TEST(ut_proc_reader, find_value_uint16_in_heap) {
-    std::shared_ptr<std::uint16_t> stack_value = std::make_shared<std::uint16_t>(2048);
+    std::shared_ptr<std::uint16_t> stack_value = std::make_shared<std::uint16_t>(static_cast<std::uint16_t>(2048));
     test_template_find_value<filter_equal>(stack_value.get(), [stack_value]() { (*stack_value)++; });
 }
 
 
 TEST(ut_proc_reader, find_value_uint32_in_heap) {
-    std::shared_ptr<std::uint32_t> stack_value = std::make_shared<std::uint32_t>(75632);
+    std::shared_ptr<std::uint32_t> stack_value = std::make_shared<std::uint32_t>(static_cast<std::uint32_t>(75632));
     test_template_find_value<filter_equal>(stack_value.get(), [stack_value]() { (*stack_value)++; });
 }
 
 
 TEST(ut_proc_reader, find_value_uint64_in_heap) {
-    std::shared_ptr<std::uint64_t> stack_value = std::make_shared<std::uint64_t>(1000000000);
+    std::shared_ptr<std::uint64_t> stack_value = std::make_shared<std::uint64_t>(static_cast<std::uint64_t>(1000000000));
     test_template_find_value<filter_equal>(stack_value.get(), [stack_value]() { (*stack_value)++; });
 }
 
