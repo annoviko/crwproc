@@ -81,9 +81,9 @@ function Run-CppCheck {
     
     Install-CppCheck
     
-    $CppCheckApplication --inline-suppr --error-exitcode=1 --std=c++17 --inconclusive --enable=warning,style,performance,information,portability core control log crwproc
+    & $CppCheckApplication --inline-suppr --error-exitcode=1 --std=c++17 --inconclusive --enable=warning,style,performance,information,portability core control log crwproc
     if ($LastExitCode -ne 0) {
-        Write-Error "[Error] Analysis crwproc failed with error code '$LastExitCode'."
+        Write-Error "[Error] CppCheck analysis failed with error code '$LastExitCode'."
         Exit 1
     }
 }
