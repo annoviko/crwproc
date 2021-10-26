@@ -29,7 +29,7 @@ run_cppcheck() {
     announce_step "Run CppCheck."
 
     sudo apt-get install -qq cppcheck
-    cppcheck --inline-suppr --error-exitcode=1 --std=c++17 --inconclusive --enable=warning,style,performance,information,portability core control crwproc log
+    cppcheck --inline-suppr --error-exitcode=1 --std=c++17 --inconclusive --enable=warning,performance,information,portability core control crwproc log
     
     terminate_if_failure "CppCheck static analysis failed."
 }

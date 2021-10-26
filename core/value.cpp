@@ -73,6 +73,13 @@ value::type value::get_type() const {
 }
 
 
+void value::update_string_value() const {
+    if (!m_value_string_valid) {
+        m_value_as_string = evaluate_string_value();
+    }
+}
+
+
 std::string value::evaluate_string_value() const {
     switch (m_type) {
     case value::type::integral:
@@ -94,10 +101,10 @@ std::string value::evaluate_string_value() const {
         }
 
     case value::type::floating:
-        return m_signed ? std::to_string(*((float*)m_buffer)) : std::to_string(*((float*)m_buffer));
+        return std::to_string(*((float*)((void*)m_buffer)));
 
     case value::type::doubling:
-        return m_signed ? std::to_string(*((double*)m_buffer)) : std::to_string(*((double*)m_buffer));
+        return std::to_string(*((double*)((void*)m_buffer)));
 
     default:
         return "invalid";

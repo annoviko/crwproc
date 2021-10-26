@@ -22,7 +22,7 @@ private:
 public:
     filter_range() = default;
 
-    filter_range(const type_desc& p_type);
+    explicit filter_range(const type_desc& p_type);
 
     filter_range(const memory_value& p_begin, const memory_value& p_end, const type_desc& p_type);
 

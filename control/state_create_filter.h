@@ -35,12 +35,12 @@ private:
     static const std::unordered_map<filter_type, std::string> FILTER_TYPE_SHORT_DICT;
 
 public:
-    event operator()(context& p_context);
+    event operator()(context& p_context) const;
 
 private:
-    void create_filter(context& p_context) const;
+    static void create_filter(context& p_context);
 
-    filter_type ask_filter_type() const;
+    static filter_type ask_filter_type();
 
 public:
     friend std::ostream& operator<<(std::ostream& p_stream, const state_create_filter& p_state);
@@ -49,7 +49,7 @@ public:
 
 private:
     template <typename TypeFilter>
-    void ask_filter(context& p_context) const {
+    static void ask_filter(context& p_context) {
         type_desc type = asker::ask_type_desc();
 
         if constexpr (std::is_same<TypeFilter, filter_equal>::value) {

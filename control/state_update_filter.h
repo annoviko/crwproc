@@ -14,7 +14,7 @@
 
 class state_update_filter {
 public:
-    event operator()(context& p_context);
+    event operator()(context& p_context) const;
 
 public:
     friend std::ostream& operator<<(std::ostream& p_stream, const state_update_filter& p_state);

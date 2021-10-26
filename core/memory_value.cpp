@@ -86,10 +86,10 @@ std::string memory_value::to_string(const type_desc& p_type) const {
         }
 
     case value_type::floating:
-        return p_type.is_signed() ? std::to_string(*((float*)m_buffer)) : std::to_string(*((float*)m_buffer));
+        return std::to_string(*((float*)((void*)m_buffer)));
 
     case value_type::doubling:
-        return p_type.is_signed() ? std::to_string(*((double*)m_buffer)) : std::to_string(*((double*)m_buffer));
+        return std::to_string(*((double*)((void*)m_buffer)));
 
     default:
         return "invalid";

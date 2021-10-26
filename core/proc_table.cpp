@@ -16,7 +16,7 @@
 #include "proc_handle.h"
 
 
-proc_info proc_table::get_info(const std::size_t p_pid) const
+proc_info proc_table::get_info(const std::size_t p_pid)
 {
     proc_handle proc_handler(p_pid, proc_handle::access::read);
     if (!proc_handler()) {
@@ -43,7 +43,7 @@ proc_info proc_table::get_info(const std::size_t p_pid) const
 }
 
 
-proc_collection proc_table::get() const {
+proc_collection proc_table::get() {
     DWORD process_ids[2048];
     std::memset(process_ids, 0x00, sizeof(process_ids));
 

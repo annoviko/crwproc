@@ -18,7 +18,7 @@ protected:
 public:
     filter_base() = default;
 
-    filter_base(const type_desc& p_type);
+    explicit filter_base(const type_desc& p_type);
 
 public:
     virtual bool is_valid() const;

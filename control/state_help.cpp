@@ -14,7 +14,7 @@
 #include "command.h"
 
 
-event state_help::operator()(context& p_context) {
+event state_help::operator()(context& p_context) const {
     show_help();
     return ask_next_action(p_context);
 }

@@ -8,9 +8,6 @@
 
 #pragma once
 
-#include <functional>
-#include <vector>
-#include <unordered_map>
 
 #include "context.h"
 #include "event.h"
@@ -19,7 +16,7 @@
 
 class state_search : public state_base {
 public:
-    event operator()(context& p_context);
+    event operator()(context& p_context) const;
 
 public:
     friend std::ostream& operator<<(std::ostream& p_stream, const state_search& p_state);

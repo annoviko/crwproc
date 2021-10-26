@@ -52,7 +52,6 @@ bool type_desc::is_signed() const {
 
 
 std::string type_desc::to_string() const {
-    std::string result;
     switch (m_type) {
         case value_type::integral:
             switch (m_size) {

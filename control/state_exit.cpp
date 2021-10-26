@@ -11,7 +11,7 @@
 #include "log/logging.h"
 
 
-event state_exit::operator()(context& p_context) {
+event state_exit::operator()(context& p_context) const {
     (void) p_context;
 
     LOG_INFO("Terminate application.")

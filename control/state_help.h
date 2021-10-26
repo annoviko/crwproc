@@ -16,10 +16,10 @@
 
 class state_help : public state_base {
 public:
-    event operator()(context& p_context);
+    event operator()(context& p_context) const;
 
 private:
-    void show_help();
+    static void show_help();
 
 private:
     static std::size_t get_longest_command_name();

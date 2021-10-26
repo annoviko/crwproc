@@ -18,7 +18,7 @@ protected:
 
 public:
     base_log_event() = default;
-    base_log_event(const std::size_t p_id) : m_id(p_id) { }
+    explicit base_log_event(const std::size_t p_id) : m_id(p_id) { }
 
 public:
     std::size_t get_id() const { return m_id; }
@@ -28,21 +28,21 @@ public:
 class log_event_flush : public base_log_event { 
 public:
     log_event_flush() = default;
-    log_event_flush(const std::size_t p_id) : base_log_event(p_id) { }
+    explicit log_event_flush(const std::size_t p_id) : base_log_event(p_id) { }
 };
 
 
 class log_event_exit : public base_log_event {
 public:
     log_event_exit() = default;
-    log_event_exit(const std::size_t p_id) : base_log_event(p_id) { }
+    explicit log_event_exit(const std::size_t p_id) : base_log_event(p_id) { }
 };
 
 
 class log_event_timeout : public base_log_event {
 public:
     log_event_timeout() = default;
-    log_event_timeout(const std::size_t p_id) : base_log_event(p_id) { }
+    explicit log_event_timeout(const std::size_t p_id) : base_log_event(p_id) { }
 };
 
 

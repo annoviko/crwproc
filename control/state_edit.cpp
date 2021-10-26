@@ -22,7 +22,7 @@
 #include "intro_builder.h"
 
 
-event state_edit::operator()(context& p_context) {
+event state_edit::operator()(context& p_context) const {
     intro_builder::show(p_context, "User table to edit values:");
     show_table(p_context);
 

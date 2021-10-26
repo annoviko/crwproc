@@ -40,7 +40,7 @@ private:
     static constexpr std::chrono::milliseconds TIMEOUT_MILLISECONDS = std::chrono::milliseconds(1000);
 
 public:
-    log_writer(const std::string& p_prefix);
+    explicit log_writer(const std::string& p_prefix);
 
     ~log_writer();
 
@@ -50,11 +50,11 @@ public:
     const std::string& get_filename() const;
 
 private:
-    std::string generate_filename(const std::string& p_prefix) const;
+    static std::string generate_filename(const std::string& p_prefix);
 
-    std::string time_as_string(const std::chrono::system_clock::time_point& p_time, const char p_date_delim, const char p_delim, const char p_time_delim) const;
+    static std::string time_as_string(const std::chrono::system_clock::time_point& p_time, const char p_date_delim, const char p_delim, const char p_time_delim);
 
-    std::size_t get_thread_id() const;
+    static std::size_t get_thread_id();
 
     void thread_writer();
 

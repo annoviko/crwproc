@@ -24,7 +24,7 @@ private:
 public:
     command_interrupt() = delete;
 
-    command_interrupt(const event& p_event);
+    explicit command_interrupt(const event& p_event);
 
 public:
     const char* what() const noexcept override;
