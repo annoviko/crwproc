@@ -20,7 +20,7 @@ function Announce-Step($Message) {
 }
 
 
-function Download-CppCheck() {
+function Download-CppCheck {
     Announce-Step "Download cppcheck for Windows from github release page."
 
     $WebClient = New-Object System.Net.WebClient
@@ -47,14 +47,14 @@ function Download-CppCheck() {
 }
 
 
-function Install-PythonPackages() {
+function Install-PythonPackages {
     Announce-Step "Install Python Packages."
     
     pip install robotframework robotframework-httpctrl
 }
 
 
-function Install-CppCheck() {
+function Install-CppCheck {
     Announce-Step "Install CppCheck."
     
     Download-CppCheck
@@ -76,7 +76,7 @@ function Install-CppCheck() {
 }
 
 
-function Run-CppCheck() {
+function Run-CppCheck {
     Announce-Step "Analyse Application Source Code."
     
     Install-CppCheck
