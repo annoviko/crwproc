@@ -157,6 +157,8 @@ function Run-SctTests {
 function Run-BuildTestJob {
     Announce-Step "Run Build Test Job."
     
+    Run-CppCheck
+    
     Build-Application "Release"
     
     Run-UnitTests
