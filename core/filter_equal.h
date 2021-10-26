@@ -22,7 +22,7 @@ private:
 public:
     filter_equal() = default;
 
-    filter_equal(const type_desc& p_type);
+    explicit filter_equal(const type_desc& p_type);
 
     filter_equal(const memory_value& p_value, const type_desc& p_type);
 

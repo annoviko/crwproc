@@ -19,14 +19,14 @@ rest_server::rest_server(const std::string& p_address, const std::size_t p_port)
         const std::string memory_type_name = p_request.matches[1];
         const std::string variable_type_name = p_request.matches[2];
 
-        memory_type mem_type = get_memory_type_from_string(memory_type_name);
+        const memory_type mem_type = get_memory_type_from_string(memory_type_name);
         if (mem_type == memory_type::invalid) {
             p_response.status = 404;
             p_response.set_content("Provided memory type '" + memory_type_name + "' does not exist.", "text/plain");
             return;
         }
 
-        value_type val_type = get_value_type_from_string(variable_type_name);
+        const value_type val_type = get_value_type_from_string(variable_type_name);
         if (val_type == value_type::invalid) {
             p_response.status = 404;
             p_response.set_content("Provided variable type '" + variable_type_name + "' does not exist.", "text/plain");
@@ -44,21 +44,21 @@ rest_server::rest_server(const std::string& p_address, const std::size_t p_port)
         const std::string variable_type_name = p_request.matches[3];
         const std::string value = p_request.matches[4];
 
-        change_type chng_type = get_change_type_from_string(operation_type_name);
+        const change_type chng_type = get_change_type_from_string(operation_type_name);
         if (chng_type == change_type::invalid) {
             p_response.status = 404;
             p_response.set_content("Provided operation type '" + operation_type_name + "' does not exist.", "text/plain");
             return;
         }
 
-        memory_type mem_type = get_memory_type_from_string(memory_type_name);
+        const memory_type mem_type = get_memory_type_from_string(memory_type_name);
         if (mem_type == memory_type::invalid) {
             p_response.status = 404;
             p_response.set_content("Provided memory type '" + memory_type_name + "' does not exist.", "text/plain");
             return;
         }
 
-        value_type val_type = get_value_type_from_string(variable_type_name);
+        const value_type val_type = get_value_type_from_string(variable_type_name);
         if (val_type == value_type::invalid) {
             p_response.status = 404;
             p_response.set_content("Provided variable type '" + variable_type_name + "' does not exist.", "text/plain");
@@ -66,11 +66,11 @@ rest_server::rest_server(const std::string& p_address, const std::size_t p_port)
         }
 
         try {
-            bool status = m_manager.change(val_type, mem_type, chng_type, value);
+            const bool status = m_manager.change(val_type, mem_type, chng_type, value);
             p_response.status = status ? 202 : 500;
         }
         catch (...) {
-            p_response.set_content("Provided value is not convertable into specified type.", "text/plain");
+            p_response.set_content("Provided value is not convertible into specified type.", "text/plain");
             p_response.status = 400;
             return;
         }
@@ -79,5 +79,5 @@ rest_server::rest_server(const std::string& p_address, const std::size_t p_port)
 
 
 void rest_server::run() {
-    m_server.listen(m_address.c_str(), m_port);
+    m_server.listen(m_address.c_str(), static_cast<int>(m_port));
 }

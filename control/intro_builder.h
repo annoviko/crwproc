@@ -24,7 +24,7 @@ private:
 public:
     intro_builder() = default;
 
-    intro_builder(const std::string& p_intro);
+    explicit intro_builder(const std::string& p_intro);
 
 public:
     void show(const context& p_context);

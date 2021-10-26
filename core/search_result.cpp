@@ -9,6 +9,7 @@
 #include "search_result.h"
 
 #include <iterator>
+#include <numeric>
 
 
 search_result::search_result(const type_desc& p_type) :
@@ -62,10 +63,9 @@ std::size_t search_result::get_amount_memory_blocks() const {
 
 
 std::size_t search_result::get_amount_values() const {
-    std::size_t amount = 0;
-    for (const auto& p_block : m_blocks) {
-        amount += p_block.get_amount(m_info.get_size());
-    }
+    const std::size_t amount = std::accumulate(m_blocks.begin(), m_blocks.end(), static_cast<std::size_t>(0), [this](std::size_t p_value, const memory_block& p_block) {
+        return p_value + p_block.get_amount(m_info.get_size());
+    });
 
     return amount;
 }

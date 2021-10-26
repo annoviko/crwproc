@@ -14,39 +14,39 @@
 
 class transitions {
 public:
-    state operator()(state_choose_proc&, event_done&) { return state_create_filter{}; }
+    state operator()(state_choose_proc&, event_done&) const { return state_create_filter{}; }
 
-    state operator()(state_create_filter&, event_done&) { return state_search{}; }
+    state operator()(state_create_filter&, event_done&) const { return state_search{}; }
 
-    state operator()(state_update_filter&, event_done&) { return state_search{}; }
-
-    template <typename TypeState>
-    state operator()(TypeState& state, event_refresh&) { return state; }
+    state operator()(state_update_filter&, event_done&) const { return state_search{}; }
 
     template <typename TypeState>
-    state operator()(TypeState& state, event_address&) { return state_address{}; }
+    state operator()(TypeState& state, event_refresh&) const { return state; }
 
     template <typename TypeState>
-    state operator()(TypeState& state, event_filter&) { return state_create_filter{}; }
+    state operator()(TypeState&, event_address&) const { return state_address{}; }
 
     template <typename TypeState>
-    state operator()(TypeState& state, event_edit&) { return state_edit{}; }
+    state operator()(TypeState&, event_filter&) const { return state_create_filter{}; }
 
     template <typename TypeState>
-    state operator()(TypeState& state, event_show&) { return state_show_search_result{}; }
+    state operator()(TypeState&, event_edit&) const { return state_edit{}; }
 
     template <typename TypeState>
-    state operator()(TypeState& state, event_update&) { return state_update_filter{}; }
+    state operator()(TypeState&, event_show&) const { return state_show_search_result{}; }
 
     template <typename TypeState>
-    state operator()(TypeState& state, event_choose&) { return state_choose_proc{}; }
+    state operator()(TypeState&, event_update&) const { return state_update_filter{}; }
 
     template <typename TypeState>
-    state operator()(TypeState& state, event_help&) { return state_help{}; }
+    state operator()(TypeState&, event_choose&) const { return state_choose_proc{}; }
 
     template <typename TypeState>
-    state operator()(TypeState& state, event_exit&) { return state_exit{}; }
+    state operator()(TypeState&, event_help&) const { return state_help{}; }
+
+    template <typename TypeState>
+    state operator()(TypeState&, event_exit&) const { return state_exit{}; }
 
     template <typename TypeState, typename TypeEvent>
-    state operator()(TypeState& state, TypeEvent&) { return state; }
+    state operator()(TypeState& state, TypeEvent&) const { return state; }
 };

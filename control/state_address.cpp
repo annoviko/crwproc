@@ -66,7 +66,7 @@ void state_address::show_value(const context& p_context) const {
 event state_address::ask_next_action(context& p_context) {
     event action = state_base::ask_next_action(p_context);
 
-    std::visit([this, &p_context, &action](auto&& instance) {
+    std::visit([this, &p_context](auto&& instance) {
         using EventType = std::decay_t<decltype(instance)>;
 
         if constexpr (std::is_same_v<EventType, event_add>) {
@@ -78,7 +78,7 @@ event state_address::ask_next_action(context& p_context) {
 }
 
 
-std::ostream& operator<<(std::ostream& p_stream, const state_address& p_state) {
+std::ostream& operator<<(std::ostream& p_stream, const state_address&) {
     p_stream << "state_address";
     return p_stream;
 }

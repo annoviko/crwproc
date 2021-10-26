@@ -63,16 +63,14 @@ public:
 
     template <>
     std::string get<std::string>() const {
-        if (!m_value_string_valid) {
-            m_value_as_string = evaluate_string_value();
-        }
-
+        update_string_value();
         return m_value_as_string;
     }
 
     template <>
     const std::string& get<const std::string&>() const {
-        return get<std::string>();
+        update_string_value();
+        return m_value_as_string;
     }
 
 
@@ -108,6 +106,8 @@ public:
     }
 
 private:
+    void update_string_value() const;
+
     std::string evaluate_string_value() const;
 
 public:

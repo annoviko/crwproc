@@ -71,6 +71,9 @@
     <ClCompile Include="event.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="command_interrupt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="asker.h">
@@ -137,6 +140,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="edit_table.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="command_interrupt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

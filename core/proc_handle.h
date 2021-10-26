@@ -24,11 +24,15 @@ private:
     HANDLE m_handle = nullptr;
 
 public:
-    proc_handle(const std::size_t p_handle, const access p_access);
+    proc_handle(const std::size_t p_pid, const access p_access);
+
+    proc_handle(const proc_handle&) = delete;
 
     ~proc_handle();
 
 public:
-    HANDLE operator()();
-    const HANDLE operator()() const;
+    HANDLE operator()() const;
+
+public:
+    proc_handle& operator=(const proc_handle& other) = delete;
 };

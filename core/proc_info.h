@@ -29,11 +29,11 @@ public:
 public:
     const std::string & name() const;
 
-    const std::size_t pid() const;
+    std::size_t pid() const;
 
-    const std::uint64_t base_address() const;
+    std::uint64_t base_address() const;
 
-    const bool is_valid() const;
+    bool is_valid() const;
 
 public:
     friend std::ostream& operator<<(std::ostream& p_stream, const proc_info& p_info);

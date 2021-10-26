@@ -24,7 +24,7 @@ private:
 public:
     proc_pointer() = default;
 
-    proc_pointer(const std::uint64_t p_address);
+    explicit proc_pointer(const std::uint64_t p_address);
 
     proc_pointer(const std::uint64_t p_address, const void* p_buffer, const std::size_t p_size);
 

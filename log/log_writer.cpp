@@ -10,7 +10,7 @@
 
 #include <iomanip>
 #include <sstream>
-#include <time.h>
+#include <ctime>
 
 #include <windows.h>
 #include <processthreadsapi.h>
@@ -28,22 +28,17 @@ log_writer::~log_writer() {
         return;
     }
 
-    {
-        std::unique_lock<std::mutex> queue_guard(m_event_lock);
-        m_event_queue.push_back(log_event_exit{ });
-    }
-
-    m_event_cv.notify_one();
+    send_exit_request();
     m_writer_thread.join();
 }
 
 
-void log_writer::log(const std::string& p_message, const log_level p_level, const std::string& p_funcname, const std::size_t p_line) {
+void log_writer::log(const std::string& p_message, const log_level p_level, const std::string& p_filename, const std::size_t p_line) {
     const auto start_time = std::chrono::system_clock::now();
     const std::size_t tid = get_thread_id();
 
     std::lock_guard<std::mutex> guard(m_buffer_lock);
-    m_buffer.emplace_back(start_time, p_level, p_funcname, p_line, tid, p_message);
+    m_buffer.emplace_back(start_time, p_level, p_filename, p_line, tid, p_message);
 
     if (m_buffer.size() > TRIGGER_FLUSH_LINES_AMOUNT) {
         send_flush_request();
@@ -56,7 +51,7 @@ const std::string& log_writer::get_filename() const {
 }
 
 
-std::string log_writer::generate_filename(const std::string& p_prefix) const {
+std::string log_writer::generate_filename(const std::string& p_prefix) {
     const auto start_time = std::chrono::system_clock::now();
 
     std::stringstream stream;
@@ -67,8 +62,8 @@ std::string log_writer::generate_filename(const std::string& p_prefix) const {
 }
 
 
-std::string log_writer::time_as_string(const std::chrono::system_clock::time_point& p_time, const char p_date_delim, const char p_delim, const char p_time_delim) const {
-    std::time_t current_time = std::chrono::system_clock::to_time_t(p_time);
+std::string log_writer::time_as_string(const std::chrono::system_clock::time_point& p_time, const char p_date_delim, const char p_delim, const char p_time_delim) {
+    const std::time_t current_time = std::chrono::system_clock::to_time_t(p_time);
 
     tm time_info;
     localtime_s(&time_info, &current_time);
@@ -86,7 +81,7 @@ std::string log_writer::time_as_string(const std::chrono::system_clock::time_poi
 }
 
 
-std::size_t log_writer::get_thread_id() const {
+std::size_t log_writer::get_thread_id() {
     return static_cast<std::size_t>(GetCurrentThreadId());  /* faster than std::stringstream + std::this_thread::id */
 }
 
@@ -139,7 +134,7 @@ void log_writer::flush() {
         m_stream
             << time_as_string(entry.timestamp, '-', ' ', ':') << " "
             << entry.level << " "
-            << entry.funcname << ":" << entry.line
+            << entry.filename << ":" << entry.line
             << " [" << entry.tid << "] "
             << entry.message
             << std::endl;

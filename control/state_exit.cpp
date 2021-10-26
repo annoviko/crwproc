@@ -11,7 +11,7 @@
 #include "log/logging.h"
 
 
-event state_exit::operator()(context& p_context) {
+event state_exit::operator()(context& p_context) const {
     (void) p_context;
 
     LOG_INFO("Terminate application.")
@@ -19,7 +19,7 @@ event state_exit::operator()(context& p_context) {
 }
 
 
-std::ostream& operator<<(std::ostream& p_stream, const state_exit& p_state) {
+std::ostream& operator<<(std::ostream& p_stream, const state_exit&) {
     p_stream << "state_exit";
     return p_stream;
 }

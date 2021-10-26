@@ -47,7 +47,7 @@ private:
         }
 
         std::cout << "Enter option number (0-" << directions.size() - 1 << "): ";
-        std::size_t index_option = asker::ask_index(directions.size());
+        const std::size_t index_option = asker::ask_index(directions.size());
         if (index_option == asker::INVALID_INDEX) {
             return false;
         }
@@ -163,11 +163,11 @@ private:
 
 
             case value_type::floating:
-                std::stof(value);
+                (void) std::stof(value);    /* check if it is possible to parse */
                 break;
 
             case value_type::doubling:
-                std::stod(value);
+                (void) std::stod(value);    /* check if it is possible to parse */
                 break;
 
             default:

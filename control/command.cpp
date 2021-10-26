@@ -7,6 +7,7 @@
 
 
 #include "command.h"
+#include "command_interrupt.h"
 
 #include <algorithm>
 #include <cctype>
@@ -79,7 +80,7 @@ const command::example_dict& command::get_examples() {
 event command::to_event(const std::string& p_command) {
     std::string canonical_command;
     std::transform(p_command.begin(), p_command.end(), std::back_inserter(canonical_command), [](const char symbol) {
-        return std::tolower(symbol);
+        return static_cast<char>(std::tolower(symbol));
     });
 
     const auto iter = COMMANDS.find(canonical_command);
@@ -92,9 +93,9 @@ event command::to_event(const std::string& p_command) {
 
 
 void command::throw_if_command(const std::string& p_user_input) {
-    event action = command::to_event(p_user_input);
+    const event action = command::to_event(p_user_input);
     if (!is_event_type<event_error>(action)) {
-        throw action;
+        throw command_interrupt(action);
     }
 }
 

@@ -17,11 +17,11 @@ class filter_less : public filter_base {
 public:
     filter_less() = default;
 
-    filter_less(const type_desc& p_type);
+    explicit filter_less(const type_desc& p_type);
 
 public: /* template contract */
     template <typename TypeValue>
-    bool is_satisfying(TypeValue p_current, TypeValue p_previous) const {
+    static bool is_satisfying(TypeValue p_current, TypeValue p_previous) {
         return p_current < p_previous;
     }
 

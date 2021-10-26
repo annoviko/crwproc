@@ -33,9 +33,10 @@ bool proc_writer::write(const proc_pointer& p_pointer, const type_desc& p_type) 
 
     case value_type::doubling:
         return write_value(proc_handler, p_pointer.get_address(), p_pointer.get_value().get<double>());
-    }
 
-    throw std::logic_error("Impossible to write value to the process memory (reason: unknown value type '" + std::to_string(static_cast<std::uint64_t>(p_type.get_type())) + "' is detected).");
+    default:
+        throw std::logic_error("Impossible to write value to the process memory (reason: unknown value type '" + std::to_string(static_cast<std::uint64_t>(p_type.get_type())) + "' is detected).");
+    }
 }
 
 

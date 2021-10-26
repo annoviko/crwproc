@@ -59,10 +59,10 @@ public:
     template <typename Type>
     static type_desc create() {
         const std::size_t size = sizeof(Type);
-        const bool is_signed = std::is_signed<Type>::value;
+        const bool is_signed_value = std::is_signed<Type>::value;
         const value_type type = get_type<Type>();
 
-        return type_desc(type, size, is_signed);
+        return type_desc(type, size, is_signed_value);
     }
 
 public:

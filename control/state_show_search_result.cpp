@@ -58,7 +58,7 @@ event state_show_search_result::ask_next_action(context& p_context) {
     LOG_INFO("User input: '" << user_input << "'.");
 
     event action = command::to_event(user_input);
-    std::visit([this, &user_input, &p_context, &action](auto&& instance) {
+    std::visit([this, &user_input, &p_context](auto&& instance) {
         using EventType = std::decay_t<decltype(instance)>;
         if constexpr (std::is_same_v<EventType, event_error>) {
             console::error_and_wait_key("Error: unknown command is specified '" + user_input + "'.");
@@ -79,7 +79,7 @@ event state_show_search_result::ask_next_action(context& p_context) {
             m_intro.redraw(p_context);
         }
         else if (std::is_same_v<EventType, event_remove>) {
-            std::size_t index_value = asker::ask_index(m_view.size(), [this, &p_context](std::size_t p_index) {
+            asker::ask_index(m_view.size(), [this](std::size_t p_index) {
                 auto& iter_entry = m_view[p_index];
                 iter_entry.memory_block_iterator->get_values().erase(iter_entry.pointer_iterator);
 
@@ -111,7 +111,7 @@ void state_show_search_result::build_view(context& p_context) {
 }
 
 
-std::ostream& operator<<(std::ostream& p_stream, const state_show_search_result& p_state) {
+std::ostream& operator<<(std::ostream& p_stream, const state_show_search_result&) {
     p_stream << "state_show_search_result";
     return p_stream;
 }

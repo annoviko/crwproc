@@ -17,7 +17,7 @@
 #include "intro_builder.h"
 
 
-event state_update_filter::operator()(context& p_context) {
+event state_update_filter::operator()(context& p_context) const {
     intro_builder::show(p_context, "Update the current filter.");
     LOG_INFO("Update the current filter.");
 
@@ -29,7 +29,7 @@ event state_update_filter::operator()(context& p_context) {
 }
 
 
-std::ostream& operator<<(std::ostream& p_stream, const state_update_filter& p_state) {
+std::ostream& operator<<(std::ostream& p_stream, const state_update_filter&) {
     p_stream << "state_update_filter";
     return p_stream;
 }

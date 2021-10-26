@@ -36,7 +36,7 @@ const std::unordered_map<state_create_filter::filter_type, std::string> state_cr
 };
 
 
-event state_create_filter::operator()(context& p_context) {
+event state_create_filter::operator()(context& p_context) const {
     p_context.get_found_values().clear();
 
     intro_builder::show(p_context, "Create filter for the process.");
@@ -45,7 +45,7 @@ event state_create_filter::operator()(context& p_context) {
 }
 
 
-void state_create_filter::create_filter(context& p_context) const {
+void state_create_filter::create_filter(context& p_context) {
     filter_type type = ask_filter_type();
     while (type == filter_type::last_item) {
         type = ask_filter_type();
@@ -76,7 +76,7 @@ void state_create_filter::create_filter(context& p_context) const {
 }
 
 
-state_create_filter::filter_type state_create_filter::ask_filter_type() const {
+state_create_filter::filter_type state_create_filter::ask_filter_type() {
     static const std::size_t amount_filters = static_cast<std::size_t>(filter_type::last_item);
 
     std::cout << "Select filter type that is going to be used for searching:" << std::endl;
@@ -106,7 +106,7 @@ state_create_filter::filter_type state_create_filter::ask_filter_type() const {
 }
 
 
-std::ostream& operator<<(std::ostream& p_stream, const state_create_filter& p_state) {
+std::ostream& operator<<(std::ostream& p_stream, const state_create_filter&) {
     p_stream << "state_create_filter";
     return p_stream;
 }

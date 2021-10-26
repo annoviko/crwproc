@@ -25,7 +25,7 @@ private:
 public:
     search_result() = default;
 
-    search_result(const type_desc& p_type);
+    explicit search_result(const type_desc& p_type);
 
 public:
     bool is_empty() const;

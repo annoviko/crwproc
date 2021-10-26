@@ -9,13 +9,18 @@ $ProjectUtName = "ut.vcxproj"
 $BinaryUtPath = "$SolutionPath\x64\Release"
 $BinaryUtName = "ut.exe"
 
+$CppCheckUrlInstaller = "https://sourceforge.net/projects/cppcheck/files/cppcheck/2.6/cppcheck-2.6-x64-Setup.msi"
+$CppCheckInstaller = "C:\cppcheck-2.6-x64-Setup.msi"
+$CppCheckPath = "C:\CppCheck"
+$CppCheckApplication = "cppcheck.exe"
+
 
 function Announce-Step($Message) {
     Write-Host "[New Step] $Message" -ForegroundColor green
 }
 
 
-function Install-PythonPackages() {
+function Install-PythonPackages {
     Announce-Step "Install Python Packages."
     
     pip install robotframework robotframework-httpctrl
@@ -60,6 +65,8 @@ function Build-SubjectApplication {
 function Run-UnitTests {
     Announce-Step "Run Unit-Tests."
     
+    Build-UnitTests
+    
     & "$BinaryUtPath\$BinaryUtName"
     
     if ($LastExitCode -ne 0) {
@@ -92,7 +99,6 @@ function Run-BuildTestJob {
     
     Build-Application "Release"
     
-    Build-UnitTests
     Run-UnitTests
     Run-SctTests
 }
