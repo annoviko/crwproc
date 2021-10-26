@@ -74,6 +74,12 @@
     <ClCompile Include="command_interrupt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="serializer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="deserializer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="asker.h">
@@ -145,5 +151,14 @@
     <ClInclude Include="command_interrupt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="serializer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="deserializer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

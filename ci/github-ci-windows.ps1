@@ -30,6 +30,8 @@ function Install-PythonPackages {
 function Build-Application($Configuration) {
     Announce-Step "Build Application."
     
+    msbuild /p:RestorePackagesConfig=true /t:restore
+    
     msbuild $SolutionName /t:crwproc /p:configuration=$Configuration /p:platform=x64
     if ($LastExitCode -ne 0) {
         Write-Error "[Error] Building crwproc failed with error code '$LastExitCode'."

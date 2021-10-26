@@ -21,6 +21,10 @@ private:
 
     static event ask_next_action(context& p_context);
 
+    static bool save_table(const context& p_context, const std::string& p_file);
+
+    static bool load_table(const std::string& p_file, context& p_context);
+
 public:
     friend std::ostream& operator<<(std::ostream& p_stream, const state_edit& p_state);
 };

@@ -26,7 +26,9 @@ const std::unordered_map<std::string, event> command::COMMANDS = {
     { command::name::address,           event_address()  },
     { command::name::refresh,           event_refresh()  },
     { command::name::remove,            event_remove()   },
-    { command::name::help,              event_help()     }
+    { command::name::help,              event_help()     },
+    { command::name::save,              event_save()     },
+    { command::name::load,              event_load()     }
 };
 
 
@@ -42,7 +44,9 @@ const std::unordered_map<std::string, std::string> command::DESCRIPTION = {
     { command::name::address,           "Open a menu to read a value from the specific address." },
     { command::name::refresh,           "Refresh current view." },
     { command::name::remove,            "Remove a variable with a specific index from a table.\nSyntax: \\remove <variable_index>" },
-    { command::name::help,              "Show help information: existed commands with examples." }
+    { command::name::help,              "Show help information: existed commands with examples." },
+    { command::name::save,              "Save the edit table to the specific file.\nSyntax: \\save <filename>" },
+    { command::name::load,              "Load the edit table from the specific file.\nSyntax: \\load <filename>" }
 };
 
 
@@ -63,7 +67,17 @@ const std::unordered_map<std::string, std::vector<std::string>> command::EXAMPLE
             "\\remove 5         - remove variable with index 5 from a table.",
             "\\remove 15        - remove variable with index 15 from a table."
         }
-    }
+    },
+
+    { command::name::save, {
+            "\\save proc_table.json - save the edit table to 'proc_table.json' file.",
+        }
+    },
+
+    { command::name::load, {
+            "\\load proc_table.json - load the edit table from 'proc_table.json' file.",
+        }
+    },
 };
 
 

@@ -8,6 +8,7 @@
 
 #include "state_edit.h"
 
+#include <fstream>
 #include <iomanip>
 #include <iostream>
 
@@ -19,7 +20,9 @@
 
 #include "asker.h"
 #include "command.h"
+#include "deserializer.h"
 #include "intro_builder.h"
+#include "serializer.h"
 
 
 event state_edit::operator()(context& p_context) const {
@@ -105,9 +108,67 @@ event state_edit::ask_next_action(context& p_context) {
 
             LOG_INFO("Remove value with index '" << index_value << "' from the edit table.");
         }
+        else if (std::is_same_v<EventType, event_save>) {
+            std::string filename;
+            std::cin >> filename;
+
+            if (!save_table(p_context, filename)) {
+                const std::string message = "Error: impossible to save the edit table to file '" + filename + "'.";
+
+                LOG_ERROR(message)
+                console::error_and_wait_key(message);
+                return;
+            }
+        }
+        else if (std::is_same_v<EventType, event_load>) {
+            std::string filename;
+            std::cin >> filename;
+
+            if (!load_table(filename, p_context)) {
+                const std::string message = "Error: impossible to load the edit table from file '" + filename + "'.";
+
+                LOG_ERROR(message)
+                console::error_and_wait_key(message);
+                return;
+            }
+        }
     }, action);
 
     return action;
+}
+
+
+bool state_edit::save_table(const context& p_context, const std::string& p_file) {
+    try {
+        std::ofstream stream(p_file);
+        stream << serializer::get(p_context.get_user_table()).dump();
+        stream.close();
+    }
+    catch (std::exception&) {
+        return false;
+    }
+
+    return true;
+}
+
+
+bool state_edit::load_table(const std::string& p_file, context& p_context) {
+    try {
+        std::ifstream stream(p_file);
+
+        std::string string_table;
+        stream >> string_table;
+
+        const nlohmann::json json_table = nlohmann::json::parse(string_table);
+        deserializer::get(json_table, p_context.get_user_table());
+
+        stream.close();
+    }
+    catch (std::exception&) {
+        return false;
+    }
+
+    return true;
 }
 
 

@@ -16,8 +16,7 @@ proc_pointer::proc_pointer(const std::uint64_t p_address, const void* p_buffer, 
 
 
 proc_pointer::proc_pointer(const std::uint64_t p_address) :
-    m_address(p_address),
-    m_value()
+    m_address(p_address)
 { }
 
 

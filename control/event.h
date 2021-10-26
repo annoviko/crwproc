@@ -44,6 +44,10 @@ class event_error { };
 
 class event_exit { };
 
+class event_save { };
+
+class event_load { };
+
 
 using event = std::variant<
     event_choose, 
@@ -59,7 +63,9 @@ using event = std::variant<
     event_address, 
     event_done, 
     event_error, 
-    event_exit
+    event_exit,
+    event_save,
+    event_load
 >;
 
 
@@ -98,3 +104,5 @@ std::ostream& operator<<(std::ostream& p_stream, const event_address& p_event);
 std::ostream& operator<<(std::ostream& p_stream, const event_done& p_event);
 std::ostream& operator<<(std::ostream& p_stream, const event_error& p_event);
 std::ostream& operator<<(std::ostream& p_stream, const event_exit& p_event);
+std::ostream& operator<<(std::ostream& p_stream, const event_save& p_event);
+std::ostream& operator<<(std::ostream& p_stream, const event_load& p_event);

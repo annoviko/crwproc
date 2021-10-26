@@ -110,10 +110,12 @@
     <ClCompile Include="command.cpp" />
     <ClCompile Include="command_interrupt.cpp" />
     <ClCompile Include="context.cpp" />
+    <ClCompile Include="deserializer.cpp" />
     <ClCompile Include="edit_table_entry.cpp" />
     <ClCompile Include="event.cpp" />
     <ClCompile Include="filter_reader_value.cpp" />
     <ClCompile Include="intro_builder.cpp" />
+    <ClCompile Include="serializer.cpp" />
     <ClCompile Include="state.cpp" />
     <ClCompile Include="state_address.cpp" />
     <ClCompile Include="state_base.cpp" />
@@ -133,6 +135,7 @@
     <ClInclude Include="command.h" />
     <ClInclude Include="command_interrupt.h" />
     <ClInclude Include="context.h" />
+    <ClInclude Include="deserializer.h" />
     <ClInclude Include="edit_table.h" />
     <ClInclude Include="edit_table_entry.h" />
     <ClInclude Include="event.h" />
@@ -149,11 +152,22 @@
     <ClInclude Include="state_search.h" />
     <ClInclude Include="state_show_search_result.h" />
     <ClInclude Include="state_update_filter.h" />
+    <ClInclude Include="serializer.h" />
     <ClInclude Include="transitions.h" />
     <ClInclude Include="ui.h" />
     <ClInclude Include="ui_stm.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\packages\nlohmann.json.3.10.2\build\native\nlohmann.json.targets" Condition="Exists('..\packages\nlohmann.json.3.10.2\build\native\nlohmann.json.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\nlohmann.json.3.10.2\build\native\nlohmann.json.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\nlohmann.json.3.10.2\build\native\nlohmann.json.targets'))" />
+  </Target>
 </Project>
