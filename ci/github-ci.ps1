@@ -23,12 +23,13 @@ function Announce-Step($Message) {
 function Download-CppCheck {
     Announce-Step "Download cppcheck for Windows from github release page."
 
-    $WebClient = New-Object System.Net.WebClient
+    #$WebClient = New-Object System.Net.WebClient
 
     $Attempts = 3
     for($i = 0; $i -lt $Attempts; $i++){
         try {
-            $WebClient.DownloadFile($CppCheckUrlInstaller, $CppCheckInstaller)
+            Invoke-WebRequest -Uri $CppCheckUrlInstaller -OutFile $CppCheckInstaller
+            #$WebClient.DownloadFile($CppCheckUrlInstaller, $CppCheckInstaller)
             break
         }
         Catch [Exception]{
