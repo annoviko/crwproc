@@ -23,13 +23,10 @@ function Announce-Step($Message) {
 function Download-CppCheck {
     Announce-Step "Download cppcheck for Windows from github release page."
 
-    #$WebClient = New-Object System.Net.WebClient
-
     $Attempts = 3
     for($i = 0; $i -lt $Attempts; $i++){
         try {
             Invoke-WebRequest -Uri $CppCheckUrlInstaller -OutFile $CppCheckInstaller
-            #$WebClient.DownloadFile($CppCheckUrlInstaller, $CppCheckInstaller)
             break
         }
         Catch [Exception]{
@@ -159,8 +156,6 @@ function Run-SctTests {
 
 function Run-BuildTestJob {
     Announce-Step "Run Build Test Job."
-    
-    Run-CppCheck
     
     Build-Application "Release"
     

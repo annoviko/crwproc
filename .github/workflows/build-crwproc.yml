@@ -21,6 +21,15 @@ jobs:
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
 
+    - name: CppCheck
+      uses: deep5050/cppcheck-action@main
+      with:
+        enable: warning,style,performance,information,portability
+        inconclusive: enable
+        inline_suppression: enable
+        platform: win64
+        std: c++17
+
     - name: Run multi-line script
       shell: pwsh
       run: ci/github-ci.ps1 test-crwproc-build
