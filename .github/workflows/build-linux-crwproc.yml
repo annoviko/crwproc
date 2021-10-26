@@ -1,0 +1,19 @@
+name: Build and test crwproc on linux
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Clone repository
+      uses: actions/checkout@v2
+      with: 
+        submodules: recursive
+
+    - name: Set rights to run CI script
+      run: chmod u+x ci/github-ci-linux.sh
+
+    - name: Run multi-line script
+      run: ci/github-ci-linux.sh test-crwproc-build

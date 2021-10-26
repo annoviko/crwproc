@@ -9,7 +9,7 @@ $ProjectUtName = "ut.vcxproj"
 $BinaryUtPath = "$SolutionPath\x64\Release"
 $BinaryUtName = "ut.exe"
 
-$CppCheckUrlInstaller = "https://github.com/danmar/cppcheck/releases/download/2.6/cppcheck-2.6-x64-Setup.msi"
+$CppCheckUrlInstaller = "https://sourceforge.net/projects/cppcheck/files/cppcheck/2.6/cppcheck-2.6-x64-Setup.msi"
 $CppCheckInstaller = "C:\cppcheck-2.6-x64-Setup.msi"
 $CppCheckPath = "C:\CppCheck"
 $CppCheckApplication = "cppcheck.exe"
@@ -156,8 +156,6 @@ function Run-SctTests {
 
 function Run-BuildTestJob {
     Announce-Step "Run Build Test Job."
-    
-    Run-CppCheck
     
     Build-Application "Release"
     

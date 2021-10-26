@@ -1,4 +1,4 @@
-name: Build and test crwproc application
+name: Build and test crwproc on windows
 
 on: [push]
 
@@ -23,4 +23,4 @@ jobs:
 
     - name: Run multi-line script
       shell: pwsh
-      run: ci/github-ci.ps1 test-crwproc-build
+      run: ci/github-ci-windows.ps1 test-crwproc-build
