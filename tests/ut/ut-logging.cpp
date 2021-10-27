@@ -19,7 +19,11 @@ TEST(ut_logging, start_stop) {
     ASSERT_FALSE(writer->get_filename().empty());
     ASSERT_TRUE(std::filesystem::exists(writer->get_filename()));
 
+    const std::string filename = writer->get_filename();
+
     delete writer;
 
-    std::filesystem::remove(writer->get_filename());
+    if (std::filesystem::exists(filename)) {
+        std::filesystem::remove(filename);
+    }
 }

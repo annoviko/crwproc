@@ -80,6 +80,15 @@
     <ClCompile Include="deserializer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="edit_table_reader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="edit_table_writer.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="edit_table_writer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="asker.h">
@@ -155,6 +164,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="deserializer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="edit_table_reader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="log_wrapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -44,5 +44,7 @@ public:
     void refresh(const proc_info& p_info);
 
 public:
+    bool operator==(const edit_table_entry& p_entry) const;
+
     friend std::ostream& operator<<(std::ostream& p_stream, const edit_table_entry& p_entry);
 };

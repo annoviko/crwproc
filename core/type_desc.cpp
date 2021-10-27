@@ -74,6 +74,13 @@ std::string type_desc::to_string() const {
 }
 
 
+bool type_desc::operator==(const type_desc& p_type) const {
+    return (m_type == p_type.m_type) &&
+        (m_size == p_type.m_size) &&
+        (m_signed == p_type.m_signed);
+}
+
+
 std::ostream& operator<<(std::ostream& p_stream, const type_desc& p_type) {
     p_stream << p_type.to_string();
     return p_stream;

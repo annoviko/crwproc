@@ -43,3 +43,8 @@ const memory_value& proc_pointer::get_value() const {
 memory_value& proc_pointer::get_value() {
     return m_value;
 }
+
+
+bool proc_pointer::operator==(const proc_pointer& p_pointer) const {
+    return m_address == p_pointer.m_address;
+}

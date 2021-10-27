@@ -10,10 +10,12 @@
 
 #include <iostream>
 #include <sstream>
+#include <future>
 
 #include "control/asker.h"
 #include "control/command_interrupt.h"
 #include "control/event.h"
+
 
 
 class ut_asker : public ::testing::Test {
@@ -58,12 +60,21 @@ protected:
             ASSERT_TRUE(interrupted);
         }
         else {
+            std::shared_ptr<std::future<bool>> future_ptr = nullptr;
             if (p_expected_value == asker::INVALID_INDEX) {
-                m_input_stream << "\n";
+                future_ptr = std::make_shared<std::future<bool>>(std::async(std::launch::async, [this]() {
+                    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+                    m_input_stream << "\n";
+                    return true;
+                }));
             }
 
             const std::size_t actual_value = asker::ask_index(p_limit);
             ASSERT_EQ(p_expected_value, actual_value);
+
+            if (future_ptr) {
+                ASSERT_TRUE(future_ptr->get());
+            }
         }
     }
 };
