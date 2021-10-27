@@ -8,6 +8,7 @@
 
 #include "edit_table_writer.h"
 
+#include <exception>
 #include <fstream>
 
 #include "log/logging.h"

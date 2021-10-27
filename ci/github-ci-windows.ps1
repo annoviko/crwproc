@@ -9,11 +9,6 @@ $ProjectUtName = "ut.vcxproj"
 $BinaryUtPath = "$SolutionPath\x64\Release"
 $BinaryUtName = "ut.exe"
 
-$CppCheckUrlInstaller = "https://sourceforge.net/projects/cppcheck/files/cppcheck/2.6/cppcheck-2.6-x64-Setup.msi"
-$CppCheckInstaller = "C:\cppcheck-2.6-x64-Setup.msi"
-$CppCheckPath = "C:\CppCheck"
-$CppCheckApplication = "cppcheck.exe"
-
 
 function Announce-Step($Message) {
     Write-Host "[New Step] $Message" -ForegroundColor green

@@ -114,7 +114,6 @@
     <ClCompile Include="edit_table_entry.cpp" />
     <ClCompile Include="edit_table_reader.cpp" />
     <ClCompile Include="edit_table_writer.cpp" />
-    <ClCompile Include="edit_table_writer.h" />
     <ClCompile Include="event.cpp" />
     <ClCompile Include="filter_reader_value.cpp" />
     <ClCompile Include="intro_builder.cpp" />
@@ -142,6 +141,7 @@
     <ClInclude Include="edit_table.h" />
     <ClInclude Include="edit_table_entry.h" />
     <ClInclude Include="edit_table_reader.h" />
+    <ClInclude Include="edit_table_writer.h" />
     <ClInclude Include="event.h" />
     <ClInclude Include="filter_reader_value.h" />
     <ClInclude Include="intro_builder.h" />

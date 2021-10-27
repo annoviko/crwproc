@@ -8,6 +8,7 @@
 
 #pragma once
 
+
 #include <vector>
 
 #include "edit_table_entry.h"

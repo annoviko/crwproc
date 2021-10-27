@@ -8,6 +8,7 @@
 
 #include "edit_table_reader.h"
 
+#include <exception>
 #include <filesystem>
 #include <fstream>
 
