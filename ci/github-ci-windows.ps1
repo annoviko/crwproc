@@ -64,12 +64,16 @@ function Run-UnitTests {
     
     Build-UnitTests
     
+    cd $BinaryUtPath
+    
     & "$BinaryUtPath\$BinaryUtName"
     
     if ($LastExitCode -ne 0) {
         Write-Error "[Error] Unit-testing failed with error code '$LastExitCode'."
         Exit 1
     }
+    
+    cd $SolutionPath
 }
 
 
