@@ -67,8 +67,8 @@ Change Global Double By Address
 
 Test Template Address
     [Arguments]   ${mem type}   ${var type}   ${inital value}    ${final value}
-    ${val size}=   Get Variable Size By Type          ${var type}
-    ${val sign}=   Get Variable Signed Type by Type   ${var type}
+    ${val size}=   Get Option Variable Size By Type          ${var type}
+    ${val sign}=   Get Option Variable Signed Type by Type   ${var type}
 
     ${address}=    Get Subject Variable Address       ${mem type}   ${var type}
     ${address}=    Convert To Upper Case              ${address}
@@ -80,31 +80,3 @@ Test Template Address
 
     Edit Value via CRWPROC   0   ${final value}
     Check Subject Variable   ${mem type}   ${var type}   ${final value}
-
-
-Find Value by Address
-    [Arguments]   ${address}   ${mem type}   ${var type}
-    ${val size}=   Get Variable Size By Type          ${var type}
-    ${val sign}=   Get Variable Signed Type By Type   ${var type}
-    ${val type}=   Get Variable Type By Type          ${var type}
-
-    Send Command    ${CRWPROC}   \\address
-    Send Command    ${CRWPROC}   ${val type}
-
-    IF    "${val type}" == "${TYPE INT TYPE}"
-        Send Command    ${CRWPROC}   ${val size}
-        Send Command    ${CRWPROC}   ${val sign}
-    END
-
-    Send Command    ${CRWPROC}   ${address}
-
-
-Find Value by Address and Check Output
-    [Arguments]   ${var inital value}   ${address}   ${mem type}   ${var type}
-    Set Subject Variable   ${mem type}   ${var type}   ${var inital value}
-
-    Find Value by Address    ${address}   ${mem type}   ${var type}
-    
-    ${pattern}=   Set Variable     .*${address}.*${var inital value}.*
-    ${result}=    Output Stream Contains    ${CRWPROC}    ${pattern}
-    Should Be True    ${result}    ${pattern}

@@ -21,6 +21,10 @@ ${TYPE INT TYPE}        ${0}
 ${TYPE FLT TYPE}        ${2}
 ${TYPE DBL TYPE}        ${1}
 
+${INT TYPE NAME}        integral
+${FLT TYPE NAME}        floating
+${DBL TYPE NAME}        doubling
+
 ${SIZE 1}    ${0}
 ${SIZE 2}    ${1}
 ${SIZE 4}    ${2}
@@ -35,7 +39,78 @@ ${SUBJECT}          ${None}
 
 *** Keywords ***
 
-Get Variable Type By Type
+Is Variable Signed By Type
+    [Arguments]   ${var type}
+    ${result}=    Set Variable   ${None}
+    IF    "${var type}" == "i8"
+        ${result}=   Set Variable   ${True}
+    ELSE IF    "${var type}" == "i16"
+        ${result}=   Set Variable   ${True}
+    ELSE IF    "${var type}" == "i32"
+        ${result}=   Set Variable   ${True}
+    ELSE IF    "${var type}" == "i64"
+        ${result}=   Set Variable   ${True}
+    ELSE IF    "${var type}" == "u8"
+        ${result}=   Set Variable   ${False}
+    ELSE IF    "${var type}" == "u16"
+        ${result}=   Set Variable   ${False}
+    ELSE IF    "${var type}" == "u32"
+        ${result}=   Set Variable   ${False}
+    ELSE IF    "${var type}" == "u64"
+        ${result}=   Set Variable   ${False}
+    ELSE IF    "${var type}" == "flt"
+        ${result}=   Set Variable   ${True}
+    ELSE IF    "${var type}" == "dbl"
+        ${result}=   Set Variable   ${True}
+    END
+    [Return]   ${result}
+
+
+Get Variable Size By Type
+    [Arguments]   ${var type}
+    ${result}=    Set Variable   ${None}
+    IF    "${var type}" == "i8"
+        ${result}=   Set Variable   ${1}
+    ELSE IF    "${var type}" == "i16"
+        ${result}=   Set Variable   ${2}
+    ELSE IF    "${var type}" == "i32"
+        ${result}=   Set Variable   ${4}
+    ELSE IF    "${var type}" == "i64"
+        ${result}=   Set Variable   ${8}
+    ELSE IF    "${var type}" == "u8"
+        ${result}=   Set Variable   ${1}
+    ELSE IF    "${var type}" == "u16"
+        ${result}=   Set Variable   ${2}
+    ELSE IF    "${var type}" == "u32"
+        ${result}=   Set Variable   ${4}
+    ELSE IF    "${var type}" == "u64"
+        ${result}=   Set Variable   ${8}
+    ELSE IF    "${var type}" == "flt"
+        ${result}=   Set Variable   ${4}
+    ELSE IF    "${var type}" == "dbl"
+        ${result}=   Set Variable   ${8}
+    END
+    [Return]   ${result}
+
+
+Get Typename By Type
+    [Arguments]   ${var type}
+    ${result}=    Set Variable   ${None}
+
+    ${count}=     Count Values In List   ${INT TYPES}   ${var type}
+    IF   "${count}" > "${0}"
+        ${result}=    Set Variable   integral
+    ELSE
+        IF    "${var type}" == "flt"
+            ${result}=   Set Variable   floating
+        ELSE IF    "${var type}" == "dbl"
+            ${result}=   Set Variable   doubling
+        END
+    END
+    [Return]   ${result}
+
+
+Get Option Variable Type By Type
     [Arguments]   ${var type}
     ${result}=    Set Variable   ${None}
     IF    "${var type}" == "i8"
@@ -61,7 +136,8 @@ Get Variable Type By Type
     END
     [Return]   ${result}
 
-Get Variable Signed Type By Type
+
+Get Option Variable Signed Type By Type
     [Arguments]   ${var type}
     ${result}=    Set Variable   ${None}
     IF    "${var type}" == "i8"
@@ -84,7 +160,7 @@ Get Variable Signed Type By Type
     [Return]   ${result}
 
 
-Get Variable Size By Type
+Get Option Variable Size By Type
     [Arguments]   ${var type}
     ${result}=    Set Variable   ${None}
     IF    "${var type}" == "i8"
@@ -114,7 +190,7 @@ Get Variable Size By Type
 Create Exact Filter
     [Arguments]   ${var type}   ${value}
     ${var size}=   Get Variable Size By Type          ${var type}
-    ${var sign}=   Get Variable Signed Type by Type   ${var type}
+    ${var sign}=   Get Option Variable Signed Type by Type   ${var type}
 
     Create Exact Integral Filter   ${var size}   ${var sign}   ${value}
 
@@ -192,19 +268,58 @@ Check Subject Variable
     Should Be Equal     ${actual value}    ${expected value}
 
 
-Initialize Object and Subject
-    ${subject instance}=    Run Subject     ${BINARY FOLDER}
+Find Value by Address
+    [Arguments]   ${var inital value}   ${address}   ${mem type}   ${var type}
+    Set Subject Variable   ${mem type}   ${var type}   ${var inital value}
+
+    ${val size}=   Get Option Variable Size By Type          ${var type}
+    ${val sign}=   Get Option Variable Signed Type By Type   ${var type}
+    ${val type}=   Get Option Variable Type By Type          ${var type}
+
+    Send Command    ${CRWPROC}   \\address
+    Send Command    ${CRWPROC}   ${val type}
+
+    IF    "${val type}" == "${TYPE INT TYPE}"
+        Send Command    ${CRWPROC}   ${val size}
+        Send Command    ${CRWPROC}   ${val sign}
+    END
+
+    Send Command    ${CRWPROC}   ${address}
+
+
+Find Value by Address and Check Output
+    [Arguments]   ${var inital value}   ${address}   ${mem type}   ${var type}
+
+    Clean Output Stream      ${CRWPROC}
+    Find Value by Address    ${var inital value}   ${address}   ${mem type}   ${var type}
+    
+    ${pattern}=   Set Variable     .*${address}.*${var inital value}.*
+    ${result}=    Output Stream Contains    ${CRWPROC}    ${pattern}
+    Should Be True    ${result}    ${pattern}
+
+
+Initialize Crwproc
     ${crwproc instance}=    Crwproc Run     ${BINARY FOLDER}
+    Set Suite Variable      ${CRWPROC}      ${crwproc instance}
 
-    Set Suite Variable    ${SUBJECT}    ${subject instance}
-    Set Suite Variable    ${CRWPROC}    ${crwproc instance}
 
+Initialize Subject
+    ${subject instance}=    Run Subject     ${BINARY FOLDER}
+    Set Suite Variable      ${SUBJECT}      ${subject instance}
+
+
+Initialize Object and Subject
+    Initialize Crwproc
+    Initialize Subject
     Initialize Client   127.0.0.1      ${SUBJECT PORT}
 
 
-Terminate Object and Subject
-    Crwproc Press Enter Key    ${CRWPROC}
-    Crwproc Exit        ${CRWPROC}
+Terminate Crwproc
+    Crwproc Press Enter Key     ${CRWPROC}
+    Crwproc Exit                ${CRWPROC}
+    Kill Application            ${CRWPROC}
 
+
+Terminate Object and Subject
+    Terminate Crwproc
     Kill Application    ${SUBJECT}
-    Kill Application    ${CRWPROC}
