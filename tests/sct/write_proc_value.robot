@@ -1,11 +1,11 @@
 *** Settings ***
 
-Library     HttpCtrl.Client
-Library     libs/crwproc_interact.py
-Library     libs/proc_interact.py
+Library          HttpCtrl.Client
+Library          libs/crwproc_interact.py
+Library          libs/proc_interact.py
 
-Resource    libs/common.robot
-Resource    libs/subject_interact.robot
+Resource         libs/common.robot
+Resource         libs/subject_interact.robot
 
 Test Setup       Initialize Object and Subject
 Test Teardown    Terminate Object and Subject

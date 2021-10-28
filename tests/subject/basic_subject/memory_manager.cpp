@@ -31,6 +31,44 @@ storage& memory_manager::get_storage(const memory_type p_type) {
 }
 
 
+std::uint64_t memory_manager::address(const value_type p_value_type, const memory_type p_memory_type) {
+    storage& content = get_storage(p_memory_type);
+    switch (p_value_type) {
+    case value_type::i8:
+        return (std::int64_t) &(content.i8);
+
+    case value_type::i16:
+        return (std::int64_t) &(content.i16);
+
+    case value_type::i32:
+        return (std::int64_t) &(content.i32);
+
+    case value_type::i64:
+        return (std::int64_t) &(content.i64);
+
+    case value_type::u8:
+        return (std::int64_t) &(content.u8);
+
+    case value_type::u16:
+        return (std::int64_t) &(content.u16);
+
+    case value_type::u32:
+        return (std::int64_t) &(content.u32);
+
+    case value_type::u64:
+        return (std::int64_t) &(content.u64);
+
+    case value_type::flt:
+        return (std::int64_t) &(content.flt);
+
+    case value_type::dbl:
+        return (std::int64_t) &(content.dbl);
+    }
+
+    return 0;
+}
+
+
 std::string memory_manager::get(const value_type p_value_type, const memory_type p_memory_type) {
     storage& content = get_storage(p_memory_type);
     switch (p_value_type) {
@@ -109,7 +147,7 @@ bool memory_manager::change(const value_type p_value_type, const memory_type p_m
         break;
 
     case value_type::dbl:
-        content.u64 = change(p_change_type, content.u64, s2v<std::uint64_t>(p_value));
+        content.dbl = change(p_change_type, content.dbl, s2v<double>(p_value));
         break;
 
     default:
