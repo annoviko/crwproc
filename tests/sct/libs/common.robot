@@ -189,8 +189,8 @@ Get Option Variable Size By Type
 
 Create Exact Filter
     [Arguments]   ${var type}   ${value}
-    ${var size}=   Get Variable Size By Type          ${var type}
-    ${var sign}=   Get Option Variable Signed Type by Type   ${var type}
+    ${var size}=   Get Option Variable Size By Type          ${var type}
+    ${var sign}=   Get Option Variable Signed Type By Type   ${var type}
 
     Create Exact Integral Filter   ${var size}   ${var sign}   ${value}
 
