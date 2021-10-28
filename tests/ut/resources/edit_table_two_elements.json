@@ -1,0 +1,20 @@
+[
+  {
+    "address": 741459622180,
+    "name": "cash",
+    "type": {
+      "signed": true,
+      "size": 8,
+      "type": "doubling"
+    }
+  },
+  {
+    "address": 741459622184,
+    "name": "wood",
+    "type": {
+      "signed": false,
+      "size": 2,
+      "type": "integral"
+    }
+  }
+]

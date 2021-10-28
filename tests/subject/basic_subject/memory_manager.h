@@ -27,6 +27,8 @@ public:
 
     std::string get(const value_type p_value_type, const memory_type p_memory_type);
 
+    std::uint64_t address(const value_type p_value_type, const memory_type p_memory_type);
+
 private:
     storage& get_storage(const memory_type p_type);
 

@@ -63,6 +63,13 @@ void edit_table_entry::refresh(const proc_info& p_info) {
 }
 
 
+bool edit_table_entry::operator==(const edit_table_entry& p_entry) const {
+    return (m_name == p_entry.m_name) &&
+        (m_pointer == p_entry.m_pointer) &&
+        (m_type == p_entry.m_type);
+}
+
+
 std::ostream& operator<<(std::ostream& p_stream, const edit_table_entry& p_entry) {
     (void)p_entry;
     return p_stream;

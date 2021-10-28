@@ -44,4 +44,7 @@ public:
     static proc_pointer create(const std::uint64_t p_address, const TypeValue p_value) {
         return proc_pointer(p_address, (void*)&p_value, sizeof(TypeValue));
     }
+
+public:
+    bool operator==(const proc_pointer& p_pointer) const;
 };

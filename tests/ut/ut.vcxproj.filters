@@ -8,9 +8,24 @@
     <Filter Include="utils">
       <UniqueIdentifier>{4ff4179b-5c25-498a-96b0-42e1e1d6037e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="resources">
+      <UniqueIdentifier>{6c684adf-4c00-4eea-a27d-94817da78753}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="resources\edit_table_one_element.json">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\edit_table_two_elements.json">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\edit_table_empty.json">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\edit_table_invalid_json.json">
+      <Filter>resources</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -56,6 +71,9 @@
       <Filter>tests</Filter>
     </ClCompile>
     <ClCompile Include="ut-string_split.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="ut-read_write_edit_table.cpp">
       <Filter>tests</Filter>
     </ClCompile>
   </ItemGroup>

@@ -33,6 +33,16 @@ std::string value_type_to_string(const value_type p_type) {
 }
 
 
+value_type string_to_value_type(const std::string& p_type) {
+    const auto iter = STR_VALUE_TYPE_DICT.find(p_type);
+    if (iter == STR_VALUE_TYPE_DICT.cend()) {
+        return value_type::invalid;
+    }
+
+    return iter->second;
+}
+
+
 std::ostream& operator<<(std::ostream& p_stream, const value_type& p_type) {
     p_stream << value_type_to_string(p_type);
     return p_stream;

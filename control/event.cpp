@@ -87,3 +87,13 @@ std::ostream& operator<<(std::ostream& p_stream, const event_exit&) {
     p_stream << "event_exit";
     return p_stream;
 }
+
+std::ostream& operator<<(std::ostream& p_stream, const event_save&) {
+    p_stream << "event_save";
+    return p_stream;
+}
+
+std::ostream& operator<<(std::ostream& p_stream, const event_load&) {
+    p_stream << "event_load";
+    return p_stream;
+}

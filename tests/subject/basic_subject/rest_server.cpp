@@ -8,6 +8,7 @@
 
 #include "rest_server.h"
 
+#include <sstream>
 #include <string>
 
 
@@ -15,6 +16,32 @@ rest_server::rest_server(const std::string& p_address, const std::size_t p_port)
     m_address(p_address),
     m_port(p_port)
 {
+    m_server.Get(R"(/address/memory/(\S+)/variable/(\S+))", [this](const httplib::Request& p_request, httplib::Response& p_response) {
+        const std::string memory_type_name = p_request.matches[1];
+        const std::string variable_type_name = p_request.matches[2];
+
+        const memory_type mem_type = get_memory_type_from_string(memory_type_name);
+        if (mem_type == memory_type::invalid) {
+            p_response.status = 404;
+            p_response.set_content("Provided memory type '" + memory_type_name + "' does not exist.", "text/plain");
+            return;
+        }
+
+        const value_type val_type = get_value_type_from_string(variable_type_name);
+        if (val_type == value_type::invalid) {
+            p_response.status = 404;
+            p_response.set_content("Provided variable type '" + variable_type_name + "' does not exist.", "text/plain");
+            return;
+        }
+
+        const std::uint64_t address = m_manager.address(val_type, mem_type);
+
+        std::stringstream stream;
+        stream << std::hex << address;
+        p_response.set_content(std::string(stream.str()), "text/plain");
+        p_response.status = 200;
+    });
+
     m_server.Get(R"(/memory/(\S+)/variable/(\S+))", [this](const httplib::Request& p_request, httplib::Response& p_response) {
         const std::string memory_type_name = p_request.matches[1];
         const std::string variable_type_name = p_request.matches[2];

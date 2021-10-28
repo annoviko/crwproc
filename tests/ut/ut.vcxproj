@@ -66,6 +66,9 @@
       <AdditionalDependencies>log.lib;control.lib;core.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>XCOPY "$(ProjectDir)resources" "$(OutDir)resources\" /S /Y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -88,9 +91,16 @@
       <AdditionalDependencies>log.lib;control.lib;core.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>XCOPY "$(ProjectDir)resources" "$(OutDir)resources\" /S /Y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="resources\edit_table_empty.json" />
+    <None Include="resources\edit_table_invalid_json.json" />
+    <None Include="resources\edit_table_one_element.json" />
+    <None Include="resources\edit_table_two_elements.json" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -102,6 +112,7 @@
     <ClCompile Include="ut-proc_reader.cpp" />
     <ClCompile Include="ut-proc_table.cpp" />
     <ClCompile Include="ut-proc_writer.cpp" />
+    <ClCompile Include="ut-read_write_edit_table.cpp" />
     <ClCompile Include="ut-string_split.cpp" />
     <ClCompile Include="ut-traits.cpp" />
     <ClCompile Include="ut-type_desc.cpp" />

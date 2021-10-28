@@ -20,6 +20,9 @@
 #include "asker.h"
 #include "command.h"
 #include "intro_builder.h"
+#include "edit_table_reader.h"
+#include "edit_table_writer.h"
+#include "log_wrapper.h"
 
 
 event state_edit::operator()(context& p_context) const {
@@ -63,51 +66,75 @@ event state_edit::ask_next_action(context& p_context) {
     std::visit([&user_input, &p_context](auto&& instance) {
         using EventType = std::decay_t<decltype(instance)>;
         if constexpr (std::is_same_v<EventType, event_error>) {
-            const std::string message = "Error: unknown command is specified '" + user_input + "'.";
-
-            LOG_ERROR(message)
-            console::error_and_wait_key(message);
+            LOG_ERROR_WITH_WAIT_KEY_AND_RETURN("Error: unknown command is specified '" + user_input + "'.")
         }
         else if (std::is_same_v<EventType, event_set>) {
-            std::size_t index_value = asker::ask_index(p_context.get_user_table().size(), false);
-            if (index_value == asker::INVALID_INDEX) {
-                return;
-            }
-
-            if (index_value >= p_context.get_user_table().size()) {
-                const std::string message = "Error: specified index '" + std::to_string(index_value) +
-                    "' is out of range. The total amount of monitored values: " + std::to_string(p_context.get_user_table().size()) + ".";
-
-                LOG_ERROR(message)
-                console::error_and_wait_key(message);
-                return;
-            }
-
-            std::string string_value;
-            std::cin >> string_value;
-
-            LOG_INFO("Set new value '" << string_value << "' to the target process.")
-
-            edit_table_entry& entry = p_context.get_user_table().at(index_value);
-            if (!entry.set_value(string_value, p_context.get_proc_info())) {
-                const std::string message = "Error: impossible to write value '" + string_value + "' to the process.";
-
-                LOG_ERROR(message)
-                console::error_and_wait_key(message);
-
-                return;
-            }
+            handle_set_event(p_context);
         }
         else if (std::is_same_v<EventType, event_remove>) {
-            std::size_t index_value = asker::ask_index(p_context.get_user_table().size(), [&p_context](std::size_t p_index) {
-                p_context.get_user_table().erase(p_context.get_user_table().begin() + p_index);
-            });
-
-            LOG_INFO("Remove value with index '" << index_value << "' from the edit table.");
+            handle_remove_event(p_context);
+        }
+        else if (std::is_same_v<EventType, event_save>) {
+            handle_save_event(p_context);
+        }
+        else if (std::is_same_v<EventType, event_load>) {
+            handle_load_event(p_context);
         }
     }, action);
 
     return action;
+}
+
+
+void state_edit::handle_set_event(context& p_context) {
+    std::size_t index_value = asker::ask_index(p_context.get_user_table().size(), false);
+    if (index_value == asker::INVALID_INDEX) {
+        return;
+    }
+
+    if (index_value >= p_context.get_user_table().size()) {
+        LOG_ERROR_WITH_WAIT_KEY_AND_RETURN("Error: specified index '" + std::to_string(index_value) +
+            "' is out of range. The total amount of monitored values: " + std::to_string(p_context.get_user_table().size()) + ".")
+    }
+
+    std::string string_value;
+    std::cin >> string_value;
+
+    LOG_INFO("Set new value '" << string_value << "' to the target process.")
+
+        edit_table_entry& entry = p_context.get_user_table().at(index_value);
+    if (!entry.set_value(string_value, p_context.get_proc_info())) {
+        LOG_ERROR_WITH_WAIT_KEY_AND_RETURN("Error: impossible to write value '" + string_value + "' to the process.");
+    }
+}
+
+
+void state_edit::handle_remove_event(context& p_context) {
+    const std::size_t index_value = asker::ask_index(p_context.get_user_table().size(), [&p_context](std::size_t p_index) {
+        p_context.get_user_table().erase(p_context.get_user_table().begin() + p_index);
+    });
+
+    LOG_INFO("Remove value with index '" << index_value << "' from the edit table.")
+}
+
+
+void state_edit::handle_save_event(const context& p_context) {
+    std::string filename;
+    std::cin >> filename;
+
+    if (!edit_table_writer(filename).write(p_context.get_user_table())) {
+        LOG_ERROR_WITH_WAIT_KEY_AND_RETURN("Error: impossible to save the edit table to file '" + filename + "'.")
+    }
+}
+
+
+void state_edit::handle_load_event(context& p_context) {
+    std::string filename;
+    std::cin >> filename;
+
+    if (!edit_table_reader(filename).read(p_context.get_user_table())) {
+        LOG_ERROR_WITH_WAIT_KEY_AND_RETURN("Error: impossible to load the edit table from file '" + filename + "'.")
+    }
 }
 
 

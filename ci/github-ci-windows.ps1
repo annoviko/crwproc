@@ -9,11 +9,6 @@ $ProjectUtName = "ut.vcxproj"
 $BinaryUtPath = "$SolutionPath\x64\Release"
 $BinaryUtName = "ut.exe"
 
-$CppCheckUrlInstaller = "https://sourceforge.net/projects/cppcheck/files/cppcheck/2.6/cppcheck-2.6-x64-Setup.msi"
-$CppCheckInstaller = "C:\cppcheck-2.6-x64-Setup.msi"
-$CppCheckPath = "C:\CppCheck"
-$CppCheckApplication = "cppcheck.exe"
-
 
 function Announce-Step($Message) {
     Write-Host "[New Step] $Message" -ForegroundColor green
@@ -29,6 +24,8 @@ function Install-PythonPackages {
 
 function Build-Application($Configuration) {
     Announce-Step "Build Application."
+    
+    msbuild /p:RestorePackagesConfig=true /t:restore
     
     msbuild $SolutionName /t:crwproc /p:configuration=$Configuration /p:platform=x64
     if ($LastExitCode -ne 0) {
@@ -67,12 +64,16 @@ function Run-UnitTests {
     
     Build-UnitTests
     
+    cd $BinaryUtPath
+    
     & "$BinaryUtPath\$BinaryUtName"
     
     if ($LastExitCode -ne 0) {
         Write-Error "[Error] Unit-testing failed with error code '$LastExitCode'."
         Exit 1
     }
+    
+    cd $SolutionPath
 }
 
 

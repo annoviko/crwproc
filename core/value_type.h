@@ -29,5 +29,7 @@ extern const std::unordered_map<value_type, std::string> VALUE_TYPE_STR_DICT;
 
 std::string value_type_to_string(const value_type p_type);
 
+value_type string_to_value_type(const std::string& p_type);
+
 
 std::ostream& operator<<(std::ostream& p_stream, const value_type& p_type);

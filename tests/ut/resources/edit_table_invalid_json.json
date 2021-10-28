@@ -1,0 +1,10 @@
+[
+  {
+    "address": 741459622180,
+    "name": "cash",
+    "type": {
+      "signed": true,
+      "size": 4,
+      "type": "integral"
+    }
+  }

@@ -66,5 +66,7 @@ public:
     }
 
 public:
+    bool operator==(const type_desc& p_type) const;
+
     friend std::ostream& operator<<(std::ostream& p_stream, const type_desc& p_type);
 };

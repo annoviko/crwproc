@@ -17,6 +17,9 @@
 #include "core/type_desc.h"
 
 
+#undef max
+
+
 class asker {
 public:
     using action_index = std::function<void(std::size_t)>;

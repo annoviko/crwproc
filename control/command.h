@@ -38,6 +38,8 @@ public:
         static constexpr char refresh[]         = "\\refresh";
         static constexpr char remove[]          = "\\remove";
         static constexpr char help[]            = "\\help";
+        static constexpr char save[]            = "\\save";
+        static constexpr char load[]            = "\\load";
     };
 
 private:

@@ -16,8 +16,7 @@ proc_pointer::proc_pointer(const std::uint64_t p_address, const void* p_buffer, 
 
 
 proc_pointer::proc_pointer(const std::uint64_t p_address) :
-    m_address(p_address),
-    m_value()
+    m_address(p_address)
 { }
 
 
@@ -43,4 +42,9 @@ const memory_value& proc_pointer::get_value() const {
 
 memory_value& proc_pointer::get_value() {
     return m_value;
+}
+
+
+bool proc_pointer::operator==(const proc_pointer& p_pointer) const {
+    return m_address == p_pointer.m_address;
 }
