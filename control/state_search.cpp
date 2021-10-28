@@ -78,7 +78,11 @@ event state_search::operator()(context& p_context) const {
 
     LOG_INFO(message)
 
-    return ask_next_action(p_context);
+    event action = continue_until_event_is_not<event_error>([&action, &p_context]() {
+        return ask_next_action(p_context);
+    });
+
+    return action;
 }
 
 
