@@ -99,8 +99,16 @@ rest_server::rest_server(const std::string& p_address, const std::size_t p_port)
         catch (...) {
             p_response.set_content("Provided value is not convertible into specified type.", "text/plain");
             p_response.status = 400;
-            return;
         }
+    });
+
+    m_server.Get(R"(/status)", [this](const httplib::Request&, httplib::Response& p_response) {
+        p_response.set_content("Running.", "text/plain");
+        p_response.status = 200;
+    });
+
+    m_server.Delete(R"(/application)", [this](const httplib::Request&, httplib::Response&) {
+        m_server.stop();
     });
 }
 

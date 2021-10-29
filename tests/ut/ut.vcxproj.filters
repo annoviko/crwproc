@@ -76,6 +76,9 @@
     <ClCompile Include="ut-read_write_edit_table.cpp">
       <Filter>tests</Filter>
     </ClCompile>
+    <ClCompile Include="ut-proc_reader_external.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ut-proc_reader.h">
@@ -97,6 +100,9 @@
       <Filter>tests</Filter>
     </ClInclude>
     <ClInclude Include="ut-type_desc.h">
+      <Filter>tests</Filter>
+    </ClInclude>
+    <ClInclude Include="ut-proc_reader_external.h">
       <Filter>tests</Filter>
     </ClInclude>
   </ItemGroup>

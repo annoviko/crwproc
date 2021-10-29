@@ -18,11 +18,16 @@ __proc_file_mapping = {}
 __proc_line_cursor_mapping = {}
 
 
-def run_application(app_name, parameters=''):
-    output_filename = ntpath.basename(app_name) + "_output.txt"
+def run_application(app_name, parameters=[''], stdout_filename=None):
+    if stdout_filename is None:
+        output_filename = ntpath.basename(app_name) + "_output.txt"
+    else:
+        output_filename = stdout_filename
+
     output_fstream = open(output_filename, "w")
 
-    application = Popen([app_name, parameters], stdout=output_fstream, stdin=PIPE, stderr=output_fstream,
+    command_line = [app_name] + parameters
+    application = Popen(command_line, stdout=output_fstream, stdin=PIPE, stderr=output_fstream,
                         bufsize=1, universal_newlines=True)
 
     __proc_file_mapping[application] = output_filename
@@ -48,7 +53,7 @@ def clean_output_stream(application):
 
 
 def output_stream_contains(application, expression):
-    logger.info("Handle process output stream '%s' (stdout: '%s')." % (__proc_file_mapping[application], application.stdout))
+    logger.info("Process (contains) output stream '%s' (stdout: '%s')." % (__proc_file_mapping[application], application.stdout))
 
     result = False
     lines_to_analyse = ""
@@ -70,6 +75,31 @@ def output_stream_contains(application, expression):
     logger.info("Analysed content using expression %s:\n%s" % (expression, lines_to_analyse))
 
     return result
+
+
+def output_stream_match(application, expression):
+    logger.info("Process (match) output stream '%s' (stdout: '%s')." % (__proc_file_mapping[application], application.stdout))
+
+    lines_to_analyse = ""
+    line_number = 0
+    skip_until = __proc_line_cursor_mapping[application]
+
+    logger.info("Consider output after line %d." % skip_until)
+    stream = open(__proc_file_mapping[application], "r")
+    for line in stream:
+        if line_number >= skip_until:
+            lines_to_analyse += line
+
+            match_result = re.match(expression, line)
+            if match_result:
+                return list(match_result.groups())
+
+        line_number += 1
+
+    logger.info("Analysed content using expression %s:\n%s" % (expression, lines_to_analyse))
+
+    return []
+
 
 
 def send_command(application, command, wait_app_ms=0.1):

@@ -15,18 +15,23 @@
 
 
 class logging {
-private:
+public:
     logging() = delete;
 
+private:
+    static std::string PREFIX;
+
 public:
+    static void initialize(const std::string& p_prefix);
+
     static log_writer& instance();
 };
 
 
 #define _LOG(_message, _level, _funcname, _line) {                          \
-    std::stringstream stream;                                               \
-    stream << _message;                                                     \
-    logging::instance().log(stream.str(), _level, _funcname, _line);        \
+    std::stringstream _stream;                                              \
+    _stream << _message;                                                    \
+    logging::instance().log(_stream.str(), _level, _funcname, _line);       \
 }
 
 

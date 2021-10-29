@@ -22,6 +22,7 @@
 
 #include "asker.h"
 #include "command.h"
+#include "log_wrapper.h"
 
 
 class filter_reader_value {
@@ -146,7 +147,7 @@ private:
         std::string value;
         std::cin >> value;
 
-        LOG_INFO("User input: '" << value << "'.");
+        LOG_INFO("User input (value): '" << value << "'.")
 
         command::throw_if_command(value);
 
@@ -154,13 +155,11 @@ private:
             switch (p_filter.get_type().get_type()) {
             case value_type::integral:
                 if (is_out_of_range(std::stoull(value), p_filter)) {
-                    console::error_and_wait_key("Error: specified value '" + value + "' is out of range (" 
-                        + std::to_string(get_integral_min_value(p_filter)) + ", " + std::to_string(get_integral_max_value(p_filter)) + ").");
-                    return std::string{ };
+                    LOG_ERROR_WITH_WAIT_KEY_AND_RETURN_VALUE("Error: specified value '" + value + "' is out of range ("
+                        + std::to_string(get_integral_min_value(p_filter)) + ", " + std::to_string(get_integral_max_value(p_filter)) + ").", std::string{ })
                 }
 
                 break;
-
 
             case value_type::floating:
                 (void) std::stof(value);    /* check if it is possible to parse */
@@ -175,8 +174,7 @@ private:
             }
         }
         catch (...) {
-            console::error_and_wait_key("Error: invalid value is specified '" + value + "'.");
-            return std::string{ };
+            LOG_ERROR_WITH_WAIT_KEY_AND_RETURN_VALUE("Error: invalid value is specified '" + value + "'.", std::string{ })
         }
 
         return value;

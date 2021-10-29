@@ -8,6 +8,8 @@
 
 #include "ut-proc_reader.h"
 
+#include <filesystem>
+
 
 struct value_in_struct {
 public:
@@ -354,3 +356,4 @@ TEST(ut_proc_reader, find_value_uin64_memory_in_end_heap) {
     std::uint64_t* heap_value = (std::uint64_t*)((std::uint8_t*)heap.get() + 32768 - sizeof(std::uint64_t));
     test_template_find_value<filter_equal>(heap_value, [heap_value]() { (*heap_value)++; });
 }
+

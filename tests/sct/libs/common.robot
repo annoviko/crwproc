@@ -189,10 +189,23 @@ Get Option Variable Size By Type
 
 Create Exact Filter
     [Arguments]   ${var type}   ${value}
-    ${var size}=   Get Option Variable Size By Type          ${var type}
-    ${var sign}=   Get Option Variable Signed Type By Type   ${var type}
+    ${val type}=   Get Option Variable Type By Type          ${var type}
+    ${val size}=   Get Option Variable Size By Type          ${var type}
+    ${val sign}=   Get Option Variable Signed Type By Type   ${var type}
 
-    Create Exact Integral Filter   ${var size}   ${var sign}   ${value}
+    ${count}=     Count Values In List   ${INT TYPES}   ${var type}
+    IF   "${count}" > "${0}"
+        Create Exact Integral Filter   ${val size}   ${val sign}   ${value}
+    ELSE
+        Create Exact Float or Double Filter   ${val type}   ${value}
+    END
+
+
+Create Exact Float or Double Filter
+    [Arguments]   ${val type}   ${value}
+    Send Command   ${CRWPROC}   ${TYPE EXACT FILTER}
+    Send Command   ${CRWPROC}   ${val type}
+    Send Command   ${CRWPROC}   ${value}
 
 
 Create Exact Integral Filter
@@ -222,10 +235,10 @@ Edit Value via CRWPROC
 
 
 Set Value via CRWPROC
-    [Arguments]   ${value}
+    [Arguments]   ${index}   ${value}
     Send Command   ${CRWPROC}   \\show
-    Send Command   ${CRWPROC}   \\add 0
-    Edit Value via CRWPROC      0   ${value}
+    Send Command   ${CRWPROC}   \\add ${index}
+    Edit Value via CRWPROC      ${index}   ${value}
 
 
 Set Subject Variable
@@ -298,8 +311,23 @@ Find Value by Address and Check Output
     Should Be True    ${result}    ${pattern}
 
 
+Get Index From View Table By Address
+    [Arguments]   ${address}
+    Clean Output Stream    ${CRWPROC}
+    Send Command           ${CRWPROC}    \\show
+
+    ${address uppercase}=    Convert To Upper Case    ${address}
+    ${pattern}=    Set Variable           .*(\\d+)\\).*${address uppercase}.*
+
+    ${groups}=     Output Stream Match    ${CRWPROC}    ${pattern}
+
+    Should Not Be Empty    ${groups}
+    ${index}=              Set Variable       ${groups}[0]
+    [Return]   ${index}
+
+
 Initialize Crwproc
-    ${crwproc instance}=    Crwproc Run     ${BINARY FOLDER}
+    ${crwproc instance}=    Crwproc Run     ${BINARY FOLDER}    ${TEST NAME}
     Set Suite Variable      ${CRWPROC}      ${crwproc instance}
 
 

@@ -9,7 +9,11 @@
 #include "state_base.h"
 
 #include "core/console.h"
+
+#include "log/logging.h"
+
 #include "command.h"
+#include "log_wrapper.h"
 
 
 event state_base::ask_next_action(context&) {
@@ -18,11 +22,13 @@ event state_base::ask_next_action(context&) {
     std::string user_input;
     std::cin >> user_input;
 
+    LOG_INFO("User input (next action): '" << user_input << "'.")
+
     event action = command::to_event(user_input);
     std::visit([&user_input](auto&& instance) {
         using EventType = std::decay_t<decltype(instance)>;
         if constexpr (std::is_same_v<EventType, event_error>) {
-            console::error_and_wait_key("Error: unknown command is specified '" + user_input + "'.");
+            LOG_ERROR_WITH_WAIT_KEY("Error: unknown command is specified '" + user_input + "'.")
         }
     }, action);
 
