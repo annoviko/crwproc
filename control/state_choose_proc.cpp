@@ -19,6 +19,7 @@
 
 #include "command.h"
 #include "intro_builder.h"
+#include "log_wrapper.h"
 
 
 event state_choose_proc::operator()(context& p_context) const {
@@ -52,6 +53,8 @@ std::string state_choose_proc::ask_proc() {
     std::string user_input;
     std::cin >> user_input;
 
+    LOG_INFO("User input (pid): '" << user_input << "'.")
+
     std::cout << std::endl;
     return user_input;
 }
@@ -81,12 +84,7 @@ std::size_t state_choose_proc::try_get_pid(const std::string& p_input) {
 event state_choose_proc::assign_pid(const std::size_t p_pid, const proc_collection& p_table, context& p_context) {
     const auto iter = p_table.find(p_pid);
     if (iter == p_table.cend()) {
-        const std::string message = "Error: process ID '" + std::to_string(p_pid) + "' does not exist.";
-
-        LOG_ERROR(message);
-        console::error_and_wait_key(message);
-
-        return event_error{};
+        LOG_ERROR_WITH_WAIT_KEY_AND_RETURN_VALUE("Error: process ID '" + std::to_string(p_pid) + "' does not exist.", event_error{ })
     }
 
     p_context.set_proc_info(iter->second);
@@ -99,10 +97,7 @@ event state_choose_proc::process_user_command(const std::string& p_command) {
     std::visit([&p_command](auto && instance) {
         using EventType = std::decay_t<decltype(instance)>;
         if constexpr (std::is_same_v<EventType, event_error>) {
-            const std::string message = "Error: unknown command is specified '" + p_command + "'.";
-
-            LOG_ERROR(message);
-            console::error_and_wait_key(message);
+            LOG_ERROR_WITH_WAIT_KEY("Error: unknown command is specified '" + p_command + "'.")
         }
     }, event_to_handle);
 

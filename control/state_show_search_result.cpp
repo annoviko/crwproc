@@ -19,6 +19,7 @@
 #include "asker.h"
 #include "edit_table_entry.h"
 #include "intro_builder.h"
+#include "log_wrapper.h"
 
 
 event state_show_search_result::operator()(context& p_context) {
@@ -55,13 +56,13 @@ event state_show_search_result::ask_next_action(context& p_context) {
     std::string user_input;
     std::cin >> user_input;
 
-    LOG_INFO("User input: '" << user_input << "'.");
+    LOG_INFO("User input (action): '" << user_input << "'.")
 
     event action = command::to_event(user_input);
     std::visit([this, &user_input, &p_context](auto&& instance) {
         using EventType = std::decay_t<decltype(instance)>;
         if constexpr (std::is_same_v<EventType, event_error>) {
-            console::error_and_wait_key("Error: unknown command is specified '" + user_input + "'.");
+            LOG_ERROR_WITH_WAIT_KEY("Error: unknown command is specified '" + user_input + "'.")
         }
         else if (std::is_same_v<EventType, event_add>) {
             std::size_t index_value = asker::ask_index(m_view.size());
@@ -76,12 +77,16 @@ event state_show_search_result::ask_next_action(context& p_context) {
             edit_table_entry entry(*(m_view[index_value].pointer_iterator), type);
             p_context.get_user_table().push_back(entry);
 
+            LOG_INFO("New value has been added to the edit table (edit table size: '" << p_context.get_user_table().size() << "').")
+
             m_intro.redraw(p_context);
         }
         else if (std::is_same_v<EventType, event_remove>) {
             asker::ask_index(m_view.size(), [this](std::size_t p_index) {
                 auto& iter_entry = m_view[p_index];
                 iter_entry.memory_block_iterator->get_values().erase(iter_entry.pointer_iterator);
+
+                LOG_INFO("Remove value from the edit table with index '" << p_index << "'.")
 
                 m_view.erase(m_view.begin() + p_index);
             });

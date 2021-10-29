@@ -15,11 +15,14 @@
 #include "core/console.h"
 
 #include "command.h"
+#include "log_wrapper.h"
 
 
 std::size_t asker::ask_index(const std::size_t p_limit, const action_index& p_action, const bool p_interruptible) {
     std::string user_input;
     std::cin >> user_input;
+
+    LOG_INFO("User input (index): '" << user_input << "'.")
 
     if (p_interruptible) {
         command::throw_if_command(user_input);
@@ -31,13 +34,12 @@ std::size_t asker::ask_index(const std::size_t p_limit, const action_index& p_ac
         index_value = std::stoull(user_input);
     }
     catch (std::exception&) {
-        console::error_and_wait_key("Error: unsigned integer value is expected.");
-        return INVALID_INDEX;
+        LOG_ERROR_WITH_WAIT_KEY_AND_RETURN_VALUE("Error: unsigned integer value is expected.", INVALID_INDEX)
     }
 
     if (index_value >= p_limit) {
-        console::error_and_wait_key("Error: specified index '" + std::to_string(index_value) + "' is out of range (0-" + std::to_string(p_limit) + ").");
-        return INVALID_INDEX;
+        LOG_ERROR_WITH_WAIT_KEY_AND_RETURN_VALUE("Error: specified index '" + std::to_string(index_value) 
+            + "' is out of range (0-" + std::to_string(p_limit) + ").", INVALID_INDEX)
     }
 
     if (p_action) {
@@ -161,6 +163,8 @@ std::optional<uint64_t> asker::ask_address() {
     std::string string_address;
     std::cin >> string_address;
 
+    LOG_INFO("User input (address): '" << string_address  << "'.")
+
     command::throw_if_command(string_address);
 
     std::stringstream stream;
@@ -170,7 +174,7 @@ std::optional<uint64_t> asker::ask_address() {
     stream >> address;
 
     if (stream.fail()) {
-        console::error_and_wait_key("Error: address as a hex value is expected (incorrect input: '" + string_address + "').");
+        LOG_ERROR_WITH_WAIT_KEY("Error: address as a hex value is expected (incorrect input: '" + string_address + "').")
         std::cin.clear();
         std::cin.ignore(256, '\n');
         return { };

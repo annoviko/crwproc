@@ -59,7 +59,7 @@ event state_edit::ask_next_action(context& p_context) {
     std::string user_input;
     std::cin >> user_input;
 
-    LOG_INFO("User input: '" << user_input << "'.");
+    LOG_INFO("User input (next action): '" << user_input << "'.");
 
     event action = command::to_event(user_input);
 
@@ -122,6 +122,8 @@ void state_edit::handle_save_event(const context& p_context) {
     std::string filename;
     std::cin >> filename;
 
+    LOG_INFO("User input (edit table filename): '" << filename << "'.")
+
     if (!edit_table_writer(filename).write(p_context.get_user_table())) {
         LOG_ERROR_WITH_WAIT_KEY_AND_RETURN("Error: impossible to save the edit table to file '" + filename + "'.")
     }
@@ -131,6 +133,8 @@ void state_edit::handle_save_event(const context& p_context) {
 void state_edit::handle_load_event(context& p_context) {
     std::string filename;
     std::cin >> filename;
+
+    LOG_INFO("User input (edit table filename): '" << filename << "'.")
 
     if (!edit_table_reader(filename).read(p_context.get_user_table())) {
         LOG_ERROR_WITH_WAIT_KEY_AND_RETURN("Error: impossible to load the edit table from file '" + filename + "'.")

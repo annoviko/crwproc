@@ -1,22 +1,24 @@
 *** Settings ***
 
-Library    libs/proc_interact.py
-Library    libs/crwproc_interact.py
+Library         libs/proc_interact.py
+Library         libs/crwproc_interact.py
+
+Resource        libs/common.robot
 
 
 *** Test Cases ***
 
 Start and Exit
-    ${crwproc}=        Crwproc Run     ./../../x64/Release/    ${TEST NAME}
-    ${exit code}=      Crwproc Exit    ${crwproc}
+    Initialize Crwproc
+    ${exit code}=      Crwproc Exit    ${CRWPROC}
     Should Be Equal    ${exit code}    ${0}
 
 
 Start and Wrong Input and Exit
-    ${crwproc}=        Crwproc Run     ./../../x64/Release/    ${TEST NAME}
-    Send Command       ${crwproc}      \\WrongCommand
+    Initialize Crwproc
+    Send Command       ${CRWPROC}      \\WrongCommand
 
-    Crwproc Press Any Key   ${crwproc}
+    Crwproc Press Any Key   ${CRWPROC}
 
-    ${exit code}=      Crwproc Exit    ${crwproc}
+    ${exit code}=      Crwproc Exit    ${CRWPROC}
     Should Be Equal    ${exit code}    ${0}

@@ -29,9 +29,9 @@ public:
 
 
 #define _LOG(_message, _level, _funcname, _line) {                          \
-    std::stringstream stream;                                               \
-    stream << _message;                                                     \
-    logging::instance().log(stream.str(), _level, _funcname, _line);        \
+    std::stringstream _stream;                                              \
+    _stream << _message;                                                    \
+    logging::instance().log(_stream.str(), _level, _funcname, _line);       \
 }
 
 
