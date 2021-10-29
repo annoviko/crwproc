@@ -10,13 +10,11 @@
 
 #include <chrono>
 #include <condition_variable>
-#include <exception>
 #include <functional>
 #include <limits>
 #include <memory>
 #include <mutex>
 #include <optional>
-#include <ratio>
 #include <thread>
 #include <vector>
 
