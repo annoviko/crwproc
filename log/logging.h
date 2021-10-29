@@ -15,10 +15,15 @@
 
 
 class logging {
-private:
+public:
     logging() = delete;
 
+private:
+    static std::string PREFIX;
+
 public:
+    static void initialize(const std::string& p_prefix);
+
     static log_writer& instance();
 };
 

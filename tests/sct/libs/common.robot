@@ -299,7 +299,7 @@ Find Value by Address and Check Output
 
 
 Initialize Crwproc
-    ${crwproc instance}=    Crwproc Run     ${BINARY FOLDER}
+    ${crwproc instance}=    Crwproc Run     ${BINARY FOLDER}    ${TEST NAME}
     Set Suite Variable      ${CRWPROC}      ${crwproc instance}
 
 

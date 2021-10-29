@@ -9,7 +9,15 @@
 #include "logging.h"
 
 
+std::string logging::PREFIX = "crwproc";
+
+
+void logging::initialize(const std::string& p_prefix) {
+    PREFIX = p_prefix;
+}
+
+
 log_writer& logging::instance() {
-    static log_writer writer("crwproc");
+    static log_writer writer(PREFIX);
     return writer;
 }

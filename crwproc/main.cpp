@@ -9,13 +9,22 @@
 #include <iostream>
 
 #include "control/ui.h"
+
 #include "log/logging.h"
 
+#include "options.h"
 
-int main() {
-    LOG_INFO("crwproc startup.")
 
+int main(int argc, char *argv[]) {
     try {
+        options config(argc, argv);
+        if (config.get_log_prefix()) {
+            logging::initialize(config.get_log_prefix().value());
+            LOG_INFO("crwproc log prefix '" << config.get_log_prefix().value() << "'.")
+        }
+
+        LOG_INFO("crwproc startup.")
+
         ui application;
         application.run();
     }

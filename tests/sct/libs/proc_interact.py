@@ -18,11 +18,16 @@ __proc_file_mapping = {}
 __proc_line_cursor_mapping = {}
 
 
-def run_application(app_name, parameters=''):
-    output_filename = ntpath.basename(app_name) + "_output.txt"
+def run_application(app_name, parameters=[''], stdout_filename=None):
+    if stdout_filename is None:
+        output_filename = ntpath.basename(app_name) + "_output.txt"
+    else:
+        output_filename = stdout_filename
+
     output_fstream = open(output_filename, "w")
 
-    application = Popen([app_name, parameters], stdout=output_fstream, stdin=PIPE, stderr=output_fstream,
+    command_line = [app_name] + parameters
+    application = Popen(command_line, stdout=output_fstream, stdin=PIPE, stderr=output_fstream,
                         bufsize=1, universal_newlines=True)
 
     __proc_file_mapping[application] = output_filename

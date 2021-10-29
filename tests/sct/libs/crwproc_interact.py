@@ -8,8 +8,13 @@
 import proc_interact
 
 
-def crwproc_run(path):
-    return proc_interact.run_application(path + "crwproc.exe")
+def crwproc_run(path, test_name):
+    postfix = test_name.replace(" ", "_").lower()
+
+    log_prefix = "crwproc_" + postfix
+    stdout_filename = "stdout_" + postfix + ".log"
+
+    return proc_interact.run_application(path + "crwproc.exe", ['-l', log_prefix], stdout_filename)
 
 
 def crwproc_exit(application):
