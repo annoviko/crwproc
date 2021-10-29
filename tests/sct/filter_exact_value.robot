@@ -1,11 +1,13 @@
 *** Settings ***
 
-Library     HttpCtrl.Client
-Library     libs/crwproc_interact.py
-Library     libs/proc_interact.py
+Library          String
 
-Resource    libs/common.robot
-Resource    libs/subject_interact.robot
+Library          HttpCtrl.Client
+Library          libs/crwproc_interact.py
+Library          libs/proc_interact.py
+
+Resource         libs/common.robot
+Resource         libs/subject_interact.robot
 
 Test Setup       Initialize Object and Subject
 Test Teardown    Terminate Object and Subject
@@ -37,6 +39,16 @@ Find and Change Stack Int32
 Find and Change Stack Int64
     ${value evolution}=    Create List   0   -8589934592   8589934592
     Test Template Find and Change   ${MEM TYPE STACK}   i64   ${value evolution}   16
+
+
+Find and Change Stack Float
+    ${value evolution}=    Create List   0   1.5   -3.5
+    Test Template Find and Change   ${MEM TYPE STACK}   flt   ${value evolution}   4.5
+
+
+Find and Change Stack Double
+    ${value evolution}=    Create List   0   4.95   -0.55
+    Test Template Find and Change   ${MEM TYPE STACK}   dbl   ${value evolution}   -1.5
 
 
 Find and Change Stack Uint8
@@ -79,6 +91,16 @@ Find and Change Heap Int64
     Test Template Find and Change   ${MEM TYPE HEAP}   i64   ${value evolution}   16
 
 
+Find and Change Heap Float
+    ${value evolution}=    Create List   0   1.5   -3.5
+    Test Template Find and Change   ${MEM TYPE HEAP}   flt   ${value evolution}   4.5
+
+
+Find and Change Heap Double
+    ${value evolution}=    Create List   0   4.95   -0.55
+    Test Template Find and Change   ${MEM TYPE HEAP}   dbl   ${value evolution}   -1.5
+
+
 Find and Change Global Int8
     ${value evolution}=    Create List   0   -16   32
     Test Template Find and Change   ${MEM TYPE GLOBAL}   i8   ${value evolution}   -8
@@ -97,6 +119,16 @@ Find and Change Global Int32
 Find and Change Global Int64
     ${value evolution}=    Create List   0   -8589934592   8589934592
     Test Template Find and Change   ${MEM TYPE GLOBAL}   i64   ${value evolution}   16
+
+
+Find and Change Global Float
+    ${value evolution}=    Create List   0   1.5   -3.5
+    Test Template Find and Change   ${MEM TYPE GLOBAL}   flt   ${value evolution}   4.5
+
+
+Find and Change Global Double
+    ${value evolution}=    Create List   0   4.95   -0.55
+    Test Template Find and Change   ${MEM TYPE GLOBAL}   dbl   ${value evolution}   -1.5
 
 
 Filter Value Int8 is Out of Range
@@ -156,5 +188,8 @@ Test Template Find and Change
         Update Filter and Continue    ${value}
     END
 
-    Set Value via CRWPROC    ${value to set}
+    ${address}=    Get Subject Variable Address           ${mem type}    ${var type}
+    ${index}=      Get Index From View Table By Address   ${address}
+
+    Set Value via CRWPROC    ${index}       ${value to set}
     Check Subject Variable   ${mem type}    ${var type}   ${value to set}
