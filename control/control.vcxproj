@@ -111,6 +111,7 @@
     <ClCompile Include="command_interrupt.cpp" />
     <ClCompile Include="context.cpp" />
     <ClCompile Include="deserializer.cpp" />
+    <ClCompile Include="edit_table_change.cpp" />
     <ClCompile Include="edit_table_entry.cpp" />
     <ClCompile Include="edit_table_reader.cpp" />
     <ClCompile Include="edit_table_writer.cpp" />
@@ -140,6 +141,7 @@
     <ClInclude Include="context.h" />
     <ClInclude Include="deserializer.h" />
     <ClInclude Include="edit_table.h" />
+    <ClInclude Include="edit_table_change.h" />
     <ClInclude Include="edit_table_entry.h" />
     <ClInclude Include="edit_table_reader.h" />
     <ClInclude Include="edit_table_writer.h" />

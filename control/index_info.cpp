@@ -29,7 +29,7 @@ index_info::index_info(const std::string& p_instruction, const std::size_t p_lim
         validate();
     }
     else {
-        m_reason = "impossible to parse input argument '" + p_instruction + "'";
+        m_reason = "impossible to parse input argument '" + p_instruction + "' as an index or range";
     }
 }
 
@@ -54,40 +54,39 @@ const std::string& index_info::reason() const {
 }
 
 
-bool index_info::is_all(const std::string& p_instruction) {
-    return INSTRUCTION_ALL.find(p_instruction) != INSTRUCTION_ALL.cend();
+bool index_info::is_all() {
+    return INSTRUCTION_ALL.find(m_instruction) != INSTRUCTION_ALL.cend();
 }
 
-bool index_info::is_1st_half(const std::string& p_instruction) {
-    return INSTRUCTION_1ST_HALF.find(p_instruction) != INSTRUCTION_1ST_HALF.cend();
+bool index_info::is_1st_half() {
+    return INSTRUCTION_1ST_HALF.find(m_instruction) != INSTRUCTION_1ST_HALF.cend();
 }
 
 
-bool index_info::is_2nd_half(const std::string& p_instruction) {
-    return INSTRUCTION_2ND_HALF.find(p_instruction) != INSTRUCTION_2ND_HALF.cend();
+bool index_info::is_2nd_half() {
+    return INSTRUCTION_2ND_HALF.find(m_instruction) != INSTRUCTION_2ND_HALF.cend();
 }
 
 
 bool index_info::try_initialize(const std::string& p_instruction) {
-    std::string canonical_instruction;
-    std::transform(p_instruction.begin(), p_instruction.end(), std::back_inserter(canonical_instruction), [](const char symbol) {
+    std::transform(p_instruction.begin(), p_instruction.end(), std::back_inserter(m_instruction), [](const char symbol) {
         return static_cast<char>(std::tolower(symbol));
     });
 
     if (m_index_only) {
-        return try_set_value(canonical_instruction);
+        return try_set_value();
     }
 
-    return try_set_all(canonical_instruction) ||
-        try_set_1st_half(canonical_instruction) ||
-        try_set_2nd_half(canonical_instruction) ||
-        try_set_range(canonical_instruction) ||
-        try_set_value(canonical_instruction);
+    return try_set_all() ||
+        try_set_1st_half() ||
+        try_set_2nd_half() ||
+        try_set_range() ||
+        try_set_value();
 }
 
 
-bool index_info::try_set_all(const std::string& p_instruction) {
-    if (is_all(p_instruction)) {
+bool index_info::try_set_all() {
+    if (is_all()) {
         m_begin = 0;
         m_end = m_limit;
 
@@ -97,8 +96,8 @@ bool index_info::try_set_all(const std::string& p_instruction) {
     return false;
 }
 
-bool index_info::try_set_1st_half(const std::string& p_instruction) {
-    if (is_1st_half(p_instruction)) {
+bool index_info::try_set_1st_half() {
+    if (is_1st_half()) {
         m_begin = 0;
         m_end = static_cast<std::size_t>(std::ceil(static_cast<double>(m_limit) / 2.0));
 
@@ -109,8 +108,8 @@ bool index_info::try_set_1st_half(const std::string& p_instruction) {
 }
 
 
-bool index_info::try_set_2nd_half(const std::string& p_instruction) {
-    if (is_2nd_half(p_instruction)) {
+bool index_info::try_set_2nd_half() {
+    if (is_2nd_half()) {
         m_begin = static_cast<std::size_t>(std::ceil(static_cast<double>(m_limit) / 2.0));
         m_end = m_limit;
 
@@ -121,9 +120,9 @@ bool index_info::try_set_2nd_half(const std::string& p_instruction) {
 }
 
 
-bool index_info::try_set_range(const std::string& p_instruction) {
+bool index_info::try_set_range() {
     std::smatch groups;
-    if (std::regex_match(p_instruction, groups, PATTERN_RANGE)) {
+    if (std::regex_match(m_instruction, groups, PATTERN_RANGE)) {
         m_begin = std::stoull(groups[1]);
         m_end = std::stoull(groups[2]);
 
@@ -134,9 +133,9 @@ bool index_info::try_set_range(const std::string& p_instruction) {
 }
 
 
-bool index_info::try_set_value(const std::string& p_instruction) {
+bool index_info::try_set_value() {
     try {
-        m_begin = std::stoul(p_instruction);
+        m_begin = std::stoul(m_instruction);
         m_end = m_begin + 1;
     }
     catch(std::exception&) {
@@ -158,7 +157,11 @@ void index_info::validate() {
 
 void index_info::set_invalid_reason() {
     if (m_end > m_limit) {
-        m_reason = "limit value '" + std::to_string(m_limit) + "' cannot be exceeded";
+        const std::size_t delta = m_end - m_begin;
+        if (delta == 1) {
+            m_reason = "input value '" + m_instruction + "' is out of range (0-" + std::to_string(m_limit) + ")";
+        }
+        m_reason = "input range '" + m_instruction + "' is out of range (0-" + std::to_string(m_limit) + ")";
     }
     else if (m_begin >= m_end) {
         m_reason = "empty range (from '" + std::to_string(m_begin) + "' to '" + std::to_string(m_end) + "')";

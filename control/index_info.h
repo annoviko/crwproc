@@ -32,6 +32,7 @@ private:
 
     bool m_valid = false;
     std::string m_reason;
+    std::string m_instruction;
 
 public:
     index_info(const std::string& p_instruction, const std::size_t p_limit, const bool p_index_only);
@@ -46,23 +47,23 @@ public:
     const std::string& reason() const;
 
 private:
-    static bool is_all(const std::string& p_instruction);
+    bool is_all();
 
-    static bool is_1st_half(const std::string& p_instruction);
+    bool is_1st_half();
 
-    static bool is_2nd_half(const std::string& p_instruction);
+    bool is_2nd_half();
 
     bool try_initialize(const std::string& p_instruction);
 
-    bool try_set_all(const std::string& p_instruction);
+    bool try_set_all();
 
-    bool try_set_1st_half(const std::string& p_instruction);
+    bool try_set_1st_half();
 
-    bool try_set_2nd_half(const std::string& p_instruction);
+    bool try_set_2nd_half();
 
-    bool try_set_range(const std::string& p_instruction);
+    bool try_set_range();
 
-    bool try_set_value(const std::string& p_instruction);
+    bool try_set_value();
 
     void validate();
 

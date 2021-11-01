@@ -28,7 +28,8 @@ const std::unordered_map<std::string, event> command::COMMANDS = {
     { command::name::remove,            event_remove()   },
     { command::name::help,              event_help()     },
     { command::name::save,              event_save()     },
-    { command::name::load,              event_load()     }
+    { command::name::load,              event_load()     },
+    { command::name::revert,            event_revert()   }
 };
 
 
@@ -46,7 +47,8 @@ const std::unordered_map<std::string, std::string> command::DESCRIPTION = {
     { command::name::remove,            "Remove a variable with a specific index from a table.\nSyntax: \\remove <variable_index>" },
     { command::name::help,              "Show help information: existed commands with examples." },
     { command::name::save,              "Save the edit table to the specific file.\nSyntax: \\save <filename>" },
-    { command::name::load,              "Load the edit table from the specific file.\nSyntax: \\load <filename>" }
+    { command::name::load,              "Load the edit table from the specific file.\nSyntax: \\load <filename>" },
+    { command::name::revert,            "Revert changes introduced by \\set command." }
 };
 
 
@@ -59,7 +61,8 @@ const std::unordered_map<std::string, std::vector<std::string>> command::EXAMPLE
 
     { command::name::set, {
             "\\set 0 99999      - set value 99999 to the variable with index 0 in the edit table.",
-            "\\add 15 3.65      - set value 3.65 to the variable with index 15 in the edit table."
+            "\\set 15 3.65      - set value 3.65 to the variable with index 15 in the edit table.",
+            "\\set all 100      - set value 100 to all variables in the edit table."
         }
     },
 

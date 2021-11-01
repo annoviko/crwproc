@@ -14,6 +14,7 @@
 #include "core/search_result.h"
 
 #include "edit_table.h"
+#include "edit_table_change.h"
 
 
 class context {
@@ -22,6 +23,7 @@ private:
     filter            m_filter = filter_none{ };
     search_result     m_found_values;
     edit_table        m_user_table;
+    edit_table_change m_user_table_change;
 
 public:
     void set_proc_info(const proc_info& p_proc);
@@ -39,6 +41,10 @@ public:
     edit_table& get_user_table();
 
     const edit_table& get_user_table() const;
+
+    edit_table_change& get_user_table_change();
+
+    const edit_table_change& get_user_table_change() const;
 
 public:
     friend std::ostream& operator<<(std::ostream& p_stream, const context& p_info);

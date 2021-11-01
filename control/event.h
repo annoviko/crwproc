@@ -48,6 +48,8 @@ class event_save { };
 
 class event_load { };
 
+class event_revert { };
+
 
 using event = std::variant<
     event_choose, 
@@ -65,7 +67,8 @@ using event = std::variant<
     event_error, 
     event_exit,
     event_save,
-    event_load
+    event_load,
+    event_revert
 >;
 
 
@@ -106,3 +109,4 @@ std::ostream& operator<<(std::ostream& p_stream, const event_error& p_event);
 std::ostream& operator<<(std::ostream& p_stream, const event_exit& p_event);
 std::ostream& operator<<(std::ostream& p_stream, const event_save& p_event);
 std::ostream& operator<<(std::ostream& p_stream, const event_load& p_event);
+std::ostream& operator<<(std::ostream& p_stream, const event_revert& p_event);

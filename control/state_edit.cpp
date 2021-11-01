@@ -80,6 +80,9 @@ event state_edit::ask_next_action(context& p_context) {
         else if (std::is_same_v<EventType, event_load>) {
             handle_load_event(p_context);
         }
+        else if (std::is_same_v<EventType, event_revert>) {
+            handle_revert_event(p_context);
+        }
     }, action);
 
     return action;
@@ -97,12 +100,28 @@ void state_edit::handle_set_event(context& p_context) {
 
     LOG_INFO("Set new value '" << string_value << "' to the target process.")
 
+    std::size_t amount_unaccessible = 0;
+
+    p_context.get_user_table_change().clear();
     for (std::size_t i = index_value.get_begin(); i < index_value.get_end(); i++) {
         edit_table_entry& entry = p_context.get_user_table().at(i);
+
+        p_context.get_user_table_change().add(entry);
+
         if (!entry.set_value(string_value, p_context.get_proc_info())) {
-            LOG_ERROR_WITH_WAIT_KEY_AND_RETURN("Error: impossible to write value '" + string_value + "' to entry with index '" + std::to_string(i) + "'.")
+            amount_unaccessible++;
         }
     }
+
+    if (amount_unaccessible > 0) {
+        LOG_ERROR_WITH_WAIT_KEY_AND_RETURN("Error: impossible to set value '" + string_value + "' for '" + std::to_string(amount_unaccessible) + "' variables in the process.")
+    }
+}
+
+
+void state_edit::handle_revert_event(context& p_context) {
+    LOG_INFO("Revert changes that were done in the target process.")
+    p_context.get_user_table_change().revert();
 }
 
 

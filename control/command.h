@@ -40,6 +40,7 @@ public:
         static constexpr char help[]            = "\\help";
         static constexpr char save[]            = "\\save";
         static constexpr char load[]            = "\\load";
+        static constexpr char revert[]          = "\\revert";
     };
 
 private:

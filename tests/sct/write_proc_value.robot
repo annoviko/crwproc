@@ -19,15 +19,15 @@ Wrong Command
 
 
 Wrong Index
-    Test Template Set View Wrong Command    \\set qwe 16    .*Error: unsigned integer value is expected.*
+    Test Template Set View Wrong Command    \\set qwe 16    .*Error: impossible to parse input argument 'qwe' as an index or range.*
 
 
 Wrong Value
-    Test Template Set View Wrong Command    \\set 0 zxcv    .*Error: impossible to write value 'zxcv' to the process.*
+    Test Template Set View Wrong Command    \\set 0 zxcv    .*Error: impossible to set value 'zxcv' for.*
 
 
 Out of Range Index
-    Test Template Set View Wrong Command    \\set 128 64    .*Error: specified index '128' is out of range \\(0-1\\).*
+    Test Template Set View Wrong Command    \\set 128 64    .*Error: input value '128' is out of range \\(0-1\\).*
 
 
 
