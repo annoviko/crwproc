@@ -37,7 +37,6 @@ private:
     intro_builder m_intro;
 
     search_result_view m_view;
-    bool m_is_complete_view = true;
 
 public:
     state_show_search_result() = default;

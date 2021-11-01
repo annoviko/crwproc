@@ -87,14 +87,9 @@ event state_edit::ask_next_action(context& p_context) {
 
 
 void state_edit::handle_set_event(context& p_context) {
-    std::size_t index_value = asker::ask_index(p_context.get_user_table().size(), false);
-    if (index_value == asker::INVALID_INDEX) {
+    index_info index_value = asker::ask_index(p_context.get_user_table().size(), false);
+    if (!index_value.is_valid()) {
         return;
-    }
-
-    if (index_value >= p_context.get_user_table().size()) {
-        LOG_ERROR_WITH_WAIT_KEY_AND_RETURN("Error: specified index '" + std::to_string(index_value) +
-            "' is out of range. The total amount of monitored values: " + std::to_string(p_context.get_user_table().size()) + ".")
     }
 
     std::string string_value;
@@ -102,19 +97,24 @@ void state_edit::handle_set_event(context& p_context) {
 
     LOG_INFO("Set new value '" << string_value << "' to the target process.")
 
-        edit_table_entry& entry = p_context.get_user_table().at(index_value);
-    if (!entry.set_value(string_value, p_context.get_proc_info())) {
-        LOG_ERROR_WITH_WAIT_KEY_AND_RETURN("Error: impossible to write value '" + string_value + "' to the process.");
+    for (std::size_t i = index_value.get_begin(); i < index_value.get_end(); i++) {
+        edit_table_entry& entry = p_context.get_user_table().at(i);
+        if (!entry.set_value(string_value, p_context.get_proc_info())) {
+            LOG_ERROR_WITH_WAIT_KEY_AND_RETURN("Error: impossible to write value '" + string_value + "' to entry with index '" + std::to_string(i) + "'.")
+        }
     }
 }
 
 
 void state_edit::handle_remove_event(context& p_context) {
-    const std::size_t index_value = asker::ask_index(p_context.get_user_table().size(), [&p_context](std::size_t p_index) {
-        p_context.get_user_table().erase(p_context.get_user_table().begin() + p_index);
-    });
+    const index_info info = asker::ask_index(p_context.get_user_table().size(), false);
+    if (!info.is_valid()) {
+        return;
+    }
 
-    LOG_INFO("Remove value with index '" << index_value << "' from the edit table.")
+    p_context.get_user_table().erase(p_context.get_user_table().begin() + info.get_begin(), p_context.get_user_table().begin() + info.get_end());
+
+    LOG_INFO("Remove values with indexes from '" << info.get_begin() << "' to '" << info.get_end() << "' from the edit table.")
 }
 
 

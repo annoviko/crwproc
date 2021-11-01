@@ -108,6 +108,7 @@
     <ClCompile Include="ut-filter_less.cpp" />
     <ClCompile Include="ut-filter_more.cpp" />
     <ClCompile Include="ut-filter_range.cpp" />
+    <ClCompile Include="ut-index_info.cpp" />
     <ClCompile Include="ut-logging.cpp" />
     <ClCompile Include="ut-proc_reader.cpp" />
     <ClCompile Include="ut-proc_reader_external.cpp" />

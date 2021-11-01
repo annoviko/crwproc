@@ -34,7 +34,7 @@ event state_show_search_result::operator()(context& p_context) {
 
 
 void state_show_search_result::show_values(const context& p_context) const {
-    for (std::size_t i = 0; i < m_view.size(); i++) {
+    for (std::size_t i = 0; (i < m_view.size()) && (i < MAX_VIEW_SIZE); i++) {
         const proc_pointer& pointer = *(m_view[i].pointer_iterator);
 
         std::cout << std::right << std::setw(4) << i << ") " <<
@@ -42,8 +42,8 @@ void state_show_search_result::show_values(const context& p_context) const {
             << std::endl;
     }
 
-    if (!m_is_complete_view) {
-        std::cout << "... (only the first " << m_view.size() << " is displayed from " << p_context.get_found_values().get_amount_values() << ")" << std::endl;
+    if (m_view.size() > MAX_VIEW_SIZE) {
+        std::cout << "... (only the first " << MAX_VIEW_SIZE << " is displayed from " << p_context.get_found_values().get_amount_values() << ")" << std::endl;
     }
 
     std::cout << std::endl;
@@ -59,37 +59,47 @@ event state_show_search_result::ask_next_action(context& p_context) {
     LOG_INFO("User input (action): '" << user_input << "'.")
 
     event action = command::to_event(user_input);
-    std::visit([this, &user_input, &p_context](auto&& instance) {
-        using EventType = std::decay_t<decltype(instance)>;
+    std::visit([this, &user_input, &p_context](auto&& action_instance) {
+        using EventType = std::decay_t<decltype(action_instance)>;
         if constexpr (std::is_same_v<EventType, event_error>) {
             LOG_ERROR_WITH_WAIT_KEY("Error: unknown command is specified '" + user_input + "'.")
         }
         else if (std::is_same_v<EventType, event_add>) {
-            std::size_t index_value = asker::ask_index(m_view.size());
-            if (index_value == asker::INVALID_INDEX) { 
+            const index_info info = asker::ask_index(m_view.size(), false);
+            if (!info.is_valid()) {
                 return;
             }
 
-            type_desc type = std::visit([](auto&& instance) { 
-                return instance.get_type(); 
+            type_desc type = std::visit([](auto&& type_instance) { 
+                return type_instance.get_type();
             }, p_context.get_filter());
 
-            edit_table_entry entry(*(m_view[index_value].pointer_iterator), type);
-            p_context.get_user_table().push_back(entry);
+            for (std::size_t i = info.get_begin(); i < info.get_end(); i++) {
+                edit_table_entry entry(*(m_view[i].pointer_iterator), type);
+                p_context.get_user_table().push_back(entry);
+            }
 
-            LOG_INFO("New value has been added to the edit table (edit table size: '" << p_context.get_user_table().size() << "').")
+            LOG_INFO("Values added to the edit table with indexes from '" << info.get_begin() << "' to '" 
+                << info.get_end() << "' (edit table size: '" << p_context.get_user_table().size() << "').")
 
             m_intro.redraw(p_context);
         }
         else if (std::is_same_v<EventType, event_remove>) {
-            asker::ask_index(m_view.size(), [this](std::size_t p_index) {
-                auto& iter_entry = m_view[p_index];
+            const index_info info = asker::ask_index(m_view.size(), false);
+            if (!info.is_valid()) {
+                return;
+            }
+
+            for (std::size_t i = info.get_begin(); i < info.get_end(); i++) {
+                auto& iter_entry = m_view[i];
                 iter_entry.memory_block_iterator->get_values().erase(iter_entry.pointer_iterator);
+            }
 
-                LOG_INFO("Remove value from the edit table with index '" << p_index << "'.")
+            for (std::size_t i = info.get_begin(); i < info.get_end(); i++) {
+                m_view.erase(m_view.begin() + i);
+            }
 
-                m_view.erase(m_view.begin() + p_index);
-            });
+            LOG_INFO("Remove values from the edit table with indexes from '" << info.get_begin() << "' to '" << info.get_end() << "'.")
         }
     }, action);
 
@@ -103,16 +113,9 @@ void state_show_search_result::build_view(context& p_context) {
         proc_pointer_collection& values = iter_block->get_values();
 
         for (auto iter_pointer = values.begin(); iter_pointer != values.end(); iter_pointer++) {
-            if (m_view.size() >= MAX_VIEW_SIZE) {
-                m_is_complete_view = false;
-                return;
-            }
-
             m_view.push_back({ iter_pointer, iter_block });
         }
     }
-
-    m_is_complete_view = true;
 }
 
 
