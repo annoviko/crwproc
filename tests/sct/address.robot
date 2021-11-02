@@ -67,9 +67,6 @@ Change Global Double By Address
 
 Test Template Address
     [Arguments]   ${mem type}   ${var type}   ${inital value}    ${final value}
-    ${val size}=   Get Option Variable Size By Type          ${var type}
-    ${val sign}=   Get Option Variable Signed Type by Type   ${var type}
-
     ${address}=    Get Subject Variable Address       ${mem type}   ${var type}
     ${address}=    Convert To Upper Case              ${address}
 

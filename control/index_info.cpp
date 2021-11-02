@@ -161,7 +161,9 @@ void index_info::set_invalid_reason() {
         if (delta == 1) {
             m_reason = "input value '" + m_instruction + "' is out of range (0-" + std::to_string(m_limit) + ")";
         }
-        m_reason = "input range '" + m_instruction + "' is out of range (0-" + std::to_string(m_limit) + ")";
+        else {
+            m_reason = "input range '" + m_instruction + "' is out of range (0-" + std::to_string(m_limit) + ")";
+        }
     }
     else if (m_begin >= m_end) {
         m_reason = "empty range (from '" + std::to_string(m_begin) + "' to '" + std::to_string(m_end) + "')";

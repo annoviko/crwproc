@@ -311,6 +311,12 @@ Find Value by Address and Check Output
     Should Be True    ${result}    ${pattern}
 
 
+Find Value by Address and Add It
+    [Arguments]   ${var inital value}   ${address}   ${mem type}   ${var type}
+    Find Value by Address and Check Output   ${var inital value}   ${address}   ${mem type}   ${var type}
+    Send Command   ${CRWPROC}   \\add
+
+
 Get Index From View Table By Address
     [Arguments]   ${address}
     Clean Output Stream    ${CRWPROC}
