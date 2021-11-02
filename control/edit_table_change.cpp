@@ -40,6 +40,11 @@ void edit_table_change::clear() {
 }
 
 
+std::size_t edit_table_change::size() const {
+    return m_entries.size();
+}
+
+
 void edit_table_change::set_proc_info(const proc_info& p_info) {
     m_proc_info = p_info;
 }

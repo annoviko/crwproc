@@ -105,6 +105,7 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ut-asker.cpp" />
+    <ClCompile Include="ut-edit_table_change.cpp" />
     <ClCompile Include="ut-filter_less.cpp" />
     <ClCompile Include="ut-filter_more.cpp" />
     <ClCompile Include="ut-filter_range.cpp" />

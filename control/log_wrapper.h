@@ -33,7 +33,7 @@
 
 
 #define LOG_WARNING_WITH_WAIT_KEY(_message) {                              \
-    LOG_WARNING(_message)                                                    \
+    LOG_WARNING(_message)                                                  \
     console::warning_and_wait_key(_message);                               \
 }
 

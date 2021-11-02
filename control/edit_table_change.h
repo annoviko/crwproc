@@ -30,5 +30,7 @@ public:
 
     void clear();
 
+    std::size_t size() const;
+
     void set_proc_info(const proc_info& p_info);
 };

@@ -38,13 +38,13 @@ const std::unordered_map<std::string, std::string> command::DESCRIPTION = {
     { command::name::choose,            "Open a menu where process (application) can be chosen for processing." },
     { command::name::create_filter,     "Open a menu to create a new filter (table of variables is cleaned)." },
     { command::name::update_filter,     "Open a menu to update current filter." },
-    { command::name::add,               "Add variable with a specific index from a current table to the edit table.\nSyntax: \\add <variable_index>" },
+    { command::name::add,               "Add variable with a specific index from a current table to the edit table.\nSyntax: \\add <index>|all|1half|2half" },
     { command::name::show,              "Open a menu where found variables are displayed." },
     { command::name::edit,              "Open a menu where variables to edit are displayed." },
-    { command::name::set,               "Set new value for a specific variable in the edit table.\nSyntax: \\set <variable_index> <value>" },
+    { command::name::set,               "Set new value for a specific variable in the edit table.\nSyntax: \\set <index>|all|1half|2half <value>" },
     { command::name::address,           "Open a menu to read a value from the specific address." },
     { command::name::refresh,           "Refresh current view." },
-    { command::name::remove,            "Remove a variable with a specific index from a table.\nSyntax: \\remove <variable_index>" },
+    { command::name::remove,            "Remove a variable with a specific index from a table.\nSyntax: \\remove <index>|all|1half|2half" },
     { command::name::help,              "Show help information: existed commands with examples." },
     { command::name::save,              "Save the edit table to the specific file.\nSyntax: \\save <filename>" },
     { command::name::load,              "Load the edit table from the specific file.\nSyntax: \\load <filename>" },
@@ -55,20 +55,23 @@ const std::unordered_map<std::string, std::string> command::DESCRIPTION = {
 const std::unordered_map<std::string, std::vector<std::string>> command::EXAMPLES = {
     { command::name::add, {
             "\\add 0            - add variable with index 0 from the table of found variables to the edit table.",
-            "\\add 20           - add variable with index 20 from the table of found variables to the edit table."
+            "\\add 20           - add variable with index 20 from the table of found variables to the edit table.",
+            "\\add all          - add all variables from the table of found variables to the edit table."
         }
     },
 
     { command::name::set, {
             "\\set 0 99999      - set value 99999 to the variable with index 0 in the edit table.",
-            "\\set 15 3.65      - set value 3.65 to the variable with index 15 in the edit table.",
-            "\\set all 100      - set value 100 to all variables in the edit table."
+            "\\set all 100      - set value 100 to all variables in the edit table.",
+            "\\set 1half 16     - set value 16 to the first half of the edit table.",
+            "\\set 2half 64     - set value 64 to the second half of the edit table."
         }
     },
 
     { command::name::remove, {
             "\\remove 5         - remove variable with index 5 from a table.",
-            "\\remove 15        - remove variable with index 15 from a table."
+            "\\remove 15        - remove variable with index 15 from a table.",
+            "\\remove 1half     - remove the first half of a table."
         }
     },
 
