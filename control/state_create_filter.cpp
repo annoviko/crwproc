@@ -95,11 +95,11 @@ state_create_filter::filter_type state_create_filter::ask_filter_type() {
     }
 
     std::cout << "Enter option number (0-" << amount_filters - 1 << "): ";
-    std::size_t index_option = asker::ask_index(amount_filters);
+    const index_info info = asker::ask_index(amount_filters, true);
 
-    if (index_option != asker::INVALID_INDEX) {
+    if (info.is_valid()) {
         std::cout << std::endl;
-        return static_cast<filter_type>(index_option);
+        return static_cast<filter_type>(info.get_begin());
     }
 
     return filter_type::last_item;

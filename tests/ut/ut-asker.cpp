@@ -51,7 +51,7 @@ protected:
         if (p_exception_expected) {
             bool interrupted = false;
             try {
-                const std::size_t actual_value = asker::ask_index(p_limit);
+                const std::size_t actual_value = asker::ask_index(p_limit, true).get_begin();
             }
             catch (command_interrupt&) {
                 interrupted = true;
@@ -69,8 +69,14 @@ protected:
                 }));
             }
 
-            const std::size_t actual_value = asker::ask_index(p_limit);
-            ASSERT_EQ(p_expected_value, actual_value);
+            const index_info info = asker::ask_index(p_limit, true);
+            if (p_expected_value != asker::INVALID_INDEX) {
+                const std::size_t actual_value = info.get_begin();
+                ASSERT_EQ(p_expected_value, actual_value);
+            }
+            else {
+                ASSERT_FALSE(info.is_valid());
+            }
 
             if (future_ptr) {
                 ASSERT_TRUE(future_ptr->get());

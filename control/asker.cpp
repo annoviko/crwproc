@@ -18,7 +18,7 @@
 #include "log_wrapper.h"
 
 
-std::size_t asker::ask_index(const std::size_t p_limit, const action_index& p_action, const bool p_interruptible) {
+index_info asker::ask_index(const std::size_t p_limit, const bool p_index_only, const bool p_interruptible) {
     std::string user_input;
     std::cin >> user_input;
 
@@ -28,30 +28,12 @@ std::size_t asker::ask_index(const std::size_t p_limit, const action_index& p_ac
         command::throw_if_command(user_input);
     }
 
-    std::size_t index_value = 0;
-
-    try {
-        index_value = std::stoull(user_input);
-    }
-    catch (std::exception&) {
-        LOG_ERROR_WITH_WAIT_KEY_AND_RETURN_VALUE("Error: unsigned integer value is expected.", INVALID_INDEX)
+    index_info info(user_input, p_limit, p_index_only);
+    if (!info.is_valid()) {
+        LOG_ERROR_WITH_WAIT_KEY_AND_RETURN_VALUE("Error: " + info.reason() + ".", info)
     }
 
-    if (index_value >= p_limit) {
-        LOG_ERROR_WITH_WAIT_KEY_AND_RETURN_VALUE("Error: specified index '" + std::to_string(index_value) 
-            + "' is out of range (0-" + std::to_string(p_limit) + ").", INVALID_INDEX)
-    }
-
-    if (p_action) {
-        p_action(index_value);
-    }
-    
-    return index_value;
-}
-
-
-std::size_t asker::ask_index(const std::size_t p_limit, const bool p_interruptible) {
-    return asker::ask_index(p_limit, nullptr, p_interruptible);
+    return info;
 }
 
 
@@ -71,11 +53,11 @@ value_type asker::ask_value_type() {
     }
 
     std::cout << "Enter option number (0-" << options.size() - 1 << "): ";
-    std::size_t index_option = asker::ask_index(options.size());
+    const index_info info = asker::ask_index(options.size(), true);
 
-    if (index_option != asker::INVALID_INDEX) {
+    if (info.is_valid()) {
         std::cout << std::endl;
-        return options[index_option]->second;
+        return options[info.get_begin()]->second;
     }
 
     return value_type::invalid;
@@ -95,11 +77,11 @@ std::size_t asker::ask_value_size() {
     }
 
     std::cout << "Enter option number (0-" << options.size() - 1 << "): ";
-    std::size_t index_option = asker::ask_index(options.size());
+    const index_info info = asker::ask_index(options.size(), true);
 
-    if (index_option != asker::INVALID_INDEX) {
+    if (info.is_valid()) {
         std::cout << std::endl;
-        return options[index_option];
+        return options[info.get_begin()];
     }
 
     return INVALID_SIZE;
@@ -120,11 +102,11 @@ std::optional<bool> asker::ask_value_sign() {
 
 
     std::cout << "Enter option number (0-" << options.size() - 1 << "): ";
-    std::size_t index_option = asker::ask_index(options.size());
+    const index_info info = asker::ask_index(options.size(), true);
 
-    if (index_option != asker::INVALID_INDEX) {
+    if (info.is_valid()) {
         std::cout << std::endl;
-        return (index_option == 0) ? false : true;
+        return (info.get_begin() == 0) ? false : true;
     }
 
     return { };

@@ -48,8 +48,8 @@ private:
         }
 
         std::cout << "Enter option number (0-" << directions.size() - 1 << "): ";
-        const std::size_t index_option = asker::ask_index(directions.size());
-        if (index_option == asker::INVALID_INDEX) {
+        const index_info index_option = asker::ask_index(directions.size(), true);
+        if (!index_option.is_valid()) {
             return false;
         }
 
@@ -57,7 +57,7 @@ private:
             return instance.get_type();
         }, p_filter);
 
-        switch (index_option) {
+        switch (index_option.get_begin()) {
         case 0:
             p_filter = filter_more(type);
             break;

@@ -97,3 +97,8 @@ std::ostream& operator<<(std::ostream& p_stream, const event_load&) {
     p_stream << "event_load";
     return p_stream;
 }
+
+std::ostream& operator<<(std::ostream& p_stream, const event_revert&) {
+    p_stream << "event_revert";
+    return p_stream;
+}

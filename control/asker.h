@@ -16,22 +16,22 @@
 #include "core/value.h"
 #include "core/type_desc.h"
 
+#include "index_info.h"
+
 
 #undef max
 
 
 class asker {
 public:
-    using action_index = std::function<void(std::size_t)>;
+    using action_index = std::function<void(const index_info&)>;
 
 public:
     static constexpr std::size_t INVALID_INDEX = std::numeric_limits<std::size_t>::max();
     static constexpr std::size_t INVALID_SIZE = std::numeric_limits<std::size_t>::max();
 
 public:
-    static std::size_t ask_index(const std::size_t p_limit, const action_index& p_action, const bool p_interruptible = true);
-
-    static std::size_t ask_index(const std::size_t p_limit, const bool p_interruptible = true);
+    static index_info ask_index(const std::size_t p_limit, const bool p_index_only, const bool p_interruptible = true);
 
     static value_type ask_value_type();
 

@@ -111,11 +111,13 @@
     <ClCompile Include="command_interrupt.cpp" />
     <ClCompile Include="context.cpp" />
     <ClCompile Include="deserializer.cpp" />
+    <ClCompile Include="edit_table_change.cpp" />
     <ClCompile Include="edit_table_entry.cpp" />
     <ClCompile Include="edit_table_reader.cpp" />
     <ClCompile Include="edit_table_writer.cpp" />
     <ClCompile Include="event.cpp" />
     <ClCompile Include="filter_reader_value.cpp" />
+    <ClCompile Include="index_info.cpp" />
     <ClCompile Include="intro_builder.cpp" />
     <ClCompile Include="serializer.cpp" />
     <ClCompile Include="state.cpp" />
@@ -139,6 +141,7 @@
     <ClInclude Include="context.h" />
     <ClInclude Include="deserializer.h" />
     <ClInclude Include="edit_table.h" />
+    <ClInclude Include="edit_table_change.h" />
     <ClInclude Include="edit_table_entry.h" />
     <ClInclude Include="edit_table_reader.h" />
     <ClInclude Include="edit_table_writer.h" />
@@ -146,6 +149,7 @@
     <ClInclude Include="filter_reader_value.h" />
     <ClInclude Include="intro_builder.h" />
     <ClInclude Include="log_wrapper.h" />
+    <ClInclude Include="index_info.h" />
     <ClInclude Include="state.h" />
     <ClInclude Include="state_address.h" />
     <ClInclude Include="state_base.h" />

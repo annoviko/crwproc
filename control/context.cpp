@@ -11,6 +11,7 @@
 
 void context::set_proc_info(const proc_info& p_proc) {
     m_proc = p_proc;
+    m_user_table_change.set_proc_info(m_proc);
 }
 
 
@@ -46,6 +47,16 @@ edit_table& context::get_user_table() {
 
 const edit_table& context::get_user_table() const {
     return m_user_table;
+}
+
+
+edit_table_change& context::get_user_table_change() {
+    return m_user_table_change;
+}
+
+
+const edit_table_change& context::get_user_table_change() const {
+    return m_user_table_change;
 }
 
 
