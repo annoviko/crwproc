@@ -71,7 +71,7 @@ Wrong Address Value
     Clean Output Stream      ${CRWPROC}
     Send Command    ${CRWPROC}   bad_address_value
 
-    ${result}=    Output Stream Contains    ${CRWPROC}    .*Error: address as a hex value is expected \(incorrect input: 'bad_address_value'\).*
+    ${result}=    Output Stream Contains    ${CRWPROC}    .*Error: address as a hex value is expected \\(incorrect input: 'bad_address_value'\\).*
     Should Be True    ${result}
 
     ${result}=   Output Stream Contains    ${CRWPROC}    .*Press any key to continue.*

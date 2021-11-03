@@ -57,7 +57,7 @@ def output_stream_contains(application, expression):
 
     result = False
     lines_to_analyse = ""
-    line_number = 0
+    line_number = 1
     skip_until = __proc_line_cursor_mapping[application]
 
     logger.info("Consider output after line %d." % skip_until)
