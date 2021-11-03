@@ -16,7 +16,7 @@
 #include "log_wrapper.h"
 
 
-event state_base::ask_next_action(context&) {
+event state_base::ask_next_action(const context&) {
     std::cout << "Please enter the command to continue: ";
 
     std::string user_input;

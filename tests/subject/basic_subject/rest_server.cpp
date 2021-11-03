@@ -34,13 +34,24 @@ rest_server::rest_server(const std::string& p_address, const std::size_t p_port)
             return;
         }
 
-        const std::uint64_t address = m_manager.address(val_type, mem_type);
+        const std::uint64_t address = m_manager.get_address_value(val_type, mem_type);
 
         std::stringstream stream;
         stream << std::hex << address;
         p_response.set_content(std::string(stream.str()), "text/plain");
         p_response.status = 200;
     });
+
+
+    m_server.Get(R"(/address/sequence)", [this](const httplib::Request&, httplib::Response& p_response) {
+        const std::uint64_t address = m_manager.get_address_sequence();
+
+        std::stringstream stream;
+        stream << std::hex << address;
+        p_response.set_content(std::string(stream.str()), "text/plain");
+        p_response.status = 200;
+    });
+
 
     m_server.Get(R"(/memory/(\S+)/variable/(\S+))", [this](const httplib::Request& p_request, httplib::Response& p_response) {
         const std::string memory_type_name = p_request.matches[1];
@@ -60,10 +71,23 @@ rest_server::rest_server(const std::string& p_address, const std::size_t p_port)
             return;
         }
 
-        const std::string value = m_manager.get(val_type, mem_type);
+        const std::string value = m_manager.get_value(val_type, mem_type);
         p_response.set_content(value, "text/plain");
         p_response.status = 200;
     });
+
+
+    m_server.Get(R"(/sequence)", [this](const httplib::Request&, httplib::Response& p_response) {
+        std::stringstream stream;
+
+        for (const std::uint8_t byte_value : m_manager.get_sequence()) {
+            stream << std::hex << byte_value << " ";
+        }
+
+        p_response.set_content(stream.str(), "text/plain");
+        p_response.status = 200;
+    });
+
 
     m_server.Post(R"(/operation/(\S+)/memory/(\S+)/variable/(\S+)/value/(\S+))", [this](const httplib::Request& p_request, httplib::Response& p_response) {
         const std::string operation_type_name = p_request.matches[1];
@@ -93,7 +117,7 @@ rest_server::rest_server(const std::string& p_address, const std::size_t p_port)
         }
 
         try {
-            const bool status = m_manager.change(val_type, mem_type, chng_type, value);
+            const bool status = m_manager.change_value(val_type, mem_type, chng_type, value);
             p_response.status = status ? 202 : 500;
         }
         catch (...) {
@@ -102,10 +126,12 @@ rest_server::rest_server(const std::string& p_address, const std::size_t p_port)
         }
     });
 
+
     m_server.Get(R"(/status)", [this](const httplib::Request&, httplib::Response& p_response) {
         p_response.set_content("Running.", "text/plain");
         p_response.status = 200;
     });
+
 
     m_server.Delete(R"(/application)", [this](const httplib::Request&, httplib::Response&) {
         m_server.stop();

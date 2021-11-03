@@ -9,9 +9,12 @@
 #include "memory_manager.h"
 
 #include <exception>
+#include <vector>
 
 
 storage global_storage;
+
+std::vector<std::uint8_t> global_sequence = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x10, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F };
 
 
 storage& memory_manager::get_storage(const memory_type p_type) {
@@ -31,7 +34,7 @@ storage& memory_manager::get_storage(const memory_type p_type) {
 }
 
 
-std::uint64_t memory_manager::address(const value_type p_value_type, const memory_type p_memory_type) {
+std::uint64_t memory_manager::get_address_value(const value_type p_value_type, const memory_type p_memory_type) {
     storage& content = get_storage(p_memory_type);
     switch (p_value_type) {
     case value_type::i8:
@@ -69,7 +72,7 @@ std::uint64_t memory_manager::address(const value_type p_value_type, const memor
 }
 
 
-std::string memory_manager::get(const value_type p_value_type, const memory_type p_memory_type) {
+std::string memory_manager::get_value(const value_type p_value_type, const memory_type p_memory_type) {
     storage& content = get_storage(p_memory_type);
     switch (p_value_type) {
     case value_type::i8:
@@ -107,7 +110,17 @@ std::string memory_manager::get(const value_type p_value_type, const memory_type
 }
 
 
-bool memory_manager::change(const value_type p_value_type, const memory_type p_memory_type, const change_type p_change_type, const std::string& p_value) {
+std::uint64_t memory_manager::get_address_sequence() {
+    return (std::uint64_t) global_sequence.data();
+}
+
+
+std::vector<std::uint8_t>& memory_manager::get_sequence() {
+    return global_sequence;
+}
+
+
+bool memory_manager::change_value(const value_type p_value_type, const memory_type p_memory_type, const change_type p_change_type, const std::string& p_value) {
     storage& content = get_storage(p_memory_type);
     switch (p_value_type) {
     case value_type::i8:

@@ -29,7 +29,8 @@ const std::unordered_map<std::string, event> command::COMMANDS = {
     { command::name::help,              event_help()     },
     { command::name::save,              event_save()     },
     { command::name::load,              event_load()     },
-    { command::name::revert,            event_revert()   }
+    { command::name::revert,            event_revert()   },
+    { command::name::dump,              event_dump()     }
 };
 
 
@@ -48,7 +49,8 @@ const std::unordered_map<std::string, std::string> command::DESCRIPTION = {
     { command::name::help,              "Show help information: existed commands with examples." },
     { command::name::save,              "Save the edit table to the specific file.\nSyntax: \\save <filename>" },
     { command::name::load,              "Load the edit table from the specific file.\nSyntax: \\load <filename>" },
-    { command::name::revert,            "Revert changes introduced by \\set command." }
+    { command::name::revert,            "Revert changes introduced by \\set command." },
+    { command::name::dump,              "Open a menu to obtain memory dump at specific address." }
 };
 
 
