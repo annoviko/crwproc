@@ -125,6 +125,7 @@
     <ClCompile Include="state_base.cpp" />
     <ClCompile Include="state_choose_proc.cpp" />
     <ClCompile Include="state_create_filter.cpp" />
+    <ClCompile Include="state_dump.cpp" />
     <ClCompile Include="state_edit.cpp" />
     <ClCompile Include="state_exit.cpp" />
     <ClCompile Include="state_help.cpp" />
@@ -155,6 +156,7 @@
     <ClInclude Include="state_base.h" />
     <ClInclude Include="state_choose_proc.h" />
     <ClInclude Include="state_create_filter.h" />
+    <ClInclude Include="state_dump.h" />
     <ClInclude Include="state_edit.h" />
     <ClInclude Include="state_exit.h" />
     <ClInclude Include="state_help.h" />

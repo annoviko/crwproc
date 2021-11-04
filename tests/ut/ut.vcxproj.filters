@@ -85,6 +85,9 @@
     <ClCompile Include="ut-edit_table_change.cpp">
       <Filter>tests</Filter>
     </ClCompile>
+    <ClCompile Include="ut-string_numeric.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ut-proc_reader.h">

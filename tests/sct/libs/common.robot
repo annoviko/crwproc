@@ -311,6 +311,12 @@ Find Value by Address and Check Output
     Should Be True    ${result}    ${pattern}
 
 
+Output Stream Should Contains
+    [Arguments]   ${pattern}
+    ${result}=    Output Stream Contains    ${CRWPROC}    ${pattern}
+    Should Be True    ${result}    ${pattern}
+
+
 Find Value by Address and Add It
     [Arguments]   ${var inital value}   ${address}   ${mem type}   ${var type}
     Find Value by Address and Check Output   ${var inital value}   ${address}   ${mem type}   ${var type}
@@ -330,6 +336,17 @@ Get Index From View Table By Address
     Should Not Be Empty    ${groups}
     ${index}=              Set Variable       ${groups}[0]
     [Return]   ${index}
+
+
+Send HTTP Request with Check and Get Body
+    [Arguments]   ${method}   ${uri}   ${expected code}   
+    Send HTTP Request   ${method}   ${uri}
+
+    ${status}=          Get Response Status
+    Should Be Equal     ${status}   ${expected code}
+
+    ${body}=            Get Response Body
+    [Return]   ${body}
 
 
 Initialize Crwproc

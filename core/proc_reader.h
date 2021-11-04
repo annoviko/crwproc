@@ -105,6 +105,14 @@ public:
     }
 
 public:
+    std::size_t read_byte_sequence(const std::uint64_t p_address, const std::size_t p_length, std::uint8_t* p_buffer) {
+        std::uint64_t bytes_was_read = 0;
+
+        ReadProcessMemory(m_proc_handle(), (LPCVOID)p_address, p_buffer, p_length, (SIZE_T*)&bytes_was_read);
+        return bytes_was_read;
+    }
+
+
     search_result read_and_filter() const {
         memblocks_info info_blocks = get_proc_memblocks();
 

@@ -31,6 +31,8 @@ public:
     static constexpr std::size_t INVALID_SIZE = std::numeric_limits<std::size_t>::max();
 
 public:
+    static std::string ask_user_input(const std::string& p_message, const bool p_interruptible = true);
+
     static index_info ask_index(const std::size_t p_limit, const bool p_index_only, const bool p_interruptible = true);
 
     static value_type ask_value_type();
@@ -42,4 +44,6 @@ public:
     static type_desc ask_type_desc();
 
     static std::optional<uint64_t> ask_address();
+
+    static std::optional<std::size_t> ask_length();
 };

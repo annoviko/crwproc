@@ -14,5 +14,5 @@
 
 class state_base {
 protected:
-    static event ask_next_action(context& p_context);
+    static event ask_next_action(const context& p_context);
 };

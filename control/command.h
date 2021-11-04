@@ -41,6 +41,7 @@ public:
         static constexpr char save[]            = "\\save";
         static constexpr char load[]            = "\\load";
         static constexpr char revert[]          = "\\revert";
+        static constexpr char dump[]            = "\\dump";
     };
 
 private:

@@ -13,20 +13,35 @@
 #include <string>
 
 #include "core/console.h"
+#include "core/string_numeric.h"
 
 #include "command.h"
 #include "log_wrapper.h"
 
 
-index_info asker::ask_index(const std::size_t p_limit, const bool p_index_only, const bool p_interruptible) {
+
+std::string asker::ask_user_input(const std::string& p_message, const bool p_interruptible) {
+    if (!p_message.empty()) {
+        std::cout << p_message;
+    }
+
     std::string user_input;
     std::cin >> user_input;
 
-    LOG_INFO("User input (index): '" << user_input << "'.")
+    LOG_INFO("User input: '" << user_input << "'.")
 
     if (p_interruptible) {
         command::throw_if_command(user_input);
     }
+
+    return user_input;
+}
+
+
+index_info asker::ask_index(const std::size_t p_limit, const bool p_index_only, const bool p_interruptible) {
+    LOG_INFO("Ask for user input - index.")
+
+    std::string user_input = ask_user_input(std::string(), p_interruptible);
 
     index_info info(user_input, p_limit, p_index_only);
     if (!info.is_valid()) {
@@ -140,27 +155,26 @@ type_desc asker::ask_type_desc() {
 
 
 std::optional<uint64_t> asker::ask_address() {
-    std::cout << "Enter address as a hex value: ";
+    LOG_INFO("Ask for user input - address.")
+    const std::string string_address = ask_user_input("Enter address as a hex value: ");
 
-    std::string string_address;
-    std::cin >> string_address;
-
-    LOG_INFO("User input (address): '" << string_address  << "'.")
-
-    command::throw_if_command(string_address);
-
-    std::stringstream stream;
-    stream << std::hex << string_address;
-
-    std::uint64_t address;
-    stream >> address;
-
-    if (stream.fail()) {
+    const auto address = crwproc::string::stonum<std::uint64_t>(string_address, 16);
+    if (!address.has_value()) {
         LOG_ERROR_WITH_WAIT_KEY("Error: address as a hex value is expected (incorrect input: '" + string_address + "').")
-        std::cin.clear();
-        std::cin.ignore(256, '\n');
-        return { };
     }
 
     return address;
+}
+
+
+std::optional<std::size_t> asker::ask_length() {
+    LOG_INFO("Ask for user input - length.")
+    const std::string string_length = ask_user_input("Enter length: ");
+
+    const auto length = crwproc::string::stonum<std::size_t>(string_length);
+    if (!length.has_value()) {
+        LOG_ERROR_WITH_WAIT_KEY("Error: length as a dec value is expected (incorrect input: '" + string_length + "').")
+    }
+
+    return length;
 }

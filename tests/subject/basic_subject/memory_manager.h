@@ -10,6 +10,7 @@
 
 #include <exception>
 #include <string>
+#include <vector>
 
 #include "change_type.h"
 #include "memory_type.h"
@@ -23,11 +24,15 @@ private:
     storage  m_stack_storage;
 
 public:
-    bool change(const value_type p_value_type, const memory_type p_memory_type, const change_type p_change_type, const std::string& p_value);
+    bool change_value(const value_type p_value_type, const memory_type p_memory_type, const change_type p_change_type, const std::string& p_value);
 
-    std::string get(const value_type p_value_type, const memory_type p_memory_type);
+    std::string get_value(const value_type p_value_type, const memory_type p_memory_type);
 
-    std::uint64_t address(const value_type p_value_type, const memory_type p_memory_type);
+    std::uint64_t get_address_value(const value_type p_value_type, const memory_type p_memory_type);
+
+    std::uint64_t get_address_sequence();
+
+    std::vector<std::uint8_t>& get_sequence();
 
 private:
     storage& get_storage(const memory_type p_type);

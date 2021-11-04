@@ -357,3 +357,21 @@ TEST(ut_proc_reader, find_value_uin64_memory_in_end_heap) {
     test_template_find_value<filter_equal>(heap_value, [heap_value]() { (*heap_value)++; });
 }
 
+
+TEST(ut_proc_reader, read_sequence) {
+    std::vector<std::uint8_t> sequence_to_read;
+    for (std::size_t i = 0; i < 50; i++) {
+        sequence_to_read.push_back(static_cast<std::uint8_t>(i));
+    }
+    
+    const std::size_t pid = static_cast<std::size_t>(GetCurrentProcessId());
+    proc_info info = proc_table().get().at(pid);
+
+    std::shared_ptr<std::uint8_t[]> buffer = std::shared_ptr<std::uint8_t[]>(new std::uint8_t[sequence_to_read.size()]);
+    const std::size_t bytes_read = proc_reader(info).read_byte_sequence((std::uint64_t) sequence_to_read.data(), sequence_to_read.size(), buffer.get());
+    
+    EXPECT_EQ(sequence_to_read.size(), bytes_read);
+    for (std::size_t i = 0; i < sequence_to_read.size(); i++) {
+        EXPECT_EQ(sequence_to_read[i], buffer.get()[i]);
+    }
+}

@@ -116,6 +116,7 @@
     <ClCompile Include="ut-proc_table.cpp" />
     <ClCompile Include="ut-proc_writer.cpp" />
     <ClCompile Include="ut-read_write_edit_table.cpp" />
+    <ClCompile Include="ut-string_numeric.cpp" />
     <ClCompile Include="ut-string_split.cpp" />
     <ClCompile Include="ut-traits.cpp" />
     <ClCompile Include="ut-type_desc.cpp" />

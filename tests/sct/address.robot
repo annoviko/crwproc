@@ -63,6 +63,21 @@ Change Global Double By Address
     Test Template Address   ${MEM TYPE GLOBAL}   dbl   76.938   -14.526
 
 
+Wrong Address Value
+    Connect to Subject Process
+    Send Command    ${CRWPROC}   \\address
+    Send Command    ${CRWPROC}   ${TYPE DBL TYPE}
+
+    Clean Output Stream      ${CRWPROC}
+    Send Command    ${CRWPROC}   bad_address_value
+
+    ${result}=    Output Stream Contains    ${CRWPROC}    .*Error: address as a hex value is expected \\(incorrect input: 'bad_address_value'\\).*
+    Should Be True    ${result}
+
+    ${result}=   Output Stream Contains    ${CRWPROC}    .*Press any key to continue.*
+    Should Be True    ${result}
+
+
 *** Keywords ***
 
 Test Template Address
