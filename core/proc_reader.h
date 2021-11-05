@@ -22,6 +22,7 @@
 #include <psapi.h>
 #include <tlhelp32.h>
 
+#include "algorithm.h"
 #include "filter.h"
 #include "memory_block.h"
 #include "parallel.h"
@@ -105,6 +106,29 @@ public:
     }
 
 public:
+    template <typename TypeCollection>
+    std::uint64_t find_byte_sequence(const TypeCollection& p_collection, const std::size_t p_length) {
+        const memblocks_info info_blocks = get_proc_memblocks();
+        for (const auto& block : info_blocks.blocks) {
+            if (p_length > block.RegionSize) {
+                continue;
+            }
+
+            std::shared_ptr<std::uint8_t[]> buffer(new std::uint8_t[block.RegionSize]);
+            std::uint8_t* raw_buffer = buffer.get();
+
+            if (ReadProcessMemory(m_proc_handle(), (LPCVOID)block.BaseAddress, (void *)raw_buffer, block.RegionSize, nullptr)) {
+                const std::size_t local_address = crwproc::algorithm::kmp(buffer.get(), block.RegionSize, p_collection, p_length);
+                if (local_address != crwproc::algorithm::npos) {
+                    return ((std::uint64_t) block.BaseAddress) + local_address;
+                }
+            }
+        }
+
+        return 0;
+    }
+
+
     std::size_t read_byte_sequence(const std::uint64_t p_address, const std::size_t p_length, std::uint8_t* p_buffer) {
         std::uint64_t bytes_was_read = 0;
 

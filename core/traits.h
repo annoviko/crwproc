@@ -12,7 +12,8 @@
 #include <type_traits>
 
 
-namespace crwproc {
+namespace crwproc
+{
 
 namespace traits
 {

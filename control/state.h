@@ -17,6 +17,7 @@
 #include "state_dump.h"
 #include "state_edit.h"
 #include "state_exit.h"
+#include "state_find_sequence.h"
 #include "state_help.h"
 #include "state_search.h"
 #include "state_show_search_result.h"
@@ -28,6 +29,7 @@ using state = std::variant<
     state_choose_proc,
     state_create_filter,
     state_dump,
+    state_find_sequence,
     state_search,
     state_show_search_result,
     state_update_filter,

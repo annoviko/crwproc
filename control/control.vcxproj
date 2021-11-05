@@ -128,6 +128,7 @@
     <ClCompile Include="state_dump.cpp" />
     <ClCompile Include="state_edit.cpp" />
     <ClCompile Include="state_exit.cpp" />
+    <ClCompile Include="state_find_sequence.cpp" />
     <ClCompile Include="state_help.cpp" />
     <ClCompile Include="state_search.cpp" />
     <ClCompile Include="state_show_search_result.cpp" />
@@ -159,6 +160,7 @@
     <ClInclude Include="state_dump.h" />
     <ClInclude Include="state_edit.h" />
     <ClInclude Include="state_exit.h" />
+    <ClInclude Include="state_find_sequence.h" />
     <ClInclude Include="state_help.h" />
     <ClInclude Include="state_search.h" />
     <ClInclude Include="state_show_search_result.h" />

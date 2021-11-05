@@ -107,3 +107,8 @@ std::ostream& operator<<(std::ostream& p_stream, const event_dump&) {
     p_stream << "event_dump";
     return p_stream;
 }
+
+std::ostream& operator<<(std::ostream& p_stream, const event_find_sequence&) {
+    p_stream << "event_find_sequence";
+    return p_stream;
+}

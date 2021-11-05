@@ -50,6 +50,9 @@ public:
     template <typename TypeState>
     state operator()(TypeState&, event_dump&) const { return state_dump{}; }
 
+    template <typename TypeState>
+    state operator()(TypeState&, event_find_sequence&) const { return state_find_sequence{}; }
+
     template <typename TypeState, typename TypeEvent>
     state operator()(TypeState& state, TypeEvent&) const { return state; }
 };
