@@ -88,6 +88,9 @@
     <ClCompile Include="ut-string_numeric.cpp">
       <Filter>tests</Filter>
     </ClCompile>
+    <ClCompile Include="ut-algorithm.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ut-proc_reader.h">
@@ -112,6 +115,9 @@
       <Filter>tests</Filter>
     </ClInclude>
     <ClInclude Include="ut-proc_reader_external.h">
+      <Filter>tests</Filter>
+    </ClInclude>
+    <ClInclude Include="ut-algorithm.h">
       <Filter>tests</Filter>
     </ClInclude>
   </ItemGroup>

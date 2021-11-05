@@ -15,22 +15,23 @@
 
 
 const std::unordered_map<std::string, event> command::COMMANDS = {
-    { command::name::exit,              event_exit()     },
-    { command::name::choose,            event_choose()   },
-    { command::name::create_filter,     event_filter()   },
-    { command::name::update_filter,     event_update()   },
-    { command::name::add,               event_add()      },
-    { command::name::show,              event_show()     },
-    { command::name::edit,              event_edit()     },
-    { command::name::set,               event_set()      },
-    { command::name::address,           event_address()  },
-    { command::name::refresh,           event_refresh()  },
-    { command::name::remove,            event_remove()   },
-    { command::name::help,              event_help()     },
-    { command::name::save,              event_save()     },
-    { command::name::load,              event_load()     },
-    { command::name::revert,            event_revert()   },
-    { command::name::dump,              event_dump()     }
+    { command::name::exit,              event_exit()            },
+    { command::name::choose,            event_choose()          },
+    { command::name::create_filter,     event_filter()          },
+    { command::name::update_filter,     event_update()          },
+    { command::name::add,               event_add()             },
+    { command::name::show,              event_show()            },
+    { command::name::edit,              event_edit()            },
+    { command::name::set,               event_set()             },
+    { command::name::address,           event_address()         },
+    { command::name::refresh,           event_refresh()         },
+    { command::name::remove,            event_remove()          },
+    { command::name::help,              event_help()            },
+    { command::name::save,              event_save()            },
+    { command::name::load,              event_load()            },
+    { command::name::revert,            event_revert()          },
+    { command::name::dump,              event_dump()            },
+    { command::name::find_sequence,     event_find_sequence()   }
 };
 
 
@@ -50,7 +51,8 @@ const std::unordered_map<std::string, std::string> command::DESCRIPTION = {
     { command::name::save,              "Save the edit table to the specific file.\nSyntax: \\save <filename>" },
     { command::name::load,              "Load the edit table from the specific file.\nSyntax: \\load <filename>" },
     { command::name::revert,            "Revert changes introduced by \\set command." },
-    { command::name::dump,              "Open a menu to obtain memory dump at specific address." }
+    { command::name::dump,              "Open a menu to obtain memory dump at specific address." },
+    { command::name::find_sequence,     "Open a menu to find byte sequence." }
 };
 
 

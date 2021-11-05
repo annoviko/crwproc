@@ -42,6 +42,7 @@ public:
         static constexpr char load[]            = "\\load";
         static constexpr char revert[]          = "\\revert";
         static constexpr char dump[]            = "\\dump";
+        static constexpr char find_sequence[]   = "\\find_sequence";
     };
 
 private:

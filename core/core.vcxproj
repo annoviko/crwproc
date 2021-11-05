@@ -88,6 +88,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="algorithm.h" />
     <ClInclude Include="console.h" />
     <ClInclude Include="filter.h" />
     <ClInclude Include="filter_base.h" />

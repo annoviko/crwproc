@@ -104,6 +104,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ut-algorithm.cpp" />
     <ClCompile Include="ut-asker.cpp" />
     <ClCompile Include="ut-edit_table_change.cpp" />
     <ClCompile Include="ut-filter_less.cpp" />
@@ -123,6 +124,7 @@
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ut-algorithm.h" />
     <ClInclude Include="ut-filter_less.h" />
     <ClInclude Include="ut-filter_more.h" />
     <ClInclude Include="ut-filter_range.h" />

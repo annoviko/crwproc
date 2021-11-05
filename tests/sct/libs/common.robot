@@ -308,13 +308,19 @@ Find Value by Address and Check Output
     
     ${pattern}=   Set Variable     .*${address}.*${var inital value}.*
     ${result}=    Output Stream Contains    ${CRWPROC}    ${pattern}
-    Should Be True    ${result}    ${pattern}
+    Should Be True    ${result}
 
 
-Output Stream Should Contains
+Output Stream Should Contain
     [Arguments]   ${pattern}
     ${result}=    Output Stream Contains    ${CRWPROC}    ${pattern}
-    Should Be True    ${result}    ${pattern}
+    Should Be True    ${result}
+
+
+Output Stream Should Not Contain
+    [Arguments]   ${pattern}
+    ${result}=    Output Stream Contains    ${CRWPROC}    ${pattern}
+    Should Not Be True    ${result}
 
 
 Find Value by Address and Add It

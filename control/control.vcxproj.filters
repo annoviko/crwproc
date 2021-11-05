@@ -95,6 +95,9 @@
     <ClCompile Include="state_dump.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="state_find_sequence.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="asker.h">
@@ -188,6 +191,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="state_dump.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="state_find_sequence.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
