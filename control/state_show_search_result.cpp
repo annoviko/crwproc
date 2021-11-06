@@ -13,6 +13,7 @@
 #include <string>
 
 #include "core/console.h"
+#include "core/console_table.h"
 
 #include "log/logging.h"
 
@@ -34,16 +35,30 @@ event state_show_search_result::operator()(context& p_context) {
 
 
 void state_show_search_result::show_values(const context& p_context) const {
+    const std::size_t amount_rows = (m_view.size() > MAX_VIEW_SIZE) ? MAX_VIEW_SIZE + 2 : m_view.size() + 1;
+
+    console_table view_table(amount_rows, 2);
+    view_table.set_column_names({ "Nr", "Address" });
+
     for (std::size_t i = 0; (i < m_view.size()) && (i < MAX_VIEW_SIZE); i++) {
         const proc_pointer& pointer = *(m_view[i].pointer_iterator);
 
-        std::cout << std::right << std::setw(4) << i << ") " <<
-            "address: " << std::setw(10) << (void*)pointer.get_address() 
-            << std::endl;
+        std::stringstream stream;
+        stream << (void*)pointer.get_address();
+
+        view_table.set_cell_content(i + 1, 0, std::to_string(i));
+        view_table.set_cell_content(i + 1, 1, stream.str());
     }
 
     if (m_view.size() > MAX_VIEW_SIZE) {
-        std::cout << "... (only the first " << MAX_VIEW_SIZE << " is displayed from " << p_context.get_found_values().get_amount_values() << ")" << std::endl;
+        view_table.set_cell_content(MAX_VIEW_SIZE + 1, 0, "...");
+        view_table.set_cell_content(MAX_VIEW_SIZE + 1, 1, "...");
+        view_table.show();
+
+        std::cout << std::endl << "... (only the first " << MAX_VIEW_SIZE << " is displayed from " << p_context.get_found_values().get_amount_values() << ")" << std::endl;
+    }
+    else {
+        view_table.show();
     }
 
     std::cout << std::endl;

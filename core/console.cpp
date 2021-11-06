@@ -13,9 +13,11 @@
 #include <iostream>
 
 
-#define FOREGROUND_YELLOW       0x000E
-#define BACKGROUND_YELLOW       0x00E0
+#define FOREGROUND_YELLOW       FOREGROUND_RED | FOREGROUND_GREEN
+#define BACKGROUND_YELLOW       (FOREGROUND_YELLOW) << 4
 
+#define FOREGROUND_WHITE        FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE
+#define BACKGROUND_WHITE        (FOREGROUND_WHITE) << 4
 
 const int console::BASIC_TEXT_ATTRIBUTE_CODE = console::get_basic_text_attributes();
 
@@ -25,7 +27,8 @@ const std::unordered_map<color, int> console::COLOR_FOREGROUND_DICT = {
     { color::red, FOREGROUND_RED },
     { color::blue, FOREGROUND_BLUE },
     { color::green, FOREGROUND_GREEN },
-    { color::yellow, FOREGROUND_YELLOW }
+    { color::yellow, FOREGROUND_YELLOW },
+    { color::white, FOREGROUND_WHITE }
 };
 
 const std::unordered_map<color, int> console::COLOR_BACKGROUND_DICT = {
@@ -33,7 +36,8 @@ const std::unordered_map<color, int> console::COLOR_BACKGROUND_DICT = {
     { color::red, BACKGROUND_RED },
     { color::blue, BACKGROUND_BLUE },
     { color::green, BACKGROUND_GREEN },
-    { color::yellow, BACKGROUND_YELLOW }
+    { color::yellow, BACKGROUND_YELLOW },
+    { color::white, BACKGROUND_WHITE }
 };
 
 

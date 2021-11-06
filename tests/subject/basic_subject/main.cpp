@@ -34,7 +34,7 @@ int main(int argc, char * argv[]) {
         }
     }
 
-    if (silent) {
+    if (!silent) {
         std::cout << "Basic subject is running on '" + address + ":" + std::to_string(port) + "' (pid: '" << GetCurrentProcessId() << "')..." << std::endl;
     }
 
