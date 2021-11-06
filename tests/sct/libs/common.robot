@@ -335,7 +335,7 @@ Get Index From View Table By Address
     Send Command           ${CRWPROC}    \\show
 
     ${address uppercase}=    Convert To Upper Case    ${address}
-    ${pattern}=    Set Variable           .*(\\d+)\\).*${address uppercase}.*
+    ${pattern}=    Set Variable           .* (\\d+) .*${address uppercase}.*
 
     ${groups}=     Output Stream Match    ${CRWPROC}    ${pattern}
 

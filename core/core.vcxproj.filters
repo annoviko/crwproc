@@ -86,6 +86,12 @@
     <ClInclude Include="algorithm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="console_table.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="console_table_style.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="console.cpp">
@@ -146,6 +152,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="value_type.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="console_table.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="console_table_style.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

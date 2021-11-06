@@ -31,8 +31,8 @@ protected:
         std::memset(&m_proc_startup_info, 0x00, sizeof(m_proc_startup_info));
         std::memset(&m_proc_info, 0x00, sizeof(m_proc_info));
 
-        wchar_t arguments[] = L"--silent";
-        if (!CreateProcess(L"basic_subject.exe", arguments, NULL, NULL, FALSE, 0, NULL, NULL, &m_proc_startup_info, &m_proc_info)) {
+        char arguments[] = "basic_subject.exe --silent";
+        if (!CreateProcess("basic_subject.exe", arguments, NULL, NULL, FALSE, 0, NULL, NULL, &m_proc_startup_info, &m_proc_info)) {
             FAIL() << "Impossible to start basic_subject process (reason: '" << GetLastError() << "')";
         }
 
