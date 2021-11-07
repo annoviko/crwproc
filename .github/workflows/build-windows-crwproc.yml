@@ -24,3 +24,13 @@ jobs:
     - name: Run multi-line script
       shell: pwsh
       run: ci/github-ci-windows.ps1 test-crwproc-build
+      
+    - name: Archive artifacts
+      uses: actions/upload-artifact@v2
+      with:
+          name: SCT test results
+          path: |
+              tests/sct/*.log
+              tests/sct/log.html
+              tests/sct/output.xml
+              tests/sct/report.html
