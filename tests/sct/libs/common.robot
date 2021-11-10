@@ -200,6 +200,8 @@ Create Exact Filter
         Create Exact Float or Double Filter   ${val type}   ${value}
     END
 
+    Wait For Output Stream Content   ${CRWPROC}   .*Processing time:.*
+
 
 Create Exact Float or Double Filter
     [Arguments]   ${val type}   ${value}
@@ -226,6 +228,8 @@ Update Filter and Continue
     [Arguments]   ${value}
     Send Command   ${CRWPROC}   \\update_filter
     Send Command   ${CRWPROC}   ${value}
+
+    Wait For Output Stream Content   ${CRWPROC}   .*Processing time:.*
 
 
 Edit Value via CRWPROC
@@ -317,9 +321,21 @@ Output Stream Should Contain
     Should Be True    ${result}
 
 
+Wait For Output Stream Should Contain
+    [Arguments]   ${pattern}   ${timeout}=${1}
+    ${result}=    Wait For Output Stream Content    ${CRWPROC}   ${pattern}   ${timeout}
+    Should Be True    ${result}
+
+
 Output Stream Should Not Contain
     [Arguments]   ${pattern}
     ${result}=    Output Stream Contains    ${CRWPROC}    ${pattern}
+    Should Not Be True    ${result}
+
+
+Wait For Output Stream Should Not Contain
+    [Arguments]   ${pattern}   ${timeout}=${1}
+    ${result}=    Wait For Output Stream Content    ${CRWPROC}   ${pattern}   ${timeout}
     Should Not Be True    ${result}
 
 

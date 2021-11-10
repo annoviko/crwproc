@@ -9,6 +9,7 @@ import ntpath
 import re
 import time
 
+from datetime import datetime
 from subprocess import Popen, PIPE
 
 from robot.api import logger
@@ -101,8 +102,21 @@ def output_stream_match(application, expression):
     return []
 
 
+def wait_for_output_stream_content(application, expression, timeout=1):
+    logger.info("Wait for '%s' for '%d' seconds (stdout: '%s')." % (expression, timeout, application.stdout))
+    time_start = datetime.now()
 
-def send_command(application, command, wait_app_ms=0.1):
+    result = output_stream_contains(application, expression)
+    time_current = datetime.now()
+    
+    while ((result is False) and ((time_current - time_start).seconds < timeout)):
+        result = output_stream_contains(application, expression)
+        time_current = datetime.now()
+
+    return result
+
+
+def send_command(application, command, wait_app_ms=0.025):
     command_string = str(command)
     logger.info("Command to execute '%s' on the application '%s'." % (str.encode(command_string), application))
 
