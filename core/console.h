@@ -24,7 +24,8 @@ enum class color {
     red,
     yellow,
     blue,
-    green
+    green,
+    white
 };
 
 

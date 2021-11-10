@@ -12,6 +12,7 @@
 #include <iostream>
 
 #include "core/console.h"
+#include "core/console_table.h"
 #include "core/proc_reader.h"
 #include "core/proc_writer.h"
 
@@ -34,20 +35,28 @@ event state_edit::operator()(context& p_context) const {
 
 
 void state_edit::show_table(context& p_context) {
-    std::visit([&p_context]() {
-        for (auto& entry : p_context.get_user_table()) {
-            entry.refresh(p_context.get_proc_info());
-        }
-    });
+    for (auto& entry : p_context.get_user_table()) {
+        entry.refresh(p_context.get_proc_info());
+    }
+
+    console_table view_table(p_context.get_user_table().size() + 1, 4);
+    view_table.set_column_names({ "Nr", "Address", "Type", "Value" });
 
     for (std::size_t i = 0; i < p_context.get_user_table().size(); i++) {
         const edit_table_entry& entry = p_context.get_user_table().at(i);
 
-        std::cout << std::right << std::setw(4) << i << ") " <<
-            "address: " << std::setw(10) << (void*)entry.get_pointer().get_address() << " | " <<
-            "type: "    << std::setw(10) << entry.get_type() << " | " <<
-            "value: "   << std::setw(10) << entry.get_pointer().get_value().to_string(entry.get_type()) << std::endl;
+        std::stringstream stream;
+
+        std::size_t row_number = i + 1;
+        view_table.set_cell_content(row_number, 0, std::to_string(i));
+
+        stream << (void*)entry.get_pointer().get_address();
+        view_table.set_cell_content(row_number, 1, stream.str());
+        view_table.set_cell_content(row_number, 2, entry.get_type().to_string());
+        view_table.set_cell_content(row_number, 3, entry.get_pointer().get_value().to_string(entry.get_type()));
     }
+
+    view_table.show();
 
     std::cout << std::endl;
 }
