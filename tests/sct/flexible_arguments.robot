@@ -20,6 +20,26 @@ Set All Variables and Revert
     Test Template Set All and Revert   ${MEM TYPE STACK}   ${var types}   8   16
 
 
+Set All Variables and Revert using Range
+    ${var types}   Create List   i8   i16   i32   i64
+    Test Template Set All and Revert using Range   ${MEM TYPE STACK}   ${var types}   8   16   0   3
+
+
+Set Variables and Revert using Range From 0 To 2
+    ${var types}   Create List   i8   i16   i32   i64
+    Test Template Set All and Revert using Range   ${MEM TYPE STACK}   ${var types}   8   16   0   2
+
+
+Set Variables and Revert using Range From 1 To 2
+    ${var types}   Create List   i8   i16   i32   i64
+    Test Template Set All and Revert using Range   ${MEM TYPE STACK}   ${var types}   8   16   1   2
+
+
+Set Variables and Revert using Range From 1 To 3
+    ${var types}   Create List   i8   i16   i32   i64
+    Test Template Set All and Revert using Range   ${MEM TYPE STACK}   ${var types}   8   16   1   3
+
+
 Set First Half Variables Size 3 and Revert
     ${var types}   Create List   i8   i16   i32
     Test Template Set First Half and Revert   ${MEM TYPE STACK}   ${var types}   8   16   0   2
@@ -114,7 +134,7 @@ Test Template Set First Half and Revert
 
 
 Test Template Set Second Half and Revert
-    [Arguments]   ${mem type}   ${var types}   ${inital value}   ${final value}  ${from}   ${to}
+    [Arguments]   ${mem type}   ${var types}   ${inital value}   ${final value}   ${from}   ${to}
     Connect to Subject Process
 
     ${length}=  Get Length   ${var types}
@@ -141,6 +161,44 @@ Test Template Set Second Half and Revert
     FOR   ${index}   IN RANGE   ${from}   ${to}
         ${type}=      Get From List   ${var types}   ${index}
         Check Subject Variable   ${mem type}   ${type}   ${final value}
+    END
+
+    Send Command    ${CRWPROC}   \\revert
+
+    FOR   ${index}   IN RANGE   0   ${length}
+        ${type}=      Get From List   ${var types}   ${index}
+        Check Subject Variable   ${mem type}   ${type}   ${inital value}
+    END
+
+
+Test Template Set All and Revert using Range
+    [Arguments]   ${mem type}   ${var types}   ${inital value}   ${final value}   ${from}   ${to}
+    Connect to Subject Process
+
+    ${length}=  Get Length   ${var types}
+
+    FOR   ${index}   IN RANGE   0   ${length}
+        ${type}=      Get From List   ${var types}   ${index}
+
+        Set Subject Variable   ${mem type}   ${type}   ${inital value}
+
+        ${address}=   Get Subject Variable Address       ${mem type}   ${type}
+        ${address}=   Convert To Upper Case              ${address}
+    
+        Find Value by Address and Add It   ${inital value}   ${address}   ${mem type}   ${type}
+    END
+
+    Send Command    ${CRWPROC}   \\edit
+    Send Command    ${CRWPROC}   \\set ${from}-${to} ${final value}
+
+    FOR   ${index}   IN RANGE   0   ${length}
+        IF   "${index}" >= "${from}" and "${index}" <= "${to}"
+            ${type}=      Get From List   ${var types}   ${index}
+            Check Subject Variable   ${mem type}   ${type}   ${final value}
+        ELSE
+            ${type}=      Get From List   ${var types}   ${index}
+            Check Subject Variable   ${mem type}   ${type}   ${inital value}
+        END
     END
 
     Send Command    ${CRWPROC}   \\revert
