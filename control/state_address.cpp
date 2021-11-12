@@ -10,7 +10,9 @@
 
 #include <iostream>
 #include <iomanip>
+#include <sstream>
 
+#include "core/console_table.h"
 #include "core/proc_reader.h"
 
 #include "asker.h"
@@ -56,10 +58,15 @@ void state_address::show_value(const context& p_context) const {
 
     intro_builder::show(p_context, "View value that is mapped on a specific address.");
 
-    std::cout << std::right <<
-        "address: " << std::setw(10) << (void*)m_pointer.get_address() << " | " <<
-        "type: "    << std::setw(10) << m_type << " | " <<
-        "value: "   << std::setw(10) << m_pointer.get_value().to_string(m_type) << std::endl << std::endl;
+    std::stringstream stream;
+    stream << (void*)m_pointer.get_address();
+
+    console_table view_table(2, 3);
+    view_table.set_column_names({ "Address", "Type", "Value" });
+    view_table.set_row_content(1, { stream.str(), m_type.to_string(), m_pointer.get_value().to_string(m_type) });
+    view_table.show();
+
+    std::cout << std::endl;
 }
 
 

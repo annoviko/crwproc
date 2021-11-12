@@ -41,6 +41,8 @@ public:
 
     void set_column_names(const table_row& p_names);
 
+    void set_row_content(const std::size_t p_row_index, const table_row& p_names);
+
     void set_cell_content(const std::size_t p_row_index, const std::size_t p_col_index, const std::string& p_content);
 
     void show() const;

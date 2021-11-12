@@ -131,6 +131,21 @@ Find and Change Global Double
     Test Template Find and Change   ${MEM TYPE GLOBAL}   dbl   ${value evolution}   -1.5
 
 
+Find and Change Heap Int8 and Int16
+    ${value evolution}=    Create List   0   -4   8   -16
+    Test Template Find and Change among Two   ${MEM TYPE HEAP}   i8   ${MEM TYPE HEAP}   i16   ${value evolution}   32
+
+
+Find and Change Global Uint8 and Uint16
+    ${value evolution}=    Create List   0   8   16   32
+    Test Template Find and Change among Two   ${MEM TYPE GLOBAL}   u8   ${MEM TYPE GLOBAL}   u16   ${value evolution}   64
+
+
+Find and Change Heap Uint8 and Uint16
+    ${value evolution}=    Create List   0   4   8   16
+    Test Template Find and Change among Two   ${MEM TYPE HEAP}   u8   ${MEM TYPE HEAP}   u16   ${value evolution}   32
+
+
 Filter Value Int8 is Out of Range
     Test Template Filter Value is Out of Range   i8   -129
 
@@ -193,3 +208,29 @@ Test Template Find and Change
 
     Set Value via CRWPROC    ${index}       ${value to set}
     Check Subject Variable   ${mem type}    ${var type}   ${value to set}
+
+
+Test Template Find and Change among Two
+    [Arguments]   ${mem type 1}   ${var type 1}   ${mem type 2}   ${var type 2}   ${value evolution}   ${value to set}
+    Connect to Subject Process
+
+    ${value}=   Set Variable   ${value evolution[0]}
+    Set Subject Variable    ${mem type 1}    ${var type 1}    ${value}
+    Set Subject Variable    ${mem type 2}    ${var type 2}    ${value}
+
+    Create Exact Filter     ${var type 1}    ${value}
+
+    ${length}=    Get length    ${value evolution}
+    FOR    ${index}    IN RANGE    1    ${length}
+        ${value}=   Set Variable   ${value evolution[${index}]}
+        Set Subject Variable          ${mem type 1}    ${var type 1}    ${value}
+        Set Subject Variable          ${mem type 2}    ${var type 2}    ${value}
+
+        Update Filter and Continue    ${value}
+    END
+
+    ${address}=    Get Subject Variable Address           ${mem type 1}    ${var type 1}
+    ${index}=      Get Index From View Table By Address   ${address}
+
+    Set Value via CRWPROC    ${index}       ${value to set}
+    Check Subject Variable   ${mem type 1}    ${var type 1}   ${value to set}
