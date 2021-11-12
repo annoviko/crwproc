@@ -124,7 +124,7 @@ bool index_info::try_set_range() {
     std::smatch groups;
     if (std::regex_match(m_instruction, groups, PATTERN_RANGE)) {
         m_begin = std::stoull(groups[1]);
-        m_end = std::stoull(groups[2]);
+        m_end = std::stoull(groups[2]) + 1;
 
         return true;
     }
