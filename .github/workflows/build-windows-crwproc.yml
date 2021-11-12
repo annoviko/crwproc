@@ -29,6 +29,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
           name: SCT test results
+          publish_on_failure: true
           path: |
               tests/sct/*.log
               tests/sct/log.html
