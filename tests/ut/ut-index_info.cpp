@@ -78,19 +78,19 @@ TEST(ut_index_info, 2half_10) {
 }
 
 TEST(ut_index_info, range_0_1) {
-    template_test_index_info("0-1", 1, false, true, 0, 1);
+    template_test_index_info("0-0", 1, false, true, 0, 1);
 }
 
 TEST(ut_index_info, range_0_10) {
-    template_test_index_info("0-10", 10, false, true, 0, 10);
+    template_test_index_info("0-9", 10, false, true, 0, 10);
 }
 
 TEST(ut_index_info, range_5_10) {
-    template_test_index_info("5-10", 10, false, true, 5, 10);
+    template_test_index_info("5-9", 10, false, true, 5, 10);
 }
 
 TEST(ut_index_info, range_3_6) {
-    template_test_index_info("3-6", 10, false, true, 3, 6);
+    template_test_index_info("3-5", 10, false, true, 3, 6);
 }
 
 TEST(ut_index_info, range_end_out_of_range) {
