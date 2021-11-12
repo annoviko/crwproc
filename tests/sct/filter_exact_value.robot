@@ -162,6 +162,21 @@ Filter Value Uint8 is Upper Border
     Test Template Filter Value on a Range Border   u8   255
 
 
+No Duplication in Show View When Wrong Command
+    ${value evolution}=    Create List   0   8   16   32
+    Test Template Find and Change   ${MEM TYPE STACK}   u8   ${value evolution}   64
+
+    ${address}=   Get Subject Variable Address   ${MEM TYPE STACK}   u8
+    ${address}=   Convert To Upper Case          ${address}
+
+    Clean Output Stream      ${CRWPROC}
+    Send Command   ${CRWPROC}   \\show
+    Send Command   ${CRWPROC}   wrong_command
+
+    Wait For Output Stream Should Contain   .* 0 .*${address}.*
+    Output Stream Should Not Contain        .* 1 .*${address}.*
+    Output Stream Should Not Contain        .* 2 .*${address}.*
+
 
 *** Keywords ***
 

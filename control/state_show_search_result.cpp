@@ -27,7 +27,9 @@ event state_show_search_result::operator()(context& p_context) {
     m_intro = intro_builder("Found values with the filter.");
     m_intro.show(p_context);
 
-    build_view(p_context);
+    if (m_view.empty()) {
+        build_view(p_context);
+    }
     show_values(p_context);
 
     return continue_until_event_is_not<event_add>([this, &p_context]() { return ask_next_action(p_context); });
