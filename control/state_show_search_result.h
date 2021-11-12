@@ -36,7 +36,7 @@ private:
 private:
     intro_builder m_intro;
 
-    search_result_view m_view;
+    search_result_view m_view = { };
 
 public:
     state_show_search_result() = default;
