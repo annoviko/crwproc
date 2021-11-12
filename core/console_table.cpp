@@ -52,6 +52,13 @@ void console_table::set_column_names(const console_table::table_row& p_names) {
 }
 
 
+void console_table::set_row_content(const std::size_t p_row_index, const table_row& p_names) {
+    for (std::size_t col_index = 0; col_index < p_names.size(); col_index++) {
+        set_cell_content(p_row_index, col_index, p_names[col_index]);
+    }
+}
+
+
 void console_table::set_cell_content(const std::size_t p_row_index, const std::size_t p_col_index, const std::string& p_content) {
     if (p_row_index >= get_amount_rows()) {
         throw std::out_of_range("row index '" + std::to_string(p_row_index) + "' is out of range due to table size '"
