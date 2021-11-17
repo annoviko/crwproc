@@ -26,6 +26,7 @@ jobs:
       run: ci/github-ci-windows.ps1 test-crwproc-build
       
     - name: Archive artifacts
+      if: always()
       uses: actions/upload-artifact@v2
       with:
           name: SCT test results
