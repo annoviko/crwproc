@@ -170,7 +170,7 @@ No Duplication in Show View When Wrong Command
     ${address}=   Convert To Upper Case          ${address}
 
     Clean Output Stream      ${CRWPROC}
-    Send Command   ${CRWPROC}   \\show
+    Navigate to Show View
     Send Command   ${CRWPROC}   wrong_command
 
     Wait For Output Stream Should Contain   .* 0 .*${address}.*

@@ -18,6 +18,7 @@ void test_template_search_result(const std::vector<std::size_t>& p_block_sizes, 
 
     search_result result(p_type);
     for (const std::size_t block_size : p_block_sizes) {
+        result.get_memory_blocks().push_back(memory_block{ });
         for (std::size_t i = 0; i < block_size; i++) {
             result.get_memory_blocks().back().get_values().push_back(proc_pointer{ current_address++ });
             expected_amount_elements++;

@@ -38,7 +38,7 @@ Test Template Set View Wrong Command
     Connect to Subject Process
     Create Exact Filter    u8   64
 
-    Send Command   ${CRWPROC}   \\show
+    Navigate to Show View
     Send Command   ${CRWPROC}   \\add 0
 
     Clean Output Stream    ${CRWPROC}

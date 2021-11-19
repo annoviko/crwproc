@@ -378,9 +378,9 @@ TEST(ut_proc_reader, read_sequence) {
 
 
 TEST(ut_proc_reader, find_sequence) {
-    const std::size_t begin_sequence = 10;
-    const std::size_t end_sequence = 30;
-    const std::size_t length_sequence = 50;
+    const std::size_t begin_sequence = 20;
+    const std::size_t end_sequence = 50;
+    const std::size_t length_sequence = 70;
 
     std::vector<std::uint8_t> sequence;
     for (std::size_t i = 0; i < length_sequence; i++) {
@@ -401,5 +401,13 @@ TEST(ut_proc_reader, find_sequence) {
 
     const std::uint64_t actual_address = proc_reader(info).find_byte_sequence((std::uint8_t *)sequence.data() + begin_sequence, end_sequence - begin_sequence);
     const std::uint64_t expected_address = ((std::uint64_t) sequence.data()) + begin_sequence;
-    EXPECT_EQ(expected_address, actual_address);
+
+    std::uint8_t * actual_data = (std::uint8_t *) actual_address;
+    for (std::size_t value = begin_sequence; value < end_sequence; value++, actual_data++) {
+        EXPECT_EQ(value, static_cast<std::size_t>(*actual_data));
+    }
+
+    if (expected_address != actual_address) {
+        EXPECT_NE(0, actual_address);   /* the same process is considered, thus a buffer in `find_byte_sequence` might not be cleaned by the operating system yet. */
+    }
 }
