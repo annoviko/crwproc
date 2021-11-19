@@ -36,8 +36,6 @@ private:
 private:
     intro_builder m_intro;
 
-    search_result_view m_view = { };
-
 public:
     state_show_search_result() = default;
 
@@ -48,8 +46,6 @@ private:
     void show_values(const context& p_context) const;
 
     event ask_next_action(context& p_context);
-
-    void build_view(context& p_context);
 
 public:
     friend std::ostream& operator<<(std::ostream& p_stream, const state_show_search_result& p_state);

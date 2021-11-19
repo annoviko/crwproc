@@ -34,7 +34,10 @@ def run_application(app_name, parameters=[''], stdout_filename=None):
     __proc_file_mapping[application] = output_filename
     __proc_line_cursor_mapping[application] = 0
 
-    logger.info("Application '%s' was run." % application)
+    if application is not None:
+        logger.info("Application '%s' (PID: '%s') was run." % (application, application.pid))
+    else:
+        logger.info("Application '%s' was run." % application)
 
     return application
 

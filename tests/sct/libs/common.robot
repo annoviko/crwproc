@@ -221,7 +221,9 @@ Create Exact Integral Filter
 
 Connect to Subject Process
     ${subject pid}=     Get Pid        ${SUBJECT}
+    Wait For Output Stream Content   ${CRWPROC}   .*Please, enter PID or crwproc command.*
     Send Command        ${CRWPROC}     ${subject pid}
+    Wait For Output Stream Content   ${CRWPROC}   .*Create filter for the process.*
 
 
 Update Filter and Continue
@@ -347,8 +349,7 @@ Find Value by Address and Add It
 
 Get Index From View Table By Address
     [Arguments]   ${address}
-    Clean Output Stream    ${CRWPROC}
-    Send Command           ${CRWPROC}    \\show
+    Navigate to Show View
 
     ${address uppercase}=    Convert To Upper Case    ${address}
     ${pattern}=    Set Variable           .* (\\d+) .*${address uppercase}.*
@@ -371,6 +372,18 @@ Send HTTP Request with Check and Get Body
     [Return]   ${body}
 
 
+Navigate to Show View
+    Clean Output Stream    ${CRWPROC}
+    Send Command           ${CRWPROC}    \\show
+    Wait For Output Stream Content   ${CRWPROC}   .*Found values with the filter.*
+
+
+Navigate to Edit Table
+    Clean Output Stream    ${CRWPROC}
+    Send Command           ${CRWPROC}    \\show
+    Wait For Output Stream Content   ${CRWPROC}   .*User table to edit values.*
+
+
 Initialize Crwproc
     ${crwproc instance}=    Crwproc Run     ${BINARY FOLDER}    ${TEST NAME}
     Set Suite Variable      ${CRWPROC}      ${crwproc instance}
@@ -382,9 +395,9 @@ Initialize Subject
 
 
 Initialize Object and Subject
-    Initialize Crwproc
     Initialize Subject
     Initialize Client   127.0.0.1      ${SUBJECT PORT}
+    Initialize Crwproc
     Sleep   10ms
 
 

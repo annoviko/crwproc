@@ -16,48 +16,60 @@ Test Teardown    Terminate Object and Subject
 *** Test Cases ***
 
 Set All Variables and Revert
-    ${var types}   Create List   i8   i16   i32   i64
+    ${var types}=   Create List   i8   i16   i32   i64
     Test Template Set All and Revert   ${MEM TYPE STACK}   ${var types}   8   16
 
 
 Set All Variables and Revert using Range
-    ${var types}   Create List   i8   i16   i32   i64
+    ${var types}=   Create List   i8   i16   i32   i64
     Test Template Set All and Revert using Range   ${MEM TYPE STACK}   ${var types}   8   16   0   3
 
 
 Set Variables and Revert using Range From 0 To 2
-    ${var types}   Create List   i8   i16   i32   i64
+    ${var types}=   Create List   i8   i16   i32   i64
     Test Template Set All and Revert using Range   ${MEM TYPE STACK}   ${var types}   8   16   0   2
 
 
 Set Variables and Revert using Range From 1 To 2
-    ${var types}   Create List   i8   i16   i32   i64
+    ${var types}=   Create List   i8   i16   i32   i64
     Test Template Set All and Revert using Range   ${MEM TYPE STACK}   ${var types}   8   16   1   2
 
 
 Set Variables and Revert using Range From 1 To 3
-    ${var types}   Create List   i8   i16   i32   i64
+    ${var types}=   Create List   i8   i16   i32   i64
     Test Template Set All and Revert using Range   ${MEM TYPE STACK}   ${var types}   8   16   1   3
 
 
 Set First Half Variables Size 3 and Revert
-    ${var types}   Create List   i8   i16   i32
+    ${var types}=   Create List   i8   i16   i32
     Test Template Set First Half and Revert   ${MEM TYPE STACK}   ${var types}   8   16   0   2
 
 
 Set First Half Variables Size 4 and Revert
-    ${var types}   Create List   i8   i16   i32   i64
+    ${var types}=   Create List   i8   i16   i32   i64
     Test Template Set First Half and Revert   ${MEM TYPE STACK}   ${var types}   8   16   0   2
 
 
 Set Second Half Variables Size 3 and Revert
-    ${var types}   Create List   i8   i16   i32
+    ${var types}=   Create List   i8   i16   i32
     Test Template Set Second Half and Revert   ${MEM TYPE STACK}   ${var types}   8   16   2   3
 
 
 Set Second Half Variables Size 4 and Revert
-    ${var types}   Create List   i8   i16   i32   i64
+    ${var types}=   Create List   i8   i16   i32   i64
     Test Template Set Second Half and Revert   ${MEM TYPE STACK}   ${var types}   8   16   2   4
+
+
+Add Range From View Table to Edit Table
+    Connect to Subject Process
+    Create Exact Filter     i8    0
+    Navigate to Show View
+    Send Command    ${CRWPROC}   0-50
+    Navigate to Edit Table
+
+    FOR   ${index}   IN RANGE   0   51
+        Wait For Output Stream Should Contain   .* ${index} .*
+    END
 
 
 *** Keywords ***
