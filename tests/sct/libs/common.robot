@@ -395,9 +395,9 @@ Initialize Subject
 
 
 Initialize Object and Subject
-    Initialize Crwproc
     Initialize Subject
     Initialize Client   127.0.0.1      ${SUBJECT PORT}
+    Initialize Crwproc
     Sleep   10ms
 
 
