@@ -91,6 +91,9 @@
     <ClCompile Include="ut-algorithm.cpp">
       <Filter>tests</Filter>
     </ClCompile>
+    <ClCompile Include="ut-search_result.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ut-proc_reader.h">

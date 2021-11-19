@@ -383,7 +383,6 @@ TEST(ut_proc_reader, find_sequence) {
     const std::size_t length_sequence = 50;
 
     std::vector<std::uint8_t> sequence;
-    std::vector<std::uint8_t> sequence_to_find;
     for (std::size_t i = 0; i < length_sequence; i++) {
         if (i < begin_sequence) {
             sequence.push_back(static_cast<std::uint8_t>(0x01));
@@ -391,7 +390,6 @@ TEST(ut_proc_reader, find_sequence) {
         else if ((i >= begin_sequence) && (i < end_sequence)) {
             const std::uint8_t value = static_cast<std::uint8_t>(i);
             sequence.push_back(value);
-            sequence_to_find.push_back(value);
         }
         else {
             sequence.push_back(static_cast<std::uint8_t>(0x02));
@@ -401,7 +399,7 @@ TEST(ut_proc_reader, find_sequence) {
     const std::size_t pid = static_cast<std::size_t>(GetCurrentProcessId());
     proc_info info = proc_table().get().at(pid);
 
-    const std::uint64_t actual_address = proc_reader(info).find_byte_sequence(sequence_to_find, sequence_to_find.size());
+    const std::uint64_t actual_address = proc_reader(info).find_byte_sequence((std::uint8_t *)sequence.data() + begin_sequence, end_sequence - begin_sequence);
     const std::uint64_t expected_address = ((std::uint64_t) sequence.data()) + begin_sequence;
     EXPECT_EQ(expected_address, actual_address);
 }

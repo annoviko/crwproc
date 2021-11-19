@@ -63,7 +63,9 @@ private:
 
             if (m_iter_pointer == m_iter_block->get_values().end()) {
                 ++m_iter_block;
-                m_iter_pointer = m_iter_block->get_values().begin();
+                if (m_iter_block != m_iter_end_block) {
+                    m_iter_pointer = m_iter_block->get_values().begin();
+                }
             }
 
             return *this;
