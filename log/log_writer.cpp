@@ -71,7 +71,7 @@ std::string log_writer::time_as_string(const std::chrono::system_clock::time_poi
     std::stringstream stream;
     stream << std::setfill('0')
         << time_info.tm_year + 1900 << p_date_delim
-        << std::setw(2) << time_info.tm_mon << p_date_delim
+        << std::setw(2) << time_info.tm_mon + 1 << p_date_delim
         << std::setw(2) << time_info.tm_mday << p_delim
         << std::setw(2) << time_info.tm_hour << p_time_delim
         << std::setw(2) << time_info.tm_min << p_time_delim
