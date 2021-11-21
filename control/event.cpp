@@ -112,3 +112,8 @@ std::ostream& operator<<(std::ostream& p_stream, const event_find_sequence&) {
     p_stream << "event_find_sequence";
     return p_stream;
 }
+
+std::ostream& operator<<(std::ostream& p_stream, const event_rename&) {
+    p_stream << "event_rename";
+    return p_stream;
+}

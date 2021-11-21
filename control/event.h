@@ -54,6 +54,8 @@ class event_dump { };
 
 class event_find_sequence { };
 
+class event_rename { };
+
 
 using event = std::variant<
     event_choose, 
@@ -74,7 +76,8 @@ using event = std::variant<
     event_load,
     event_revert,
     event_dump,
-    event_find_sequence
+    event_find_sequence,
+    event_rename
 >;
 
 
@@ -118,3 +121,4 @@ std::ostream& operator<<(std::ostream& p_stream, const event_load& p_event);
 std::ostream& operator<<(std::ostream& p_stream, const event_revert& p_event);
 std::ostream& operator<<(std::ostream& p_stream, const event_dump& p_event);
 std::ostream& operator<<(std::ostream& p_stream, const event_find_sequence& p_event);
+std::ostream& operator<<(std::ostream& p_stream, const event_rename& p_event);

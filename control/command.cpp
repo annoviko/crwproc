@@ -31,7 +31,8 @@ const std::unordered_map<std::string, event> command::COMMANDS = {
     { command::name::load,              event_load()            },
     { command::name::revert,            event_revert()          },
     { command::name::dump,              event_dump()            },
-    { command::name::find_sequence,     event_find_sequence()   }
+    { command::name::find_sequence,     event_find_sequence()   },
+    { command::name::rename,            event_rename()          }
 };
 
 
@@ -52,7 +53,8 @@ const std::unordered_map<std::string, std::string> command::DESCRIPTION = {
     { command::name::load,              "Load the edit table from the specific file.\nSyntax: \\load <filename>" },
     { command::name::revert,            "Revert changes introduced by \\set command." },
     { command::name::dump,              "Open a menu to obtain memory dump at specific address." },
-    { command::name::find_sequence,     "Open a menu to find byte sequence." }
+    { command::name::find_sequence,     "Open a menu to find byte sequence." },
+    { command::name::rename,            "Rename variable with a specific index in the edit table.\nSyntax: \\rename <index> <name>" }
 };
 
 
@@ -88,6 +90,12 @@ const std::unordered_map<std::string, std::vector<std::string>> command::EXAMPLE
             "\\load proc_table.json - load the edit table from 'proc_table.json' file.",
         }
     },
+
+    { command::name::rename, {
+            "\\rename 0 wood    - set 'wood' name to variable with index 0 in the edit table.",
+            "\\rename 1 gold    - set 'gold' name to variable with index 1 in the edit table."
+        }
+    }
 };
 
 
