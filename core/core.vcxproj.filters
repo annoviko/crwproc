@@ -92,6 +92,9 @@
     <ClInclude Include="console_table_style.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="string_utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="console.cpp">

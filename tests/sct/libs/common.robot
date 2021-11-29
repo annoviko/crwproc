@@ -380,7 +380,7 @@ Navigate to Show View
 
 Navigate to Edit Table
     Clean Output Stream    ${CRWPROC}
-    Send Command           ${CRWPROC}    \\show
+    Send Command           ${CRWPROC}    \\edit
     Wait For Output Stream Content   ${CRWPROC}   .*User table to edit values.*
 
 

@@ -15,6 +15,8 @@
 #include "core/console_table.h"
 #include "core/proc_reader.h"
 #include "core/proc_writer.h"
+#include "core/string_split.h"
+#include "core/string_utils.h"
 
 #include "log/logging.h"
 
@@ -24,6 +26,15 @@
 #include "edit_table_reader.h"
 #include "edit_table_writer.h"
 #include "log_wrapper.h"
+
+
+const state_edit::column_name_map state_edit::COLUMN_NAME_MAP = {
+    { state_edit::column_element::number, "Nr" },
+    { state_edit::column_element::address, "Address" },
+    { state_edit::column_element::name, "Name" },
+    { state_edit::column_element::type, "Type" },
+    { state_edit::column_element::value, "Value" },
+};
 
 
 event state_edit::operator()(context& p_context) const {
@@ -39,8 +50,11 @@ void state_edit::show_table(context& p_context) {
         entry.refresh(p_context.get_proc_info());
     }
 
-    console_table view_table(p_context.get_user_table().size() + 1, 4);
-    view_table.set_column_names({ "Nr", "Address", "Type", "Value" });
+    column_position_map position_map = get_column_position_map(p_context);
+    column_names names = get_column_names(position_map);
+
+    console_table view_table(p_context.get_user_table().size() + 1, names.size());
+    view_table.set_column_names(names);
 
     for (std::size_t i = 0; i < p_context.get_user_table().size(); i++) {
         const edit_table_entry& entry = p_context.get_user_table().at(i);
@@ -48,17 +62,75 @@ void state_edit::show_table(context& p_context) {
         std::stringstream stream;
 
         std::size_t row_number = i + 1;
-        view_table.set_cell_content(row_number, 0, std::to_string(i));
+        view_table.set_cell_content(row_number, position_map.at(column_element::number), std::to_string(i));
 
         stream << (void*)entry.get_pointer().get_address();
-        view_table.set_cell_content(row_number, 1, stream.str());
-        view_table.set_cell_content(row_number, 2, entry.get_type().to_string());
-        view_table.set_cell_content(row_number, 3, entry.get_pointer().get_value().to_string(entry.get_type()));
+        view_table.set_cell_content(row_number, position_map.at(column_element::address), stream.str());
+        view_table.set_cell_content(row_number, position_map.at(column_element::type), entry.get_type().to_string());
+        view_table.set_cell_content(row_number, position_map.at(column_element::value), entry.get_pointer().get_value().to_string(entry.get_type()));
+
+        const auto iter_position = position_map.find(column_element::name);
+        if (iter_position != position_map.cend()) {
+            view_table.set_cell_content(row_number, iter_position->second, entry.get_name());
+        }
     }
 
     view_table.show();
 
     std::cout << std::endl;
+}
+
+
+bool state_edit::has_table_names(const context& p_context) {
+    for (const auto& p_entry : p_context.get_user_table()) {
+        if (!p_entry.get_name().empty()) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
+state_edit::column_position_map state_edit::get_column_position_map(const context& p_context) {
+    const bool has_names = has_table_names(p_context);
+
+    column_position_map result;
+    for (std::size_t i = 0, position = 0; i < static_cast<std::size_t>(column_element::last_element); ++i) {
+        const column_element column = static_cast<column_element>(i);
+        if (!has_names && (column == column_element::name)) {
+            continue;
+        }
+
+        result.insert({ column, position++ });
+    }
+
+    return result;
+}
+
+
+state_edit::column_names state_edit::get_column_names(const state_edit::column_position_map& p_position) {
+    column_names result;
+
+    for (std::size_t i = 0; i < static_cast<std::size_t>(column_element::last_element); ++i) {
+        const column_element column = static_cast<column_element>(i);
+        const auto iter_position = p_position.find(column);
+        if (iter_position != p_position.end()) {
+            result.push_back(get_column_name(iter_position->first));
+        }
+    }
+
+    return result;
+}
+
+
+std::string state_edit::get_column_name(const column_element p_element) {
+    const auto iter = COLUMN_NAME_MAP.find(p_element);
+    if (iter != COLUMN_NAME_MAP.cend()) {
+        return iter->second;
+    }
+
+    return "invalid";
 }
 
 
@@ -91,6 +163,9 @@ event state_edit::ask_next_action(context& p_context) {
         }
         else if (std::is_same_v<EventType, event_revert>) {
             handle_revert_event(p_context);
+        }
+        else if (std::is_same_v<EventType, event_rename>) {
+            handle_rename_event(p_context);
         }
     }, action);
 
@@ -167,6 +242,30 @@ void state_edit::handle_load_event(context& p_context) {
     if (!edit_table_reader(filename).read(p_context.get_user_table())) {
         LOG_ERROR_WITH_WAIT_KEY_AND_RETURN("Error: impossible to load the edit table from file '" + filename + "'.")
     }
+}
+
+
+void state_edit::handle_rename_event(context& p_context) {
+    const index_info info = asker::ask_index(p_context.get_user_table().size(), true);
+    if (!info.is_valid()) {
+        return;
+    }
+
+    std::string string_name;
+    std::getline(std::cin, string_name);
+
+    crwproc::string::utils::trim(string_name);
+
+    std::vector<std::string> last_arguments = { };
+    crwproc::string::split(string_name, std::back_inserter(last_arguments));
+
+    if (last_arguments.empty() || (last_arguments.size() > 1)) {
+        LOG_ERROR_WITH_WAIT_KEY_AND_RETURN("Error: variable name should be represented by a value without spaces.")
+    }
+
+    LOG_INFO("User input (new name for variable): '" << string_name << "'.")
+
+    p_context.get_user_table().at(info.get_begin()).set_name(string_name);
 }
 
 

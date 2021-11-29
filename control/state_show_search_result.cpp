@@ -49,8 +49,6 @@ void state_show_search_result::show_values(const context& p_context) const {
 
         view_table.set_cell_content(i + 1, 0, std::to_string(i));
         view_table.set_cell_content(i + 1, 1, stream.str());
-
-        ++iter_cursor;
     }
 
     if (amount_elements > MAX_VIEW_SIZE) {
