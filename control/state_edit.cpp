@@ -15,6 +15,7 @@
 #include "core/console_table.h"
 #include "core/proc_reader.h"
 #include "core/proc_writer.h"
+#include "core/string_split.h"
 #include "core/string_utils.h"
 
 #include "log/logging.h"
@@ -254,6 +255,13 @@ void state_edit::handle_rename_event(context& p_context) {
     std::getline(std::cin, string_name);
 
     crwproc::string::utils::trim(string_name);
+
+    std::vector<std::string> last_arguments = { };
+    crwproc::string::split(string_name, std::back_inserter(last_arguments));
+
+    if (last_arguments.empty() || (last_arguments.size() > 1)) {
+        LOG_ERROR_WITH_WAIT_KEY_AND_RETURN("Error: variable name should be represented by a value without spaces.")
+    }
 
     LOG_INFO("User input (new name for variable): '" << string_name << "'.")
 

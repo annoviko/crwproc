@@ -64,7 +64,7 @@ Add Range From View Table to Edit Table
     Connect to Subject Process
     Create Exact Filter     i8    0
     Navigate to Show View
-    Send Command    ${CRWPROC}   0-50
+    Send Command    ${CRWPROC}   \\add 0-50
     Navigate to Edit Table
 
     FOR   ${index}   IN RANGE   0   51
