@@ -33,6 +33,10 @@ private:
 
     template <typename TypeValue>
     static bool write_value(const proc_handle& p_handle, const std::uint64_t p_address, const TypeValue p_value) {
-        return (bool) WriteProcessMemory(p_handle(), (LPVOID)p_address, (LPCVOID) &p_value, sizeof(TypeValue), nullptr);
+        if (p_handle.is_running()) {
+            return (bool) WriteProcessMemory(p_handle(), (LPVOID)p_address, (LPCVOID) &p_value, sizeof(TypeValue), nullptr);
+        }
+
+        return false;
     }
 };

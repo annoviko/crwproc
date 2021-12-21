@@ -31,6 +31,9 @@ public:
     ~proc_handle();
 
 public:
+    bool is_running() const;
+
+public:
     HANDLE operator()() const;
 
 public:

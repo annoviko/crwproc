@@ -175,3 +175,4 @@ def get_pid(application):
 def kill_application(application):
     robot.api.logger.info("Kill application '%s'." % application)
     application.kill()
+    application.communicate()

@@ -39,5 +39,10 @@ int main(int argc, char * argv[]) {
     }
 
     rest_server(address, port).run();
+
+    if (!silent) {
+        std::cout << "Basic subject (pid: '" << GetCurrentProcessId() << "') is terminated." << std::endl;
+    }
+
     return 0;
 }

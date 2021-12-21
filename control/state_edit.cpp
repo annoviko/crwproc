@@ -58,6 +58,7 @@ void state_edit::show_table(context& p_context) {
 
     for (std::size_t i = 0; i < p_context.get_user_table().size(); i++) {
         const edit_table_entry& entry = p_context.get_user_table().at(i);
+        const std::string entry_value = entry.is_valid() ? entry.get_pointer().get_value().to_string(entry.get_type()) : INVALID_VALUE;
 
         std::stringstream stream;
 
@@ -67,7 +68,7 @@ void state_edit::show_table(context& p_context) {
         stream << (void*)entry.get_pointer().get_address();
         view_table.set_cell_content(row_number, position_map.at(column_element::address), stream.str());
         view_table.set_cell_content(row_number, position_map.at(column_element::type), entry.get_type().to_string());
-        view_table.set_cell_content(row_number, position_map.at(column_element::value), entry.get_pointer().get_value().to_string(entry.get_type()));
+        view_table.set_cell_content(row_number, position_map.at(column_element::value), entry_value);
 
         const auto iter_position = position_map.find(column_element::name);
         if (iter_position != position_map.cend()) {
