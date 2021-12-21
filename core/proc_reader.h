@@ -224,6 +224,11 @@ private:
 
 
     void refresh_value(const type_desc p_type, proc_pointer& p_value) const {
+        if (!m_proc_handle.is_running()) {
+            p_value.invalidate();
+            return;
+        }
+
         const std::size_t value_size = p_type.get_size();
 
         std::shared_ptr<std::uint8_t[]> buffer(new std::uint8_t[value_size]);
@@ -234,7 +239,7 @@ private:
             return;
         }
 
-        return p_value.get_value().set((void *)raw_buffer, value_size);
+        p_value.get_value().set((void *)raw_buffer, value_size);
     }
 
 

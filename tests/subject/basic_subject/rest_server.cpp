@@ -16,6 +16,9 @@ rest_server::rest_server(const std::string& p_address, const std::size_t p_port)
     m_address(p_address),
     m_port(p_port)
 {
+    m_server.set_keep_alive_max_count(1);
+    m_server.set_keep_alive_timeout(1);
+
     m_server.Get(R"(/address/memory/(\S+)/variable/(\S+))", [this](const httplib::Request& p_request, httplib::Response& p_response) {
         const std::string memory_type_name = p_request.matches[1];
         const std::string variable_type_name = p_request.matches[2];
@@ -133,7 +136,8 @@ rest_server::rest_server(const std::string& p_address, const std::size_t p_port)
     });
 
 
-    m_server.Delete(R"(/application)", [this](const httplib::Request&, httplib::Response&) {
+    m_server.Delete(R"(/application)", [this](const httplib::Request&, httplib::Response& p_response) {
+        p_response.status = 200;
         m_server.stop();
     });
 }

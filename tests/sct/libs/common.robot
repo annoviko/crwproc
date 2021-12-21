@@ -407,6 +407,15 @@ Terminate Crwproc
     Kill Application            ${CRWPROC}
 
 
+Terminate Subject
+    Send HTTP Request   DELETE           /application
+
+    ${status}=   Get Response Status
+    Log          Termination subject status ${status}
+
+    Kill Application    ${SUBJECT}
+
+
 Terminate Object and Subject
     Terminate Crwproc
     Kill Application    ${SUBJECT}

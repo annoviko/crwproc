@@ -35,6 +35,8 @@ public:
 
     const proc_pointer& get_pointer() const;
 
+    const bool is_valid() const;
+
     const type_desc& get_type() const;
 
     void set_name(const std::string& p_name);
