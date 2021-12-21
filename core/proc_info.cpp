@@ -8,7 +8,12 @@
 
 #include "proc_info.h"
 
+#include "proc_handle.h"
+
 #include <limits>
+
+
+#undef max
 
 
 const std::size_t proc_info::INVALID_PID = std::numeric_limits<std::size_t>::max();
@@ -41,7 +46,23 @@ bool proc_info::is_valid() const {
 }
 
 
+bool proc_info::is_running() const {
+    const proc_handle handle = proc_handle(m_pid, proc_handle::access::read);
+    if (handle() == nullptr) {
+        return false;
+    }
+
+    return handle.is_running();
+}
+
+
 std::ostream& operator<<(std::ostream& p_stream, const proc_info& p_info) {
-    p_stream << "Process ID: " << p_info.m_pid << " | " << p_info.m_name;
+    if (p_info.is_running()) {
+        p_stream << "Process ID: " << p_info.m_pid << " | " << p_info.m_name;
+    }
+    else {
+        p_stream << "Process ID: [TERMINATED] | " << p_info.m_name;
+    }
+    
     return p_stream;
 }
