@@ -29,6 +29,7 @@ Read Unavailable Value
     Sleep   1000ms
 
     Navigate to Edit Table
+    Wait For Output Stream Should Contain    .*[TERMINATED].*
     FOR    ${index}    IN RANGE    0    11
         Wait For Output Stream Should Contain    .* ${index} .* ######## .*
     END
