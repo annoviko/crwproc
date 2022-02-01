@@ -21,7 +21,7 @@ proc_pointer::proc_pointer(const std::uint64_t p_address) :
 
 
 bool proc_pointer::is_valid() const {
-    return m_address == INVALID_ADDRESS;
+    return m_address != INVALID_ADDRESS;
 }
 
 

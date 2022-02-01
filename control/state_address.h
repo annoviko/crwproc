@@ -20,6 +20,9 @@
 
 class state_address : public state_base {
 private:
+    constexpr static char INVALID_VALUE[] = "########";
+
+private:
     proc_pointer m_pointer;
     type_desc    m_type;
 

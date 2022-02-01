@@ -34,6 +34,8 @@ private:
     using column_names = std::vector<std::string>;
 
 private:
+    static constexpr char INVALID_VALUE[] = "########";
+
     static const column_name_map COLUMN_NAME_MAP;
 
 public:

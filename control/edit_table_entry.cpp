@@ -34,6 +34,11 @@ const proc_pointer& edit_table_entry::get_pointer() const {
 }
 
 
+const bool edit_table_entry::is_valid() const {
+    return m_pointer.is_valid();
+}
+
+
 const type_desc& edit_table_entry::get_type() const {
     return m_type;
 }

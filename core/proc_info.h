@@ -35,6 +35,8 @@ public:
 
     bool is_valid() const;
 
+    bool is_running() const;
+
 public:
     friend std::ostream& operator<<(std::ostream& p_stream, const proc_info& p_info);
 };

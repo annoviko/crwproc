@@ -35,6 +35,14 @@ proc_handle::~proc_handle() {
 }
 
 
+bool proc_handle::is_running() const {
+    DWORD status = 0;
+    GetExitCodeProcess(m_handle, &status);
+
+    return (status == STILL_ACTIVE);
+}
+
+
 HANDLE proc_handle::operator()() const {
     return m_handle;
 }
