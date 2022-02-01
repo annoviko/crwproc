@@ -50,6 +50,16 @@ const edit_table& context::get_user_table() const {
 }
 
 
+edit_table_names& context::get_user_table_active_names() {
+    return m_user_table_active_names;
+}
+
+
+const edit_table_names& context::get_user_table_active_names() const {
+    return m_user_table_active_names;
+}
+
+
 edit_table_change& context::get_user_table_change() {
     return m_user_table_change;
 }

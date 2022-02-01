@@ -50,6 +50,7 @@ void state_edit::show_table(context& p_context) {
         entry.refresh(p_context.get_proc_info());
     }
 
+
     column_position_map position_map = get_column_position_map(p_context);
     column_names names = get_column_names(position_map);
 
@@ -134,6 +135,20 @@ std::string state_edit::get_column_name(const column_element p_element) {
 }
 
 
+index_info::user_instruction state_edit::get_index_user_instruction(const context& p_context) {
+    index_info::user_instruction result = { };
+
+    for (std::size_t i = 0; i < p_context.get_user_table().size(); i++) {
+        const std::string& entry_name = p_context.get_user_table()[i].get_name();
+        if (!entry_name.empty()) {
+            result[entry_name] = i;
+        }
+    }
+
+    return result;
+}
+
+
 event state_edit::ask_next_action(context& p_context) {
     std::cout << "Please enter the command to continue: ";
 
@@ -174,7 +189,8 @@ event state_edit::ask_next_action(context& p_context) {
 
 
 void state_edit::handle_set_event(context& p_context) {
-    index_info index_value = asker::ask_index(p_context.get_user_table().size(), false);
+    const auto user_index_map = get_index_user_instruction(p_context);
+    index_info index_value = asker::ask_index(p_context.get_user_table().size(), false, user_index_map);
     if (!index_value.is_valid()) {
         return;
     }
@@ -210,9 +226,23 @@ void state_edit::handle_revert_event(context& p_context) {
 
 
 void state_edit::handle_remove_event(context& p_context) {
-    const index_info info = asker::ask_index(p_context.get_user_table().size(), false);
+    const auto index_user_map = get_index_user_instruction(p_context);
+    const index_info info = asker::ask_index(p_context.get_user_table().size(), false, index_user_map);
     if (!info.is_valid()) {
         return;
+    }
+
+    for (std::size_t i = info.get_begin(); i < info.get_end(); i++) {
+        const std::string& entry_name = p_context.get_user_table()[i].get_name();
+        if (entry_name.empty()) {
+            continue;
+        }
+
+        auto& active_names = p_context.get_user_table_active_names();
+        auto iter = active_names.find(entry_name);
+        if (iter != active_names.cend()) {
+            active_names.erase(iter);
+        }
     }
 
     p_context.get_user_table().erase(p_context.get_user_table().begin() + info.get_begin(), p_context.get_user_table().begin() + info.get_end());
@@ -246,7 +276,8 @@ void state_edit::handle_load_event(context& p_context) {
 
 
 void state_edit::handle_rename_event(context& p_context) {
-    const index_info info = asker::ask_index(p_context.get_user_table().size(), true);
+    const auto index_user_map = get_index_user_instruction(p_context);
+    const index_info info = asker::ask_index(p_context.get_user_table().size(), true, index_user_map);
     if (!info.is_valid()) {
         return;
     }
@@ -265,7 +296,12 @@ void state_edit::handle_rename_event(context& p_context) {
 
     LOG_INFO("User input (new name for variable): '" << string_name << "'.")
 
+    if (p_context.get_user_table_active_names().count(string_name) != 0) {
+        LOG_ERROR_WITH_WAIT_KEY_AND_RETURN("Error: variable name should be unique.")
+    }
+
     p_context.get_user_table().at(info.get_begin()).set_name(string_name);
+    p_context.get_user_table_active_names().insert(string_name);
 }
 
 

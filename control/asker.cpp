@@ -52,6 +52,20 @@ index_info asker::ask_index(const std::size_t p_limit, const bool p_index_only, 
 }
 
 
+index_info asker::ask_index(const std::size_t p_limit, const bool p_index_only, const index_info::user_instruction& p_user_instruction, const bool p_interruptible) {
+    LOG_INFO("Ask for user input - index with user index map.")
+
+    std::string user_input = ask_user_input(std::string(), p_interruptible);
+
+    index_info info(user_input, p_limit, p_index_only, p_user_instruction);
+    if (!info.is_valid()) {
+        LOG_ERROR_WITH_WAIT_KEY_AND_RETURN_VALUE("Error: " + info.reason() + ".", info)
+    }
+
+    return info;
+}
+
+
 value_type asker::ask_value_type() {
     std::cout << "Select value type that is going to be searched in the process:" << std::endl;
 

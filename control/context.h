@@ -23,6 +23,7 @@ private:
     filter            m_filter = filter_none{ };
     search_result     m_found_values;
     edit_table        m_user_table;
+    edit_table_names  m_user_table_active_names;
     edit_table_change m_user_table_change;
 
 public:
@@ -41,6 +42,10 @@ public:
     edit_table& get_user_table();
 
     const edit_table& get_user_table() const;
+
+    edit_table_names& get_user_table_active_names();
+
+    const edit_table_names& get_user_table_active_names() const;
 
     edit_table_change& get_user_table_change();
 
