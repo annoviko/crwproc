@@ -45,6 +45,8 @@ def run_application(app_name, parameters=[''], stdout_filename=None):
 
 
 def check_log_correctness(application, test_name):
+    time.sleep(0.1)
+
     date = datetime.today()
     expected_date_postfix = date.strftime("%Y-%m-%d_%H-%M-%S")
     
@@ -134,6 +136,7 @@ def wait_for_output_stream_content(application, expression, timeout=1):
     while ((result is False) and ((time_current - time_start).seconds < timeout)):
         result = output_stream_contains(application, expression)
         time_current = datetime.now()
+        time.sleep(0.05)
 
     return result
 
