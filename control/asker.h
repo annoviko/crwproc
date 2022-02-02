@@ -35,6 +35,8 @@ public:
 
     static index_info ask_index(const std::size_t p_limit, const bool p_index_only, const bool p_interruptible = true);
 
+    static index_info ask_index(const std::size_t p_limit, const bool p_index_only, const index_info::user_instruction& p_user_instruction, const bool p_interruptible = true);
+
     static value_type ask_value_type();
 
     static std::size_t ask_value_size();

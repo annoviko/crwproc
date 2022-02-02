@@ -21,17 +21,18 @@ const std::unordered_set<std::string> index_info::INSTRUCTION_2ND_HALF = { "seco
 const std::regex index_info::PATTERN_RANGE("(\\d+)-(\\d+)");
 
 
-index_info::index_info(const std::string& p_instruction, const std::size_t p_limit, const bool p_index_only) :
+index_info::index_info(const std::string& p_instruction, const std::size_t p_limit, const bool p_index_only, const user_instruction& p_index_map) :
     m_index_only(p_index_only),
-    m_limit(p_limit)
+    m_limit(p_limit),
+    m_user_instruction(p_index_map)
 {
-    if (try_initialize(p_instruction)) {
-        validate();
-    }
-    else {
-        m_reason = "impossible to parse input argument '" + p_instruction + "' as an index or range";
-    }
+    initialize(p_instruction);
 }
+
+
+index_info::index_info(const std::string& p_instruction, const std::size_t p_limit, const bool p_index_only) :
+    index_info(p_instruction, p_limit, p_index_only, { })
+{ }
 
 
 std::size_t index_info::get_begin() const {
@@ -68,20 +69,32 @@ bool index_info::is_2nd_half() {
 }
 
 
+void index_info::initialize(const std::string& p_instruction) {
+    if (try_initialize(p_instruction)) {
+        validate();
+    }
+    else {
+        m_reason = "impossible to parse input argument '" + p_instruction + "' as an index or range";
+    }
+}
+
+
 bool index_info::try_initialize(const std::string& p_instruction) {
     std::transform(p_instruction.begin(), p_instruction.end(), std::back_inserter(m_instruction), [](const char symbol) {
         return static_cast<char>(std::tolower(symbol));
     });
 
     if (m_index_only) {
-        return try_set_value();
+        return try_set_value() ||
+            try_set_user_value();
     }
 
     return try_set_all() ||
         try_set_1st_half() ||
         try_set_2nd_half() ||
         try_set_range() ||
-        try_set_value();
+        try_set_value() ||
+        try_set_user_value();
 }
 
 
@@ -143,6 +156,19 @@ bool index_info::try_set_value() {
     }
 
     return true;
+}
+
+
+bool index_info::try_set_user_value() {
+    const auto iter = m_user_instruction.find(m_instruction);
+    if (iter != m_user_instruction.cend()) {
+        m_begin = iter->second;
+        m_end = m_begin + 1;
+
+        return true;
+    }
+
+    return false;
 }
 
 

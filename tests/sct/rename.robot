@@ -37,6 +37,46 @@ Rename Two Added Variables
     Wait For Output Stream Should Contain   .* 1 .* gold .* 22222 .*
 
 
+Rename And Set By Name
+    Add Variable by Address and Rename   ${MEM TYPE STACK}   i8    64   0   adm
+    
+    Send Command   ${CRWPROC}   \\set adm 101
+
+    Check Subject Variable   ${MEM TYPE STACK}   i8   101
+    Wait For Output Stream Should Contain   .* 0 .* adm .* 101 .*
+
+
+Rename And Delete By Name
+    Add Variable by Address and Rename   ${MEM TYPE STACK}   i8    64   0   dip
+
+    Send Command   ${CRWPROC}   \\remove dip
+
+    Wait For Output Stream Should Not Contain   .* 0 .* 101 .*
+
+
+Rename And Rename By Name
+    Add Variable by Address and Rename   ${MEM TYPE STACK}   i8    64   0   mil
+
+    Send Command   ${CRWPROC}   \\rename mil cash
+
+    Wait For Output Stream Should Contain   .* 0 .* cash .* 64 .*
+
+
+Rename Unique Variable
+    Add Variable by Address and Rename   ${MEM TYPE STACK}   i8     16   0   coal
+    Add Variable by Address and Rename   ${MEM TYPE STACK}   i16    32   1   iron
+
+    Add Variable by Address   ${MEM TYPE STACK}   i32    64
+    Navigate to Edit Table
+    Send Command   ${CRWPROC}   \\rename 2 coal
+
+    ${result}=    Output Stream Contains    ${CRWPROC}    .*Error: variable name should be unique.*
+    Should Be True    ${result}
+
+    ${result}=   Output Stream Contains    ${CRWPROC}    .*Press any key to continue.*
+    Should Be True    ${result}
+
+
 *** Keywords ***
 
 Add Variable by Address
@@ -48,3 +88,13 @@ Add Variable by Address
     Find Value by Address and Check Output   ${inital value}   ${address}   ${mem type}   ${var type}
     
     Send Command   ${CRWPROC}   \\add
+
+
+Add Variable by Address and Rename
+    [Arguments]   ${mem type}   ${var type}   ${inital value}   ${var index}   ${var name}
+    Add Variable by Address   ${mem type}   ${var type}    ${inital value}
+    Navigate to Edit Table
+
+    Send Command   ${CRWPROC}   \\rename ${var index} ${var name}
+    
+    Wait For Output Stream Should Contain   .* ${var index} .* ${var name} .* ${inital value} .*

@@ -13,6 +13,7 @@
 
 #include "context.h"
 #include "event.h"
+#include "index_info.h"
 
 
 class state_edit {
@@ -50,6 +51,8 @@ private:
     static column_names get_column_names(const column_position_map& p_position);
 
     static std::string get_column_name(const column_element p_element);
+
+    static index_info::user_instruction get_index_user_instruction(const context& p_context);
 
     static event ask_next_action(context& p_context);
 
