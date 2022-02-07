@@ -13,6 +13,7 @@
 #include <vector>
 
 #include "console_table_style.h"
+#include "console_table_cell_property.h"
 
 
 class console_table {
@@ -20,10 +21,14 @@ private:
     using table_row = std::vector<std::string>;
     using table = std::vector<table_row>;
 
+    using col_props = std::vector<console_table_cell_property>;
+
     using width_sequence = std::vector<std::size_t>;
 
 private:
     table m_table;
+
+    col_props m_col_props;
 
     width_sequence m_col_width;
 
@@ -45,6 +50,8 @@ public:
 
     void set_cell_content(const std::size_t p_row_index, const std::size_t p_col_index, const std::string& p_content);
 
+    console_table_cell_property& get_col_property(const std::size_t p_index);
+
     void show() const;
 
 private:
@@ -57,4 +64,6 @@ private:
     void show_content_row(const std::size_t p_index) const;
 
     void show_content() const;
+
+    void set_stdout_alignment(const console_table_cell_alignment& p_property) const;
 };

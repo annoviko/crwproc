@@ -14,6 +14,7 @@
 #include <type_traits>
 
 #include "core/console.h"
+#include "core/console_table.h"
 
 #include "log/logging.h"
 
@@ -36,14 +37,19 @@ event state_choose_proc::operator()(context& p_context) const {
 
 
 void state_choose_proc::show_procs(const proc_collection& p_table) {
-    static const std::string highlighter(40, '-');
+    console_table view_table(p_table.size() + 1, 2);
+    view_table.set_column_names({ "PID", "Name" });
+    view_table.get_col_property(1).alignment = console_table_cell_alignment::left;
 
-    std::cout << highlighter << std::endl;
+    std::size_t row_number = 1;
     for (const auto& info : p_table) {
-        std::cout << std::left << std::setw(10) << info.second.pid() << " | " << info.second.name() << std::endl;
+        view_table.set_cell_content(row_number, 0, std::to_string(info.second.pid()));
+        view_table.set_cell_content(row_number, 1, info.second.name());
+
+        row_number++;
     }
 
-    std::cout << highlighter << std::endl << std::endl;
+    view_table.show();
 }
 
 

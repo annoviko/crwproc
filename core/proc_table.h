@@ -9,12 +9,12 @@
 #pragma once
 
 
-#include <unordered_map>
+#include <map>
 
 #include "proc_info.h"
 
 
-using proc_collection = std::unordered_map<std::size_t, proc_info>;
+using proc_collection = std::map<std::size_t, proc_info>;
 
 
 class proc_table {

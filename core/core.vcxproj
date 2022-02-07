@@ -92,6 +92,7 @@
     <ClInclude Include="console.h" />
     <ClInclude Include="console_progress_bar.h" />
     <ClInclude Include="console_table.h" />
+    <ClInclude Include="console_table_cell_property.h" />
     <ClInclude Include="console_table_style.h" />
     <ClInclude Include="filter.h" />
     <ClInclude Include="filter_base.h" />

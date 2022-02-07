@@ -19,6 +19,7 @@
 
 console_table::console_table(const std::size_t p_rows, const std::size_t p_cols, const console_table_style& p_style) :
     m_table(p_rows, table_row(p_cols)),
+    m_col_props(p_cols),
     m_col_width(p_cols, 0),
     m_style(p_style)
 { }
@@ -66,12 +67,22 @@ void console_table::set_cell_content(const std::size_t p_row_index, const std::s
     }
 
     if (p_col_index >= get_amount_cols()) {
-        throw std::out_of_range("column index '" + std::to_string(p_row_index) + "' is out of range due to table size '"
+        throw std::out_of_range("column index '" + std::to_string(p_col_index) + "' is out of range due to table size '"
             + std::to_string(get_amount_rows()) + "x" + std::to_string(get_amount_cols()) + "'");
     }
 
     m_table[p_row_index][p_col_index] = p_content;
     m_col_width[p_col_index] = std::max(p_content.size(), m_col_width[p_col_index]);
+}
+
+
+console_table_cell_property& console_table::get_col_property(const std::size_t p_index) {
+    if (p_index >= get_amount_cols()) {
+        throw std::out_of_range("column index '" + std::to_string(p_index) + "' is out of range due to table size '"
+            + std::to_string(get_amount_rows()) + "x" + std::to_string(get_amount_cols()) + "'");
+    }
+
+    return m_col_props[p_index];
 }
 
 
@@ -109,7 +120,8 @@ void console_table::show_header() const {
         std::cout << '|' << std::string(m_style.get_cell_padding_left(), ' ');
 
         console::set_foreground_color(m_style.get_header_font_color(), true);
-        std::cout << std::right << std::setw(m_col_width[i]) << m_table[0][i];
+        set_stdout_alignment(m_col_props[i].alignment);
+        std::cout << std::setw(m_col_width[i]) << m_table[0][i];
         console::set_foreground_default_color();
 
         std::cout << std::string(m_style.get_cell_padding_right(), ' ');
@@ -126,7 +138,8 @@ void console_table::show_content_row(const std::size_t p_index) const {
         std::cout << '|' << std::string(m_style.get_cell_padding_left(), ' ');
 
         console::set_foreground_color(m_style.get_content_font_color(), true);
-        std::cout << std::right << std::setw(m_col_width[i]) << m_table[p_index][i];
+        set_stdout_alignment(m_col_props[i].alignment);
+        std::cout << std::setw(m_col_width[i]) << m_table[p_index][i];
         console::set_foreground_default_color();
 
         std::cout << std::string(m_style.get_cell_padding_right(), ' ');
@@ -141,4 +154,20 @@ void console_table::show_content() const {
     }
 
     show_row_separator();
+}
+
+
+void console_table::set_stdout_alignment(const console_table_cell_alignment& p_alignment) const {
+    switch (p_alignment) {
+    case console_table_cell_alignment::left:
+        std::cout << std::left;
+        break;
+
+    case console_table_cell_alignment::right:
+        std::cout << std::right;
+        break;
+
+    default:
+        throw std::invalid_argument("unknown alignment '" + std::to_string(static_cast<std::size_t>(p_alignment)) + "' is specified");
+    }
 }
