@@ -12,6 +12,7 @@
 #include <iostream>
 
 #include "core/console.h"
+#include "core/console_progress_bar.h"
 #include "core/proc_reader.h"
 
 #include "log/logging.h"
@@ -27,23 +28,21 @@ event state_search::operator()(context& p_context) {
 
     LOG_INFO("Run search process using filter '" << p_context.get_filter() << "'.")
 
-    std::visit([&p_context](auto&& filter) {
+    console_progress_bar progress_control(60);
+    progress_control.display();
+
+    std::visit([&p_context, &progress_control](auto&& filter) {
         std::size_t reported_progress = 0;
         proc_reader reader(p_context.get_proc_info(), filter);
-        auto observer = [&reported_progress](std::size_t p_progress) {
+        auto observer = [&reported_progress, &progress_control](std::size_t p_progress) {
             if (p_progress > 100) {
                 return;
             }
 
-            const std::size_t bars_to_display = (p_progress - reported_progress) / 2;
-            if (bars_to_display != 0) {
-                reported_progress = p_progress;
-                std::cout << std::string(bars_to_display, '=');
-            }
+            progress_control.update(p_progress);
         };
 
         reader.subscribe(observer);
-        std::cout << "Progress: ";
 
         if (p_context.get_found_values().is_empty()) {
             const auto start_time = std::chrono::system_clock::now();

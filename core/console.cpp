@@ -19,25 +19,30 @@
 #define FOREGROUND_WHITE        FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE
 #define BACKGROUND_WHITE        (FOREGROUND_WHITE) << 4
 
+#define FOREGROUND_BLACK        0
+#define BACKGROUND_BLACK        0
+
 const int console::BASIC_TEXT_ATTRIBUTE_CODE = console::get_basic_text_attributes();
 
 
 const std::unordered_map<color, int> console::COLOR_FOREGROUND_DICT = {
-    { color::basic, console::BASIC_TEXT_ATTRIBUTE_CODE & 0x000F },
+    { color::basic, console::BASIC_TEXT_ATTRIBUTE_CODE & 0xFF0F },
     { color::red, FOREGROUND_RED },
     { color::blue, FOREGROUND_BLUE },
     { color::green, FOREGROUND_GREEN },
     { color::yellow, FOREGROUND_YELLOW },
-    { color::white, FOREGROUND_WHITE }
+    { color::white, FOREGROUND_WHITE },
+    { color::black, FOREGROUND_BLACK }
 };
 
 const std::unordered_map<color, int> console::COLOR_BACKGROUND_DICT = {
-    { color::basic, console::BASIC_TEXT_ATTRIBUTE_CODE & 0x00F0 },
+    { color::basic, console::BASIC_TEXT_ATTRIBUTE_CODE & 0xFFF0 },
     { color::red, BACKGROUND_RED },
     { color::blue, BACKGROUND_BLUE },
     { color::green, BACKGROUND_GREEN },
     { color::yellow, BACKGROUND_YELLOW },
-    { color::white, BACKGROUND_WHITE }
+    { color::white, BACKGROUND_WHITE },
+    { color::black, BACKGROUND_BLACK }
 };
 
 
@@ -176,23 +181,55 @@ void console::set_cursor_position(const position& p_position) {
 }
 
 
+void console::set_color(const color p_foreground, const color p_background, const bool p_intense) {
+    set_foreground_color(p_foreground, p_intense);
+    set_background_color(p_background);
+}
+
+
 void console::set_foreground_color(const color p_color, const bool p_intense) {
-    auto iter = COLOR_FOREGROUND_DICT.find(p_color);
+    const auto iter = COLOR_FOREGROUND_DICT.find(p_color);
     if (iter != COLOR_FOREGROUND_DICT.cend()) {
-        HANDLE console_handle = GetStdHandle(STD_OUTPUT_HANDLE);
+        const HANDLE console_handle = GetStdHandle(STD_OUTPUT_HANDLE);
         CONSOLE_SCREEN_BUFFER_INFO buffer_info;
 
         GetConsoleScreenBufferInfo(console_handle, &buffer_info);
 
-        WORD intensity = p_intense ? FOREGROUND_INTENSITY : 0;
+        const WORD intensity = p_intense ? FOREGROUND_INTENSITY : 0;
+        const WORD attributes = (buffer_info.wAttributes & 0xFFF0) | static_cast<WORD>(iter->second) | intensity;
 
-        SetConsoleTextAttribute(console_handle, static_cast<WORD>(iter->second) | intensity);
+        SetConsoleTextAttribute(console_handle, attributes);
+    }
+}
+
+
+void console::set_background_color(const color p_color) {
+    const auto iter = COLOR_BACKGROUND_DICT.find(p_color);
+    if (iter != COLOR_BACKGROUND_DICT.cend()) {
+        const HANDLE console_handle = GetStdHandle(STD_OUTPUT_HANDLE);
+        CONSOLE_SCREEN_BUFFER_INFO buffer_info;
+
+        GetConsoleScreenBufferInfo(console_handle, &buffer_info);
+        const WORD attributes = (buffer_info.wAttributes & 0xFF0F) | static_cast<WORD>(iter->second);
+
+        SetConsoleTextAttribute(console_handle, attributes);
     }
 }
 
 
 void console::set_defaut_color() {
     set_foreground_color(color::basic);
+    set_background_color(color::basic);
+}
+
+
+void console::set_foreground_default_color() {
+    set_foreground_color(color::basic);
+}
+
+
+void console::set_background_default_color() {
+    set_background_color(color::basic);
 }
 
 

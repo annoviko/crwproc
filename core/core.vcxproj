@@ -90,6 +90,7 @@
   <ItemGroup>
     <ClInclude Include="algorithm.h" />
     <ClInclude Include="console.h" />
+    <ClInclude Include="console_progress_bar.h" />
     <ClInclude Include="console_table.h" />
     <ClInclude Include="console_table_style.h" />
     <ClInclude Include="filter.h" />
@@ -119,6 +120,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="console.cpp" />
+    <ClCompile Include="console_progress_bar.cpp" />
     <ClCompile Include="console_table.cpp" />
     <ClCompile Include="console_table_style.cpp" />
     <ClCompile Include="filter.cpp" />
