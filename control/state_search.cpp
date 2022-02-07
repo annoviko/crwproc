@@ -21,8 +21,9 @@
 #include "log_wrapper.h"
 
 
-event state_search::operator()(context& p_context) const {
-    intro_builder::show(p_context, "Run search process, please wait...");
+event state_search::operator()(context& p_context) {
+    m_intro = intro_builder("Run search process, please wait...");
+    m_intro.show(p_context);
 
     LOG_INFO("Run search process using filter '" << p_context.get_filter() << "'.")
 
@@ -72,6 +73,8 @@ event state_search::operator()(context& p_context) const {
 
     const std::string message = "Amount of found values: " + std::to_string(p_context.get_found_values().get_amount_values()) + ".";
     std::cout << message << std::endl;
+
+    m_intro.redraw(p_context);
 
     LOG_INFO(message)
 
