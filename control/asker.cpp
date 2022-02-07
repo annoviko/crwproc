@@ -75,7 +75,7 @@ value_type asker::ask_value_type() {
     for (auto iter = STR_VALUE_TYPE_DICT.cbegin(); iter != STR_VALUE_TYPE_DICT.cend(); iter++) {
         console::set_foreground_color(color::blue, true);
         std::cout << " " << options.size();
-        console::set_defaut_color();
+        console::set_foreground_default_color();
 
         std::cout << " - " << iter->first << std::endl;
         options.push_back(iter);
@@ -100,7 +100,7 @@ std::size_t asker::ask_value_size() {
     for (std::size_t i = 0; i < options.size(); i++) {
         console::set_foreground_color(color::blue, true);
         std::cout << " " << i;
-        console::set_defaut_color();
+        console::set_foreground_default_color();
 
         std::cout << " - " << options[i] << " byte" << (options[i] == 1 ? "" : "s") << std::endl;
     }
@@ -124,7 +124,7 @@ std::optional<bool> asker::ask_value_sign() {
     for (std::size_t i = 0; i < options.size(); i++) {
         console::set_foreground_color(color::blue, true);
         std::cout << " " << i;
-        console::set_defaut_color();
+        console::set_foreground_default_color();
 
         std::cout << " - " << options[i] << std::endl;
     }

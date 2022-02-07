@@ -25,7 +25,7 @@ void state_help::show_help() {
     for (auto& pair : command::get_description()) {
         console::set_foreground_color(color::blue, true);
         std::cout << std::left << std::setw(longest_name + 3) << pair.first;
-        console::set_defaut_color();
+        console::set_foreground_default_color();
 
         std::cout << " - " << pair.second << std::endl;
 

@@ -110,7 +110,7 @@ void console_table::show_header() const {
 
         console::set_foreground_color(m_style.get_header_font_color(), true);
         std::cout << std::right << std::setw(m_col_width[i]) << m_table[0][i];
-        console::set_defaut_color();
+        console::set_foreground_default_color();
 
         std::cout << std::string(m_style.get_cell_padding_right(), ' ');
     }
@@ -127,7 +127,7 @@ void console_table::show_content_row(const std::size_t p_index) const {
 
         console::set_foreground_color(m_style.get_content_font_color(), true);
         std::cout << std::right << std::setw(m_col_width[i]) << m_table[p_index][i];
-        console::set_defaut_color();
+        console::set_foreground_default_color();
 
         std::cout << std::string(m_style.get_cell_padding_right(), ' ');
     }
