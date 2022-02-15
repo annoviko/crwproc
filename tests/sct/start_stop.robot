@@ -15,12 +15,12 @@ Start and Exit
 
 
 Start and Check Log
-	Initialize Crwproc
+    Initialize Crwproc
 
-	${exit code}=      Crwproc Exit    ${CRWPROC}
+    ${exit code}=      Crwproc Exit    ${CRWPROC}
     Should Be Equal    ${exit code}    ${0}
 
-	Check Log Correctness   ${CRWPROC}   ${TEST NAME}
+    Check Log Correctness   ${CRWPROC}   ${TEST NAME}
 
 
 Start and Wrong Input and Exit

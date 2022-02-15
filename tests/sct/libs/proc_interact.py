@@ -48,13 +48,13 @@ def check_log_correctness(application, test_name):
     time.sleep(0.1)
 
     date = datetime.today()
-    expected_date_postfix = date.strftime("%Y-%m-%d_%H-%M-%S")
+    expected_date_postfix = date.strftime("%Y-%m-%d_%H-")
     
     expected_name_postfix = test_name.replace(" ", "_").lower()
     
     folder_files = os.listdir(".")
     
-    expression = ".*" + expected_name_postfix + ".*" + expected_date_postfix + ".log"
+    expression = ".*" + expected_name_postfix + ".*" + expected_date_postfix + ".*\.log"
     robot.api.logger.info("Regex expression to find log file '%s' amoung files '%s'." % (expression, str(folder_files)))
     for filename in folder_files:
         if re.match(expression, filename):

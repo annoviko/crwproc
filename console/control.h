@@ -11,17 +11,12 @@
 #include <string>
 #include <unordered_map>
 
+#include "position.h"
+
 
 namespace crwproc {
 
 namespace console {
-
-
-struct position {
-public:
-    int x = 0;
-    int y = 0;
-};
 
 
 enum class color {

@@ -12,6 +12,7 @@
 #include <iostream>
 
 #include "console/control.h"
+#include "console/reader.h"
 #include "console/table.h"
 
 #include "core/proc_reader.h"
@@ -154,17 +155,35 @@ index_info::user_instruction state_edit::get_index_user_instruction(const contex
 event state_edit::ask_next_action(context& p_context) {
     std::cout << "Please enter the command to continue: ";
 
+#if 1
+    auto console_reader = crwproc::console::reader();
+    console_reader.register_interrupt(VK_F5);
+    crwproc::console::coutput user_input = console_reader.read_line();
+
+    event action = event_refresh{ };
+    if (user_input.interrupt.has_value()) {
+        LOG_INFO("User input (next action): <special key '" << std::to_string(user_input.interrupt.value()) << "'>.")
+    }
+    else {
+        action = command::to_event(user_input.content);
+        LOG_INFO("User input (next action): '" << user_input.content << "'.")
+    }
+#else
     std::string user_input;
     std::cin >> user_input;
 
-    LOG_INFO("User input (next action): '" << user_input << "'.");
-
+    LOG_INFO("User input (next action): '" << user_input << "'.")
     event action = command::to_event(user_input);
+#endif
 
     std::visit([&user_input, &p_context](auto&& instance) {
         using EventType = std::decay_t<decltype(instance)>;
         if constexpr (std::is_same_v<EventType, event_error>) {
+#if 1
+            LOG_ERROR_WITH_WAIT_KEY_AND_RETURN("Error: unknown command is specified '" + user_input.content + "'.")
+#else
             LOG_ERROR_WITH_WAIT_KEY_AND_RETURN("Error: unknown command is specified '" + user_input + "'.")
+#endif
         }
         else if (std::is_same_v<EventType, event_set>) {
             handle_set_event(p_context);

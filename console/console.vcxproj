@@ -85,14 +85,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="control.h" />
+    <ClInclude Include="position.h" />
     <ClInclude Include="progress_bar.h" />
+    <ClInclude Include="reader.h" />
     <ClInclude Include="table.h" />
     <ClInclude Include="table_cell_property.h" />
     <ClInclude Include="table_style.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="control.cpp" />
+    <ClCompile Include="position.cpp" />
     <ClCompile Include="progress_bar.cpp" />
+    <ClCompile Include="reader.cpp" />
     <ClCompile Include="table.cpp" />
     <ClCompile Include="table_style.cpp" />
   </ItemGroup>
