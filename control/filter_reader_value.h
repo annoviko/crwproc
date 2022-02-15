@@ -15,10 +15,10 @@
 
 #include "log/logging.h"
 
-#include "core/console.h"
+#include "console/control.h"
+
 #include "core/filter.h"
 #include "core/traits.h"
-#include "core/value.h"
 
 #include "asker.h"
 #include "command.h"
@@ -40,9 +40,9 @@ private:
 
         std::cout << "Choose filtering type: " << std::endl;
         for (std::size_t i = 0; i < directions.size(); i++) {
-            console::set_foreground_color(color::blue, true);
+            crwproc::console::control::set_foreground_color(crwproc::console::color::blue, true);
             std::cout << " " << i;
-            console::set_defaut_color();
+            crwproc::console::control::set_defaut_color();
 
             std::cout << " - " << directions[i] << std::endl;
         }

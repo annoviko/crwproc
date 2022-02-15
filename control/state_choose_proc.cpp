@@ -13,8 +13,8 @@
 #include <string>
 #include <type_traits>
 
-#include "core/console.h"
-#include "core/console_table.h"
+#include "console/control.h"
+#include "console/table.h"
 
 #include "log/logging.h"
 
@@ -37,9 +37,9 @@ event state_choose_proc::operator()(context& p_context) const {
 
 
 void state_choose_proc::show_procs(const proc_collection& p_table) {
-    console_table view_table(p_table.size() + 1, 2);
+    crwproc::console::table view_table(p_table.size() + 1, 2);
     view_table.set_column_names({ "PID", "Name" });
-    view_table.get_col_property(1).alignment = console_table_cell_alignment::left;
+    view_table.get_col_property(1).alignment = crwproc::console::table_cell_alignment::left;
 
     std::size_t row_number = 1;
     for (const auto& info : p_table) {

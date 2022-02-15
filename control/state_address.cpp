@@ -12,7 +12,8 @@
 #include <iomanip>
 #include <sstream>
 
-#include "core/console_table.h"
+#include "console/table.h"
+
 #include "core/proc_reader.h"
 
 #include "asker.h"
@@ -54,7 +55,7 @@ void state_address::read(const proc_info& p_info) {
 
 
 void state_address::show_value(const context& p_context) const {
-    console::clear();
+    crwproc::console::control::clear();
 
     intro_builder::show(p_context, "View value that is mapped on a specific address.");
 
@@ -63,7 +64,7 @@ void state_address::show_value(const context& p_context) const {
     std::stringstream stream;
     stream << (void*)m_pointer.get_address();
 
-    console_table view_table(2, 3);
+    crwproc::console::table view_table(2, 3);
     view_table.set_column_names({ "Address", "Type", "Value" });
     view_table.set_row_content(1, { stream.str(), m_type.to_string(), entry_value });
     view_table.show();

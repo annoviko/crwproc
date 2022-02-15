@@ -11,8 +11,9 @@
 #include <chrono>
 #include <iostream>
 
-#include "core/console.h"
-#include "core/console_progress_bar.h"
+#include "console/control.h"
+#include "console/progress_bar.h"
+
 #include "core/proc_reader.h"
 
 #include "log/logging.h"
@@ -28,7 +29,7 @@ event state_search::operator()(context& p_context) {
 
     LOG_INFO("Run search process using filter '" << p_context.get_filter() << "'.")
 
-    console_progress_bar progress_control(60);
+    crwproc::console::progress_bar progress_control(60);
     progress_control.display();
 
     std::visit([&p_context, &progress_control](auto&& filter) {

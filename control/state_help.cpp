@@ -10,7 +10,8 @@
 
 #include <iomanip>
 
-#include "core/console.h"
+#include "console/control.h"
+
 #include "command.h"
 
 
@@ -23,9 +24,9 @@ event state_help::operator()(context& p_context) const {
 void state_help::show_help() {
     static const std::size_t longest_name = get_longest_command_name();
     for (auto& pair : command::get_description()) {
-        console::set_foreground_color(color::blue, true);
+        crwproc::console::control::set_foreground_color(crwproc::console::color::blue, true);
         std::cout << std::left << std::setw(longest_name + 3) << pair.first;
-        console::set_foreground_default_color();
+        crwproc::console::control::set_foreground_default_color();
 
         std::cout << " - " << pair.second << std::endl;
 

@@ -11,12 +11,12 @@
 
 #include "log/logging.h"
 
-#include "core/console.h"
+#include "console/control.h"
 
 
 #define LOG_ERROR_WITH_WAIT_KEY(_message) {                                \
     LOG_ERROR(_message)                                                    \
-    console::error_and_wait_key(_message);                                 \
+    crwproc::console::control::error_and_wait_key(_message);               \
 }
 
 
@@ -34,7 +34,7 @@
 
 #define LOG_WARNING_WITH_WAIT_KEY(_message) {                              \
     LOG_WARNING(_message)                                                  \
-    console::warning_and_wait_key(_message);                               \
+    crwproc::console::control::warning_and_wait_key(_message);             \
 }
 
 

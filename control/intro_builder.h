@@ -10,7 +10,7 @@
 
 #include <string>
 
-#include "core/console.h"
+#include "console/control.h"
 #include "control/context.h"
 
 
@@ -18,8 +18,8 @@ class intro_builder {
 private:
     std::string m_intro;
 
-    position m_begin_position;
-    position m_end_position;
+    crwproc::console::position m_begin_position;
+    crwproc::console::position m_end_position;
 
 public:
     intro_builder() = default;

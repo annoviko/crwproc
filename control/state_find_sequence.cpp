@@ -90,7 +90,7 @@ void state_find_sequence::find_byte_sequence(const context& p_context) {
 
 
 void state_find_sequence::show_result(const context& p_context) const {
-    console::clear();
+    crwproc::console::control::clear();
 
     intro_builder::show(p_context, "Find byte sequence in the process memory.");
 
@@ -109,7 +109,7 @@ void state_find_sequence::show_result(const context& p_context) const {
         std::cout << "Byte sequence has been found at '" << (void *) m_address << "'." << std::endl;
     }
     else {
-        console::warning("Byte sequence has not been found.");
+        crwproc::console::control::warning("Byte sequence has not been found.");
     }
 
     std::cout << std::endl << std::endl;

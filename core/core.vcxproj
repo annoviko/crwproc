@@ -89,11 +89,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="algorithm.h" />
-    <ClInclude Include="console.h" />
-    <ClInclude Include="console_progress_bar.h" />
-    <ClInclude Include="console_table.h" />
-    <ClInclude Include="console_table_cell_property.h" />
-    <ClInclude Include="console_table_style.h" />
     <ClInclude Include="filter.h" />
     <ClInclude Include="filter_base.h" />
     <ClInclude Include="filter_equal.h" />
@@ -120,10 +115,6 @@
     <ClInclude Include="value_type.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="console.cpp" />
-    <ClCompile Include="console_progress_bar.cpp" />
-    <ClCompile Include="console_table.cpp" />
-    <ClCompile Include="console_table_style.cpp" />
     <ClCompile Include="filter.cpp" />
     <ClCompile Include="filter_base.cpp" />
     <ClCompile Include="filter_equal.cpp" />

@@ -11,8 +11,9 @@
 #include <iomanip>
 #include <iostream>
 
-#include "core/console.h"
-#include "core/console_table.h"
+#include "console/control.h"
+#include "console/table.h"
+
 #include "core/proc_reader.h"
 #include "core/proc_writer.h"
 #include "core/string_split.h"
@@ -54,7 +55,7 @@ void state_edit::show_table(context& p_context) {
     column_position_map position_map = get_column_position_map(p_context);
     column_names names = get_column_names(position_map);
 
-    console_table view_table(p_context.get_user_table().size() + 1, names.size());
+    crwproc::console::table view_table(p_context.get_user_table().size() + 1, names.size());
     view_table.set_column_names(names);
 
     for (std::size_t i = 0; i < p_context.get_user_table().size(); i++) {

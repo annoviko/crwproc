@@ -10,7 +10,8 @@
 
 #include "command_interrupt.h"
 
-#include "core/console.h"
+#include "console/control.h"
+
 #include "log/logging.h"
 
 #include "transitions.h"
@@ -29,7 +30,7 @@ void ui_stm::handle_state() {
         m_event = p_interruption.get();
     }
 
-    console::clear();
+    crwproc::console::control::clear();
 
     m_state = std::visit(transitions{}, m_state, m_event);
     LOG_INFO("New state: '" << m_state << "' after transition '" << m_event << "'.")

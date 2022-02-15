@@ -70,7 +70,7 @@ void state_dump::show_dump(const context& p_context) const {
     static const std::size_t row_size = 16;
     static const std::string string_separator = "    | ";
 
-    console::clear();
+    crwproc::console::control::clear();
 
     intro_builder::show(p_context, "View memory dump at the specific address.");
 

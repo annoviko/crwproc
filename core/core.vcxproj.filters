@@ -1,26 +1,40 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="console.h">
+    <ClInclude Include="algorithm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="filter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="filter_base.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="filter_equal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="proc_handle.h">
+    <ClInclude Include="filter_less.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="filter_more.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="filter_none.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="filter_range.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="memory_block.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="memory_value.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="parallel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="proc_handle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="proc_info.h">
@@ -38,81 +52,63 @@
     <ClInclude Include="proc_writer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="traits.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="value.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="filter_range.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="filter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="filter_none.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="filter_more.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="filter_less.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="type_desc.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="value_type.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="search_result.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="memory_block.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="memory_value.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="filter_base.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="string_split.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="string_numeric.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="algorithm.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="console_table.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="console_table_style.h">
+    <ClInclude Include="string_split.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="string_utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="console_progress_bar.h">
+    <ClInclude Include="traits.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="console_table_cell_property.h">
+    <ClInclude Include="type_desc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="value.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="value_type.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="console.cpp">
+    <ClCompile Include="filter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="filter_base.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="filter_equal.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="proc_handle.cpp">
+    <ClCompile Include="filter_less.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="filter_more.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="filter_none.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="filter_range.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="memory_block.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="memory_value.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="parallel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="proc_handle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="proc_info.cpp">
@@ -127,50 +123,25 @@
     <ClCompile Include="proc_writer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="value.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="filter_range.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="filter_none.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="filter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="filter_more.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="filter_less.cpp">
+    <ClCompile Include="search_result.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="type_desc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="memory_block.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="search_result.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="memory_value.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="filter_base.cpp">
+    <ClCompile Include="value.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="value_type.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="console_table.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="console_table_style.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="console_progress_bar.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{f7bd50d3-748c-474e-86c7-0224949de91e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{c67934c8-b17c-4d31-bc61-a443ff56b51f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

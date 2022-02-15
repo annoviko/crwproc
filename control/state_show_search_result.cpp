@@ -12,8 +12,8 @@
 #include <iomanip>
 #include <string>
 
-#include "core/console.h"
-#include "core/console_table.h"
+#include "console/control.h"
+#include "console/table.h"
 
 #include "log/logging.h"
 
@@ -37,7 +37,7 @@ void state_show_search_result::show_values(const context& p_context) const {
     const std::size_t amount_elements = p_context.get_found_values().get_amount_values();
     const std::size_t amount_rows = (p_context.get_found_values().get_amount_values() > MAX_VIEW_SIZE) ? MAX_VIEW_SIZE + 2 : p_context.get_found_values().get_amount_values() + 1;
 
-    console_table view_table(amount_rows, 2);
+    crwproc::console::table view_table(amount_rows, 2);
     view_table.set_column_names({ "Nr", "Address" });
 
     auto iter_cursor = p_context.get_found_values().begin();

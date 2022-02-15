@@ -71,7 +71,7 @@
       <AdditionalDependencies>core.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib>
-      <AdditionalDependencies>log.lib;core.lib</AdditionalDependencies>
+      <AdditionalDependencies>log.lib;console.lib;core.lib</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
@@ -99,7 +99,7 @@
       <AdditionalDependencies>core.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib>
-      <AdditionalDependencies>log.lib;core.lib</AdditionalDependencies>
+      <AdditionalDependencies>log.lib;console.lib;core.lib</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>

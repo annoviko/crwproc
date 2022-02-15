@@ -22,14 +22,14 @@ intro_builder::intro_builder(const std::string& p_intro) :
 
 
 void intro_builder::show(const context& p_context) {
-    m_begin_position = console::get_cursor_position();
+    m_begin_position = crwproc::console::control::get_cursor_position();
     show(p_context, m_intro);
-    m_end_position = console::get_cursor_position();
+    m_end_position = crwproc::console::control::get_cursor_position();
 }
 
 
 void intro_builder::redraw(const context& p_context) const {
-    position original_position = console::get_cursor_position();
+    crwproc::console::position original_position = crwproc::console::control::get_cursor_position();
 
     const int lines_to_clean = m_end_position.y - m_begin_position.y - 1;
     if (lines_to_clean < 0) {
@@ -38,12 +38,12 @@ void intro_builder::redraw(const context& p_context) const {
         show(p_context, m_intro);
     }
 
-    console::set_cursor_position(m_begin_position);
+    crwproc::console::control::set_cursor_position(m_begin_position);
 
-    console::clear_lines(lines_to_clean);
+    crwproc::console::control::clear_lines(lines_to_clean);
     show(p_context, m_intro);
 
-    console::set_cursor_position(original_position);
+    crwproc::console::control::set_cursor_position(original_position);
 }
 
 

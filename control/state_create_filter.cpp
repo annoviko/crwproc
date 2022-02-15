@@ -9,10 +9,8 @@
 #include "state_create_filter.h"
 
 #include <iostream>
-#include <limits>
-#include <vector>
 
-#include "core/console.h"
+#include "console/control.h"
 
 #include "log/logging.h"
 
@@ -82,9 +80,9 @@ state_create_filter::filter_type state_create_filter::ask_filter_type() {
     std::cout << "Select filter type that is going to be used for searching:" << std::endl;
 
     for (std::size_t i = 0; i < amount_filters; i++) {
-        console::set_foreground_color(color::blue, true);
+        crwproc::console::control::set_foreground_color(crwproc::console::color::blue, true);
         std::cout << " " << i;
-        console::set_foreground_default_color();
+        crwproc::console::control::set_foreground_default_color();
 
         auto iter = FILTER_TYPE_DICT.find(static_cast<filter_type>(i));
         if (iter == FILTER_TYPE_DICT.end()) {

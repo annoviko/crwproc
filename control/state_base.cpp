@@ -8,7 +8,7 @@
 
 #include "state_base.h"
 
-#include "core/console.h"
+#include "console/control.h"
 
 #include "log/logging.h"
 

@@ -11,7 +11,6 @@
 
 #include <chrono>
 #include <string>
-#include <thread>
 
 #include "log_level.h"
 
