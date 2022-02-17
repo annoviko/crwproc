@@ -77,6 +77,19 @@ Rename Unique Variable
     Should Be True    ${result}
 
 
+Rename To Old Name
+	Add Variable by Address and Rename   ${MEM TYPE STACK}   i8     16   0   wood
+	
+	Send Command   ${CRWPROC}   \\rename 0 food
+	Wait For Output Stream Should Contain   .* 0 .* food .* 16 .*
+
+	Send Command   ${CRWPROC}   \\rename 0 wood
+	Wait For Output Stream Should Contain   .* 0 .* wood .* 16 .*
+	
+	Send Command   ${CRWPROC}   \\rename wood food
+	Wait For Output Stream Should Contain   .* 0 .* food .* 16 .*
+
+
 *** Keywords ***
 
 Add Variable by Address

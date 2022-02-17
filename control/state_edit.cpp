@@ -298,12 +298,21 @@ void state_edit::handle_rename_event(context& p_context) {
 
     LOG_INFO("User input (new name for variable): '" << string_name << "'.")
 
-    if (p_context.get_user_table_active_names().count(string_name) != 0) {
+    auto& table_active_names = p_context.get_user_table_active_names();
+    if (table_active_names.count(string_name) != 0) {
         LOG_ERROR_WITH_WAIT_KEY_AND_RETURN("Error: variable name should be unique.")
     }
 
-    p_context.get_user_table().at(info.get_begin()).set_name(string_name);
-    p_context.get_user_table_active_names().insert(string_name);
+    auto& entry = p_context.get_user_table().at(info.get_begin());
+    if (!entry.get_name().empty()) {
+        LOG_INFO("Remove name '" + entry.get_name() + "' from table active names.")
+        table_active_names.erase(entry.get_name());
+    }
+
+    LOG_INFO("Rename variable '" + entry.get_name() + "' to '" + string_name + "'.")
+
+    entry.set_name(string_name);
+    table_active_names.insert(string_name);
 }
 
 
