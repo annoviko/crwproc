@@ -8,7 +8,11 @@
 
 #include "reader.h"
 
+#include <algorithm>
 #include <iostream>
+#include <thread>
+
+#include <windows.h>
 
 
 namespace crwproc {
@@ -16,102 +20,90 @@ namespace crwproc {
 namespace console {
 
 
-HANDLE reader::m_handle = GetStdHandle(STD_INPUT_HANDLE);
+const interruptible_reader::record_sequence interruptible_reader::UNLOCK_SEQUENCE = get_unlock_sequence();
+
+const std::set<int> interruptible_reader::TERMINATE_KEYS = { '\n' };
 
 
-void reader::register_interrupt(const int p_key) {
+void interruptible_reader::register_interrupt(const int p_key) {
     m_interruptions.insert(p_key);
 }
 
 
-coutput reader::read_line() {
-    m_position = control::get_cursor_position();
+stdin_output interruptible_reader::read_line() {
+    std::thread thread_reader([this]() {
+        std::string line;
+        std::cin >> line;
 
-    bool finish = false;
-    while(!finish) {
-        DWORD number_records = 0;
-        INPUT_RECORD input_record;
+        if (!m_output.interrupted) {
+            m_output.content = std::move(line);
+        }
 
-        ReadConsoleInput(m_handle, &input_record, 1, &number_records);
+        std::cin.get();
+    });
 
-        finish = handle_key(input_record);
+    if (!m_interruptions.empty()) {
+        wait_termination();
     }
+
+    thread_reader.join();
 
     return m_output;
 }
 
 
-void reader::clear_output() {
-    m_output.content.clear();
-    m_output.interrupt.reset();
+void interruptible_reader::wait_termination() {
+    bool termination_flag = false;
+    while(!termination_flag) {
+        termination_flag = is_interrupted() || !m_output.content.empty();
+    }
 }
 
 
-void reader::clear_interrupt() {
+bool interruptible_reader::is_interrupted() {
+    return std::any_of(m_interruptions.cbegin(), m_interruptions.cend(), [this](int p_key) {
+        return is_key_pressed(p_key);
+    });
+}
+
+
+bool interruptible_reader::is_key_pressed(const int p_key) {
+    HANDLE stdin_handle = GetStdHandle(STD_INPUT_HANDLE);
+
+    const bool key_pressed = (GetAsyncKeyState(p_key) & (1 << 16));
+    if (key_pressed) {
+        m_output.interrupted = true;
+
+        DWORD event_written = 0;
+        WriteConsoleInput(stdin_handle, UNLOCK_SEQUENCE.data(), static_cast<DWORD>(UNLOCK_SEQUENCE.size()), &event_written);
+
+        return true;
+    }
+
+    return false;
+}
+
+
+void interruptible_reader::clear_interrupt() {
     m_interruptions.clear();
 }
 
 
-bool reader::handle_input(const INPUT_RECORD& p_input_record) {
-    const char key = p_input_record.Event.KeyEvent.uChar.AsciiChar;
+interruptible_reader::record_sequence interruptible_reader::get_unlock_sequence() {
+    static const std::vector<std::size_t> unlock_keys = { 'A', VK_RETURN };
 
-    switch(key) {
-    case '\n':
-    case '\r':
-        return true;
-
-    default:
-        m_output.content += static_cast<char>(key);
-        std::cout << key;
+    record_sequence unlock_sequence(unlock_keys.size());
+    for (std::size_t i = 0; i < unlock_keys.size(); i++) {
+        unlock_sequence[i].EventType = KEY_EVENT;
+        unlock_sequence[i].Event.KeyEvent.bKeyDown = TRUE;
+        unlock_sequence[i].Event.KeyEvent.dwControlKeyState = 0;
+        unlock_sequence[i].Event.KeyEvent.uChar.UnicodeChar = static_cast<WCHAR>(unlock_keys[i]);
+        unlock_sequence[i].Event.KeyEvent.wRepeatCount = 1;
+        unlock_sequence[i].Event.KeyEvent.wVirtualKeyCode = static_cast<WORD>(unlock_keys[i]);
+        unlock_sequence[i].Event.KeyEvent.wVirtualScanCode = static_cast<WORD>(MapVirtualKey(static_cast<UINT>(unlock_keys[i]), MAPVK_VK_TO_VSC));
     }
 
-    return false;
-}
-
-
-void reader::handle_backspace() {
-    position cursor = control::get_cursor_position();
-
-    if (cursor < m_position) {
-        cursor = m_position;
-    }
-    else {
-        std::cout << " ";
-        m_output.content.pop_back();
-    }
-
-    control::set_cursor_position(cursor);
-}
-
-
-bool reader::handle_special_input(const INPUT_RECORD& p_input_record) {
-    const int key = p_input_record.Event.KeyEvent.wVirtualKeyCode;
-
-    if (key == VK_BACK) {
-        handle_backspace();
-        return false;
-    }
-
-    const auto iter = m_interruptions.find(key);
-    if (iter != m_interruptions.cend()) {
-        m_output.interrupt = key;
-        return true;
-    }
-
-    return false;
-}
-
-
-bool reader::handle_key(const INPUT_RECORD& p_input_record) {
-    if (p_input_record.EventType != KEY_EVENT) {
-        return false;
-    }
-
-    if (p_input_record.Event.KeyEvent.bKeyDown) {
-        return handle_input(p_input_record);
-    }
-
-    return handle_special_input(p_input_record);
+    return unlock_sequence;
 }
 
 

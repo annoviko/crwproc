@@ -156,13 +156,13 @@ event state_edit::ask_next_action(context& p_context) {
     std::cout << "Please enter the command to continue: ";
 
 #if 1
-    auto console_reader = crwproc::console::reader();
+    auto console_reader = crwproc::console::interruptible_reader();
     console_reader.register_interrupt(VK_F5);
-    crwproc::console::coutput user_input = console_reader.read_line();
+    crwproc::console::stdin_output user_input = console_reader.read_line();
 
     event action = event_refresh{ };
-    if (user_input.interrupt.has_value()) {
-        LOG_INFO("User input (next action): <special key '" << std::to_string(user_input.interrupt.value()) << "'>.")
+    if (user_input.interrupted) {
+        LOG_INFO("User input (next action): <interrupted>.")
     }
     else {
         action = command::to_event(user_input.content);

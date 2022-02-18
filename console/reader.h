@@ -9,9 +9,9 @@
 #pragma once
 
 
-#include <optional>
 #include <set>
 #include <string>
+#include <vector>
 
 #include <windows.h>
 
@@ -23,38 +23,40 @@ namespace crwproc {
 namespace console {
 
 
-struct coutput {
+struct stdin_output {
     std::string content;
-    std::optional<int> interrupt;
+    bool interrupted = false;
 };
 
 
-class reader {
+class interruptible_reader {
 private:
-    static HANDLE m_handle;
+    using record_sequence = std::vector<INPUT_RECORD>;
 
 private:
-    coutput       m_output;
+    static const record_sequence UNLOCK_SEQUENCE;
+    static const std::set<int> TERMINATE_KEYS;
+
+private:
+    stdin_output  m_output;
     std::set<int> m_interruptions;
-    position      m_position;
 
 public:
-    virtual void register_interrupt(const int p_key);
+    void register_interrupt(const int p_key);
 
-    virtual coutput read_line();
+    stdin_output read_line();
 
-    virtual void clear_output();
+    void clear_interrupt();
 
-    virtual void clear_interrupt();
+private:
+    void wait_termination();
 
-protected:
-    bool handle_input(const INPUT_RECORD& p_input_record);
+    bool is_interrupted();
 
-    bool handle_special_input(const INPUT_RECORD& p_input_record);
+    bool is_key_pressed(const int p_key);
 
-    bool handle_key(const INPUT_RECORD& p_input_record);
-
-    void handle_backspace();
+private:
+    static record_sequence get_unlock_sequence();
 };
 
 
