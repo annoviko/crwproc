@@ -26,5 +26,5 @@ Read Byte Sequence By Address
     Send Command    ${CRWPROC}   ${address}
     Send Command    ${CRWPROC}   32
 
-    Output Stream Should Contain   .*00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F.*
-    Output Stream Should Contain   .*10 11 12 13 14 15 16 17 18 19 1A 1B 1C 1D 1E 1F.*
+    Output Stream Should Contain   .*10 21 12 23 14 25 16 27 18 29 1A 2B 1C 2D 1E 2F.*
+    Output Stream Should Contain   .*A0 B1 A2 B3 A4 B5 A6 B7 A8 B9 AA BB AC BD AE BF.*
