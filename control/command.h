@@ -44,6 +44,7 @@ public:
         static constexpr char dump[]            = "\\dump";
         static constexpr char find_sequence[]   = "\\find_sequence";
         static constexpr char rename[]          = "\\rename";
+        static constexpr char set_multiplier[]  = "\\set_multiplier";
     };
 
 private:

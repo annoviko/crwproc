@@ -17,6 +17,9 @@
 
 class memory_value {
 private:
+    static constexpr std::int64_t DEFAULT_MULTIPLIER = 1;
+
+private:
     std::uint8_t    m_buffer[sizeof(std::uint64_t)];
 
 public:
@@ -29,9 +32,9 @@ public:
 
     void set(const void* p_buffer, const std::size_t p_size);
 
-    bool set(const std::string& p_value, const type_desc& p_type);
+    bool set(const std::string& p_value, const type_desc& p_type, const std::int64_t p_multiplier = DEFAULT_MULTIPLIER);
 
-    std::string to_string(const type_desc& p_type) const;
+    std::string to_string(const type_desc& p_type, const std::int64_t p_multiplier = DEFAULT_MULTIPLIER) const;
 
 public:
     template <typename TypeValue>

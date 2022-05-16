@@ -16,6 +16,7 @@ Test Teardown    Terminate Object and Subject
 *** Test Cases ***
 
 Rename Single Variable
+    Connect to Subject Process
     Add Variable by Address   ${MEM TYPE STACK}   i8    64
     Navigate to Edit Table
 
@@ -25,6 +26,7 @@ Rename Single Variable
 
 
 Rename Two Added Variables
+    Connect to Subject Process
     Add Variable by Address   ${MEM TYPE STACK}   i8    111
     Add Variable by Address   ${MEM TYPE STACK}   i16   22222
 
@@ -38,6 +40,7 @@ Rename Two Added Variables
 
 
 Rename And Set By Name
+    Connect to Subject Process
     Add Variable by Address and Rename   ${MEM TYPE STACK}   i8    64   0   adm
     
     Send Command   ${CRWPROC}   \\set adm 101
@@ -47,6 +50,7 @@ Rename And Set By Name
 
 
 Rename And Delete By Name
+    Connect to Subject Process
     Add Variable by Address and Rename   ${MEM TYPE STACK}   i8    64   0   dip
 
     Send Command   ${CRWPROC}   \\remove dip
@@ -55,6 +59,7 @@ Rename And Delete By Name
 
 
 Rename And Rename By Name
+    Connect to Subject Process
     Add Variable by Address and Rename   ${MEM TYPE STACK}   i8    64   0   mil
 
     Send Command   ${CRWPROC}   \\rename mil cash
@@ -63,6 +68,7 @@ Rename And Rename By Name
 
 
 Rename Unique Variable
+    Connect to Subject Process
     Add Variable by Address and Rename   ${MEM TYPE STACK}   i8     16   0   coal
     Add Variable by Address and Rename   ${MEM TYPE STACK}   i16    32   1   iron
 
@@ -76,8 +82,11 @@ Rename Unique Variable
     ${result}=   Output Stream Contains    ${CRWPROC}    .*Press any key to continue.*
     Should Be True    ${result}
 
+    Crwproc Press Any Key   ${CRWPROC}
+
 
 Rename To Old Name
+    Connect to Subject Process
 	Add Variable by Address and Rename   ${MEM TYPE STACK}   i8     16   0   wood
 	
 	Send Command   ${CRWPROC}   \\rename 0 food
@@ -97,7 +106,6 @@ Add Variable by Address
     ${address}=    Get Subject Variable Address       ${mem type}   ${var type}
     ${address}=    Convert To Upper Case              ${address}
 
-    Connect to Subject Process
     Find Value by Address and Check Output   ${inital value}   ${address}   ${mem type}   ${var type}
     
     Send Command   ${CRWPROC}   \\add
