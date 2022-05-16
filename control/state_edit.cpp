@@ -16,6 +16,7 @@
 
 #include "core/proc_reader.h"
 #include "core/proc_writer.h"
+#include "core/string_numeric.h"
 #include "core/string_split.h"
 #include "core/string_utils.h"
 
@@ -34,7 +35,14 @@ const state_edit::column_name_map state_edit::COLUMN_NAME_MAP = {
     { state_edit::column_element::address, "Address" },
     { state_edit::column_element::name, "Name" },
     { state_edit::column_element::type, "Type" },
+    { state_edit::column_element::multiplier, "Multiplier" },
     { state_edit::column_element::value, "Value" },
+};
+
+
+const state_edit::optional_columns state_edit::OPTIONAL_COLUMNS = {
+    state_edit::column_element::name,
+    state_edit::column_element::multiplier
 };
 
 
@@ -60,7 +68,7 @@ void state_edit::show_table(context& p_context) {
 
     for (std::size_t i = 0; i < p_context.get_user_table().size(); i++) {
         const edit_table_entry& entry = p_context.get_user_table().at(i);
-        const std::string entry_value = entry.is_valid() ? entry.get_pointer().get_value().to_string(entry.get_type()) : INVALID_VALUE;
+        const std::string entry_value = entry.get_value();
 
         std::stringstream stream;
 
@@ -72,9 +80,14 @@ void state_edit::show_table(context& p_context) {
         view_table.set_cell_content(row_number, position_map.at(column_element::type), entry.get_type().to_string());
         view_table.set_cell_content(row_number, position_map.at(column_element::value), entry_value);
 
-        const auto iter_position = position_map.find(column_element::name);
-        if (iter_position != position_map.cend()) {
+        auto iter_position = position_map.find(column_element::name);
+        if (iter_position != position_map.end()) {
             view_table.set_cell_content(row_number, iter_position->second, entry.get_name());
+        }
+
+        iter_position = position_map.find(column_element::multiplier);
+        if ((iter_position != position_map.end()) && (entry.get_multiplier() != edit_table_entry::DEFAULT_MULTIPLIER)) {
+            view_table.set_cell_content(row_number, iter_position->second, std::to_string(entry.get_multiplier()));
         }
     }
 
@@ -84,24 +97,34 @@ void state_edit::show_table(context& p_context) {
 }
 
 
-bool state_edit::has_table_names(const context& p_context) {
+state_edit::optional_columns state_edit::get_table_optional_columns(const context& p_context) {
+    optional_columns columns;
+
     for (const auto& p_entry : p_context.get_user_table()) {
         if (!p_entry.get_name().empty()) {
-            return true;
+            columns.insert(column_element::name);
+        }
+
+        if (p_entry.get_multiplier() != edit_table_entry::DEFAULT_MULTIPLIER) {
+            columns.insert(column_element::multiplier);
+        }
+
+        if (OPTIONAL_COLUMNS.size() == columns.size()) {
+            break;
         }
     }
 
-    return false;
+    return columns;
 }
 
 
 state_edit::column_position_map state_edit::get_column_position_map(const context& p_context) {
-    const bool has_names = has_table_names(p_context);
+    const optional_columns has_optiona_columns = get_table_optional_columns(p_context);
 
     column_position_map result;
     for (std::size_t i = 0, position = 0; i < static_cast<std::size_t>(column_element::last_element); ++i) {
         const column_element column = static_cast<column_element>(i);
-        if (!has_names && (column == column_element::name)) {
+        if ((OPTIONAL_COLUMNS.count(column) != 0) && (has_optiona_columns.count(column) == 0)) {
             continue;
         }
 
@@ -151,6 +174,23 @@ index_info::user_instruction state_edit::get_index_user_instruction(const contex
 }
 
 
+std::string state_edit::get_single_value_from_stdin() {
+    std::string string_value;
+    std::getline(std::cin, string_value);
+
+    crwproc::string::utils::trim(string_value);
+
+    std::vector<std::string> last_arguments = { };
+    crwproc::string::split(string_value, std::back_inserter(last_arguments));
+
+    if (last_arguments.empty() || (last_arguments.size() > 1)) {
+        LOG_ERROR_WITH_WAIT_KEY_AND_RETURN_VALUE("Error: value should be represented by a value without spaces.", std::string())
+    }
+
+    return string_value;
+}
+
+
 event state_edit::ask_next_action(context& p_context) {
     std::cout << "Please enter the command to continue: ";
 
@@ -183,6 +223,9 @@ event state_edit::ask_next_action(context& p_context) {
         }
         else if (std::is_same_v<EventType, event_rename>) {
             handle_rename_event(p_context);
+        }
+        else if (std::is_same_v<EventType, event_set_multiplier>) {
+            handle_set_multiplier(p_context);
         }
     }, action);
 
@@ -284,16 +327,9 @@ void state_edit::handle_rename_event(context& p_context) {
         return;
     }
 
-    std::string string_name;
-    std::getline(std::cin, string_name);
-
-    crwproc::string::utils::trim(string_name);
-
-    std::vector<std::string> last_arguments = { };
-    crwproc::string::split(string_name, std::back_inserter(last_arguments));
-
-    if (last_arguments.empty() || (last_arguments.size() > 1)) {
-        LOG_ERROR_WITH_WAIT_KEY_AND_RETURN("Error: variable name should be represented by a value without spaces.")
+    std::string string_name = get_single_value_from_stdin();
+    if (string_name.empty()) {
+        return;
     }
 
     LOG_INFO("User input (new name for variable): '" << string_name << "'.")
@@ -313,6 +349,30 @@ void state_edit::handle_rename_event(context& p_context) {
 
     entry.set_name(string_name);
     table_active_names.insert(string_name);
+}
+
+
+void state_edit::handle_set_multiplier(context& p_context) {
+    const auto index_user_map = get_index_user_instruction(p_context);
+    const index_info info = asker::ask_index(p_context.get_user_table().size(), false, index_user_map);
+    if (!info.is_valid()) {
+        return;
+    }
+
+    std::string string_multiplier = get_single_value_from_stdin();
+    if (string_multiplier.empty()) {
+        return;
+    }
+
+    LOG_INFO("User input (new multiplier for variable): '" << string_multiplier << "'.")
+
+    const auto optional_integer = crwproc::string::stonum<std::int64_t>(string_multiplier);
+    if (!optional_integer.has_value()) {
+        LOG_ERROR_WITH_WAIT_KEY_AND_RETURN("Error: multiplier should be integer.")
+    }
+
+    auto& entry = p_context.get_user_table().at(info.get_begin());
+    entry.set_multiplier(optional_integer.value());
 }
 
 

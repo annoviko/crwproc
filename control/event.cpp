@@ -117,3 +117,8 @@ std::ostream& operator<<(std::ostream& p_stream, const event_rename&) {
     p_stream << "event_rename";
     return p_stream;
 }
+
+std::ostream& operator<<(std::ostream& p_stream, const event_set_multiplier&) {
+    p_stream << "set_multiplier";
+    return p_stream;
+}

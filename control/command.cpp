@@ -32,7 +32,8 @@ const std::unordered_map<std::string, event> command::COMMANDS = {
     { command::name::revert,            event_revert()          },
     { command::name::dump,              event_dump()            },
     { command::name::find_sequence,     event_find_sequence()   },
-    { command::name::rename,            event_rename()          }
+    { command::name::rename,            event_rename()          },
+    { command::name::set_multiplier,    event_set_multiplier()  }
 };
 
 
@@ -54,7 +55,8 @@ const std::unordered_map<std::string, std::string> command::DESCRIPTION = {
     { command::name::revert,            "Revert changes introduced by \\set command." },
     { command::name::dump,              "Open a menu to obtain memory dump at specific address." },
     { command::name::find_sequence,     "Open a menu to find byte sequence." },
-    { command::name::rename,            "Rename variable with a specific index in the edit table.\nSyntax: \\rename <index> <name>" }
+    { command::name::rename,            "Rename variable with a specific index in the edit table.\nSyntax: \\rename <index> <name>" },
+    { command::name::set_multiplier,    "Set multiplier (integer value) for a specific variable in the edit table.\nSyntax: \\set_multiplier <index>|<name> <multiplier>" }
 };
 
 
@@ -94,6 +96,12 @@ const std::unordered_map<std::string, std::vector<std::string>> command::EXAMPLE
     { command::name::rename, {
             "\\rename 0 wood    - set 'wood' name to variable with index 0 in the edit table.",
             "\\rename 1 gold    - set 'gold' name to variable with index 1 in the edit table."
+        }
+    },
+
+    { command::name::set_multiplier, {
+            "\\set_multiplier 0 100      - set factor x100 to variable with index 0 in the edit table.",
+            "\\set_multiplier alloy 1000 - set factor x1000 to variable with name 'alloy' in the edit table."
         }
     }
 };
