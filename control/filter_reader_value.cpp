@@ -21,6 +21,10 @@ bool filter_reader_value::read(filter& p_filter) {
         else if constexpr (crwproc::traits::is_any<FilterType, filter_more, filter_less>::value) {
             reading_result = read_filter<FilterType>(p_filter);
         }
+        else if constexpr (crwproc::traits::is_any<FilterType, filter_change>::value) {
+            LOG_WARNING_WITH_WAIT_KEY("Nothing to update for filter type '" << p_filter << "'.")
+            reading_result = true;
+        }
     }, p_filter);
 
     return reading_result;

@@ -21,8 +21,9 @@
 const std::unordered_map<state_create_filter::filter_type, std::string> state_create_filter::FILTER_TYPE_DICT = {
     { state_create_filter::filter_type::equal, "Filter Equal - to search exact value" },
     { state_create_filter::filter_type::range, "Filter Range - to search value in range (from 'A' to 'B')" },
-    { state_create_filter::filter_type::more, "Filter More - to search value that are greater than before (x[t] > x[t-1])" },
-    { state_create_filter::filter_type::less, "Filter Less - to search value that are smaller than before (x[t] < x[t-1])" }
+    { state_create_filter::filter_type::more, "Filter More - to search value that is greater than previous (x[t] > x[t-1])" },
+    { state_create_filter::filter_type::less, "Filter Less - to search value that is smaller than previous (x[t] < x[t-1])" },
+    { state_create_filter::filter_type::change, "Filter Change - to search value that is different from previous (x[t] != x[t-1])" }
 };
 
 
@@ -30,7 +31,8 @@ const std::unordered_map<state_create_filter::filter_type, std::string> state_cr
     { state_create_filter::filter_type::equal, "Filter Equal" },
     { state_create_filter::filter_type::range, "Filter Range)" },
     { state_create_filter::filter_type::more, "Filter More" },
-    { state_create_filter::filter_type::less, "Filter Less" }
+    { state_create_filter::filter_type::less, "Filter Less" },
+    { state_create_filter::filter_type::change, "Filter Change" }
 };
 
 
@@ -68,6 +70,11 @@ void state_create_filter::create_filter(context& p_context) {
         ask_filter<filter_less>(p_context);
         break;
 
+    case filter_type::change:
+        ask_filter<filter_change>(p_context);
+        break;
+
+    case filter_type::last_item:
     default:
         throw std::logic_error("Unknown filter type '" + std::to_string(static_cast<std::size_t>(type)) + "' is detected by UI.");
     }

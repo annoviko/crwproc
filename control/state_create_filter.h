@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include <exception>
 #include <unordered_map>
 
 #include "core/filter.h"
@@ -26,6 +25,7 @@ private:
         range,
         more,
         less,
+        change,
         last_item
     };
 
@@ -52,17 +52,12 @@ private:
     static void ask_filter(context& p_context) {
         type_desc type = asker::ask_type_desc();
 
-        if constexpr (std::is_same<TypeFilter, filter_equal>::value) {
+        if constexpr (crwproc::traits::is_any<TypeFilter, filter_equal, filter_range>::value) {
             p_context.get_filter() = TypeFilter(type);
 
             while (!filter_reader_value::read(p_context.get_filter())) { }
         }
-        else if constexpr (std::is_same<TypeFilter, filter_range>::value) {
-            p_context.get_filter() = filter_range(type);
-
-            while (!filter_reader_value::read(p_context.get_filter())) { }
-        }
-        else if constexpr (crwproc::traits::is_any<TypeFilter, filter_more, filter_less>::value) {
+        else if constexpr (crwproc::traits::is_any<TypeFilter, filter_more, filter_less, filter_change>::value) {
             p_context.get_filter() = TypeFilter(type);
         }
     }

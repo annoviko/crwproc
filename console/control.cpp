@@ -13,6 +13,9 @@
 #include <iostream>
 
 
+#undef max
+
+
 namespace crwproc {
 
 namespace console {
@@ -144,12 +147,18 @@ void control::color_output(const std::string& p_message, const std::uint64_t p_a
         if (ask_wait_key) {
             std::cout << "Press any key to continue...";
 
-            std::cin.putback('\n');
+             std::cin.putback('\n');
+             std::cin.clear();
+             std::cin.ignore(2048, '\n');
+
+             std::cin.get();
+
+#if 0
             std::cin.clear();
-            std::cin.ignore(2048, '\n');
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-            std::cin.get();
-
+            const int value = std::cin.get();
+#endif
             std::cout << std::endl;
         }
     };

@@ -91,6 +91,7 @@
     <ClInclude Include="algorithm.h" />
     <ClInclude Include="filter.h" />
     <ClInclude Include="filter_base.h" />
+    <ClInclude Include="filter_change.h" />
     <ClInclude Include="filter_equal.h" />
     <ClInclude Include="filter_less.h" />
     <ClInclude Include="filter_more.h" />
@@ -117,6 +118,7 @@
   <ItemGroup>
     <ClCompile Include="filter.cpp" />
     <ClCompile Include="filter_base.cpp" />
+    <ClCompile Include="filter_change.cpp" />
     <ClCompile Include="filter_equal.cpp" />
     <ClCompile Include="filter_less.cpp" />
     <ClCompile Include="filter_more.cpp" />

@@ -474,7 +474,7 @@ private:
     template <typename TypeValue>
     inline void insert_if_satisfies(const TypeValue p_actual_value, const proc_pointer& p_pointer, memory_block& p_dummy) const {
         bool is_satisfying = false;
-        if constexpr (crwproc::traits::is_any<TypeFilter, filter_more, filter_less>::value) {
+        if constexpr (crwproc::traits::is_any<TypeFilter, filter_more, filter_less, filter_change>::value) {
             const TypeValue previous_value = p_pointer.get_value().get<TypeValue>();
             is_satisfying = m_filter.is_satisfying(p_actual_value, previous_value);
         }
@@ -567,7 +567,7 @@ private:
             const TypeValue actual_value = *((TypeValue*)(raw_buffer + offset));
 
             bool is_satisfying = false;
-            if constexpr (crwproc::traits::is_any<TypeFilter, filter_more, filter_less>::value) {
+            if constexpr (crwproc::traits::is_any<TypeFilter, filter_more, filter_less, filter_change>::value) {
                 const TypeValue previous_value = *((TypeValue*)(p_block.get_memory().get() + offset_parent_block));
                 is_satisfying = m_filter.is_satisfying(actual_value, previous_value);
             }
@@ -675,7 +675,7 @@ private:
 
         const std::uint8_t* buffer = (std::uint8_t*)p_buffer.get();
 
-        if constexpr (crwproc::traits::is_any<TypeFilter, filter_more, filter_less>::value) {
+        if constexpr (crwproc::traits::is_any<TypeFilter, filter_more, filter_less, filter_change>::value) {
             result.set_memory(p_buffer);  /* only capture current process memory in 'filter more' and 'filter less' */
         }
         else {

@@ -12,6 +12,7 @@
 #include <variant>
 #include <iostream>
 
+#include "filter_change.h"
 #include "filter_equal.h"
 #include "filter_less.h"
 #include "filter_more.h"
@@ -20,6 +21,7 @@
 
 
 using filter = std::variant<
+    filter_change,
     filter_equal, 
     filter_less, 
     filter_more, 
