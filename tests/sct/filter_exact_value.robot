@@ -102,7 +102,7 @@ Find and Change Heap Double
 
 
 Find and Change Global Int8
-    ${value evolution}=    Create List   0   -16   32
+    ${value evolution}=    Create List   0   -16   32   64
     Test Template Find and Change   ${MEM TYPE GLOBAL}   i8   ${value evolution}   -8
 
 
